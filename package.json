@@ -1,0 +1,16 @@
+{
+  "name": "youtube_clone",
+  "version": "1.0.0",
+  "description": "cloning Youtube with VanillaJS and NodeJS",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aroundthistime/youtube_clone.git"
+  },
+  "author": "Donghwan",
+  "license": "ISC",
+  "homepage": "https://github.com/aroundthistime/youtube_clone#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
