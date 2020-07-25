@@ -1,9 +1,9 @@
 extends layouts/main.pug
 
 block content
-    .form__container
-        form(action="/login", method = "post")
-            input(type = "email", name="email", placeholder="이메일/email")
-            input(type = "password", name="password", placeholder = "비밀번호/Password")
+    .form-container
+        form(action=routes.login, method = "post")
+            input(type = "email", name="email", placeholder="이메일/email", required=true)
+            input(type = "password", name="password", placeholder = "비밀번호/Password", required=true)
             input(type = "submit", value = "Login")
         include partials/socialLogin
