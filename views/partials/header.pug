@@ -1,10 +1,13 @@
 header.header
     .header__column
-        a(href=routes.home)
+        a.home(href=routes.home)
             i.fab.fa-youtube
+            |Yutube
     .header__column
         form(action=routes.search, method="get")
             input(type="text", placeholder="Search by a term...",name = "term")
+            button
+                <i class="fas fa-search"></i>
     .header__column
         ul
             if !(user.isAuthenticated)

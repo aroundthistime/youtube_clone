@@ -1,4 +1,16 @@
 extends layouts/main.pug
 
 block content
-    p Videos details 🙄~
+    .video__player
+        video(src=`/${video.fileUrl}`, width="200px", height="150px", controls=true/*, autoplay=true, muted 영상 자동재생*/)
+    .video__info
+        a(href=routes.editVideo(video.id))
+            |Edit or Delete Video
+        h5.video__title=video.title
+        span.video__views=video.views
+        p.video__description=video.description
+    .video__comments
+        if video.comments.length === 1
+            span.video__comments-count 1 comment
+        else
+            span.video__comments-count #{video.comments.length} comments

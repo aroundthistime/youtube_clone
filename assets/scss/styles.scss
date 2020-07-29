@@ -1,0 +1,17 @@
+@import "/config/_variables.scss";
+@import "/config/reset.scss";
+@import "/partials/header.scss";
+@import "/main.scss";
+@import "/pages/home.scss";
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: beige;
+}
+
+.light {
+  opacity: 0.6;
+}
