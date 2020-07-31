@@ -1,8 +1,8 @@
 mixin videoBlock(video = {})
     .videoBlock
         a(href=routes.videoDetail(video.id))
-            video.videoBlock__thumbnail(src=video.fileUrl, width ="200px",height="150px")
-            h4.videoBlock__title=video.title
+            video.videoBlock__thumbnail(src=`${routes.home+video.fileUrl}`, width ="200px",height="150px")
+            span.videoBlock__title=video.title
             .videoBlock__more.light
-                h6.videoBlock__views 조회수 #{video.views}회
-                h6.videoBlock__uploadTime #{Date(video.uploadTime).toString().substring(4, 15)}
+                span.videoBlock__views 조회수 #{video.views}회
+                span.videoBlock__uploadTime #{video.uploadTime.toString().substring(4, 15)}

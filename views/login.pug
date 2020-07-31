@@ -1,6 +1,11 @@
 extends layouts/main.pug
 
 block content
+    .userForm-greeting
+        p.userForm-logo
+            i.fab.fa-youtube
+            |Yutube
+        p.userForm-letter Login for daily entertainment!
     .form-container
         form(action=routes.login, method = "post")
             input(type = "email", name="email", placeholder="이메일/email", required=true)

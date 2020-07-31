@@ -64,7 +64,12 @@ export const videoDetail = async (req, res) => {
   } = req;
   try {
     const video = await Video.findById(id);
-    res.render("videoDetail", { pageTitle: video.title, video });
+    const videosRecommended = await Video.find({}); //should change to real recommendations.
+    res.render("videoDetail", {
+      pageTitle: video.title,
+      video,
+      videosRecommended,
+    });
   } catch (error) {
     res.redirect(routes.home); //해당 영상이 존재하지 않는다는 페이지 만들기?
   }
