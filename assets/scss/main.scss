@@ -4,3 +4,12 @@ main {
   min-height: 93vh;
   background-color: $gray;
 }
+
+@media (min-device-width: 320px) and (max-device-width: 480px) {
+  main {
+    padding: 20px 3vw;
+  }
+  .home__videos {
+    padding-left: 65px;
+  }
+}

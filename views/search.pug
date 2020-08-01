@@ -1,13 +1,15 @@
 extends layouts/main
-include mixins/videoBlock
+include mixins/videoBlockSearch
 
 block content
     .search
         .search__header
-            h3 Searching by #{searchingBy}
+            h3 Searching by #{searchingBy} - 
+                if videos.length === 1
+                    |#{videos.length} result found
+                else
+                    |#{videos.length} results found
         .search__videos
-            if videos.length === 0
-                h5 No videos found
             each video in videos
-                +videoBlock(video)
+                +videoBlockSearch(video)
     include ./partials/nav

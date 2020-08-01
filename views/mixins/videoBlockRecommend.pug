@@ -5,4 +5,4 @@ mixin videoBlockRecommend(video = {})
                 video.videoBlock__thumbnail(src=`${routes.home+video.fileUrl}`, width ="200px",height="150px")
             .videoBlock__column
                 p.videoBlock__title=video.title
-                p.videoBlock__info.light 조회수 #{video.views}회 · #{video.uploadTime.toString().substring(4, 15)}
+                p.videoBlock__info.light 조회수 #{video.views}회 • #{video.uploadTime.toString().substring(4, 15)}

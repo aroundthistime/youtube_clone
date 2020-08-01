@@ -1,0 +1,49 @@
+.search {
+  .search__header {
+    font-size: 20px;
+    margin-left: 5px;
+    margin-bottom: 15px;
+  }
+  .videoBlock {
+    width: 100%;
+    padding: 10px 0px;
+    a {
+      display: flex;
+      .videoBlock__thumbnail {
+        width: 250px;
+        height: 150px;
+        flex-shrink: 0;
+        margin-right: 20px;
+      }
+      .video__info {
+        padding: 5px 15px 5px 0px;
+        width: 65vw;
+        height: 150px;
+        flex-shrink: 0;
+        color: black;
+        .videoBlock__title {
+          font-size: 22px;
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+          max-height: 50px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          margin-bottom: 5px;
+        }
+        .videoBlock__more {
+          font-size: 13px;
+          margin-bottom: 18px;
+        }
+        .videoBlock__description {
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+          max-height: 50px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+      }
+    }
+  }
+}
