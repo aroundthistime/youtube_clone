@@ -4,7 +4,7 @@ const JOIN = "/join";
 const LOGIN = "/login";
 const LOGOUT = "/logout";
 const SEARCH = "/search";
-// const CATEGORY = "/:category";
+const CATEGORY = "/:category";
 // users
 const USERS = "/users";
 const EDIT_PROFILE = "/edit-profile";
@@ -25,6 +25,13 @@ const routes = {
   login: LOGIN,
   logout: LOGOUT,
   search: SEARCH,
+  category: (category) => {
+    if (category) {
+      return "/${category}";
+    } else {
+      return CATEGORY;
+    }
+  },
   users: USERS,
   userDetail: (id) => {
     if (id) {

@@ -5,5 +5,65 @@ block content
         form(action=routes.editVideo(video.id), method = "post")
             input(type="text", placeholder="Title", name="title", value=video.title, required=true)
             textarea(name="description", placeholder="Description", required=true)=video.description
+            .selectBox
+                .select-guide Category
+                .select
+                    select(name="category")
+                        if (video.category == "Animals")
+                            option(value="Animals", selected)|Animals
+                        else
+                            option(value="Animals")|Animals
+                        if (video.category == "Art")
+                            option(value="Art", selected)|Art
+                        else
+                            option(value="Art")|Art
+                        if (video.category == "Educational")
+                            option(value="Educational", selected)|Educational
+                        else
+                            option(value="Educational")|Educational
+                        if (video.category == "Food")
+                            option(value="Food", selected)|Food
+                        else
+                            option(value="Food")|Food
+                        if (video.category == "Game")
+                            option(value="Game", selected)|Game
+                        else
+                            option(value="Game")|Game
+                        if (video.category == "Kids")
+                            option(value="Kids", selected)|Kids
+                        else
+                            option(value="Kids")|Kids
+                        if (video.category == "Movie")
+                            option(value="Movie", selected)|Movie
+                        else
+                            option(value="Movie")|Movie
+                        if (video.category == "Music")
+                            option(value="Music", selected)|Music
+                        else
+                            option(value="Music")|Music
+                        if (video.category == "Religion")
+                            option(value="Religion", selected)|Religion
+                        else
+                            option(value="Religion")|Religion
+                        if (video.category == "SocialNews")
+                            option(value="SocialNews", selected)|Social News
+                        else
+                            option(value="SocialNews")|Social News
+                        if (video.category == "Sports")
+                            option(value="Sports", selected)|Sports
+                        else
+                            option(value="Sports")|Sports
+                        if (video.category == "Travel")
+                            option(value="Travel", selected)|Travel
+                        else
+                            option(value="Travel")|Travel
+                        if (video.category == "TVshows")
+                            option(value="TVshows", selected)|TV Shows
+                        else
+                            option(value="TVshows")|TV Shows   
+                        if (video.category == "Etc")
+                            option(value="Etc", selected)|Etc
+                        else 
+                            option(value="Etc")|Etc    
             input(type="submit", value="Edit Video")
         a.form-container__link.form-container__link--delete(href=routes.deleteVideo(video.id)) Delete Video

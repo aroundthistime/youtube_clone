@@ -64,6 +64,10 @@
         background-color: rgb(158, 158, 158);
         color: $gray;
         border-radius: 10px;
+        transition: all 0.2s;
+        &:hover {
+          background-color: rgb(116, 115, 115);
+        }
       }
     }
 
@@ -77,11 +81,93 @@
       height: 120px;
       font-size: 17px;
       padding: 5px 10px;
+      margin-bottom: 20px;
       border: none;
       box-shadow: 0 1px 2px rgba(0, 0, 0, 0.07), 0 2px 4px rgba(0, 0, 0, 0.07);
       border-radius: 8px;
       &::placeholder {
         font-size: 20px;
+      }
+    }
+    .selectBox {
+      display: flex;
+      justify-content: space-between;
+      width: 450px;
+      .select-guide {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 90px;
+        height: 50px;
+        background-color: rgb(158, 158, 158);
+        color: $gray;
+        border-radius: 10px;
+      }
+      select {
+        width: 350px;
+        height: 50px;
+        background: #2c3e50;
+        appearance: none;
+        padding: 10px 20px;
+        option {
+          background-color: $gray;
+          height: 100px;
+        }
+      }
+      select {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        -ms-appearance: none;
+        appearance: none;
+        outline: 0;
+        box-shadow: none;
+        border: 0 !important;
+        background: #fff;
+        background-image: none;
+      }
+      /* Remove IE arrow */
+      select::-ms-expand {
+        display: none;
+      }
+      /* Custom Select */
+      .select {
+        position: relative;
+        display: flex;
+        width: 350px;
+        height: 50px;
+        line-height: 3;
+        background: #2c3e50;
+        overflow: hidden;
+        border-radius: 8px;
+      }
+      select {
+        flex: 1;
+        padding: 0 10px;
+        color: rgb(126, 126, 126);
+        cursor: pointer;
+        font-size: 17px;
+      }
+      /* Arrow */
+      .select::after {
+        content: "\25BC";
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding: 0 1em;
+        color: gray;
+        background: rgb(218, 218, 218);
+        cursor: pointer;
+        pointer-events: none;
+        -webkit-transition: 0.25s all ease;
+        -o-transition: 0.25s all ease;
+        transition: 0.25s all ease;
+      }
+      /* Transition */
+      .select:hover::after {
+        color: rgb(73, 73, 73);
+      }
+      .select option {
+        background: #fff;
       }
     }
   }

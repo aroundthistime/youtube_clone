@@ -1,0 +1,15 @@
+extends layouts/main
+include mixins/videoBlock
+
+block content
+    ul.home__videos
+        li
+            p.videos-topic #{category}
+            if videos.length === 0
+                .noVideo No videos found 😥
+            .videos
+                each video in videos
+                    +videoBlock(video)
+    include ./partials/nav
+
+//- shares home.scss

@@ -42,6 +42,9 @@
       &:hover {
         background-color: $selected-tab;
       }
+      &.selected {
+        background-color: $selected-tab;
+      }
       .nav__category-icon {
         display: inline-block;
         margin-right: 20px;
