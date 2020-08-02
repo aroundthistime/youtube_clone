@@ -9,15 +9,17 @@ block content
             .video__info
                 p.video__title=video.title
                 p.video__more.light 조회수 #{video.views}회 • #{Date(video.uploadTime).toString().substring(4, 15)}
-                p.video__description=video.description
+                .video__description
+                    .video__description-content=video.description
+                    .video__description-btn
             .video__comments
                 .comments__header
                     if video.comments.length === 1
                         span.video__comments-count 1 comment
                     else
                         span.video__comments-count #{video.comments.length} comments
-                    a(href=routes.editVideo(video.id))|Edit Video
-                    
+                    a(href=routes.editVideo(video.id))|Edit Video   
+
         .recommends
             p.recommends-title 추천 동영상
             each videoRecommended in videosRecommended
