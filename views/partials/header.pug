@@ -10,7 +10,7 @@ header.header
                 <i class="fas fa-search"></i>
     .header__column
         ul
-            if !(user)
+            if !(user.isAuthenticated)
                 li
                     a(href=routes.join) Join
                 li
