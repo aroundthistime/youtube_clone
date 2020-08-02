@@ -327,6 +327,16 @@ a {
            -moz-box-align: initial;
             -ms-flex-align: initial;
                 align-items: initial;
+        display: -webkit-box;
+        display: -webkit-flex;
+        display: -moz-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-align: center;
+        -webkit-align-items: center;
+           -moz-box-align: center;
+            -ms-flex-align: center;
+                align-items: center;
         padding-left: 20px; }
         .nav .nav__categories .nav__category a {
           display: -webkit-box;

@@ -73,6 +73,8 @@
       .nav__category {
         overflow: hidden;
         align-items: initial;
+        display: flex;
+        align-items: center;
         // height: 7.5vh;
         padding-left: 20px;
         a {
