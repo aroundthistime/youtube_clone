@@ -1,4 +1,6 @@
 extends layouts/main.pug
 
 block content
-    p This is user detail 😍
+    .user-profile
+        img.profile-img(src=user.avatarUrl)
+        p.profile-name=user.name

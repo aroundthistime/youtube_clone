@@ -14,6 +14,7 @@ const GOOGLE_CALLBACK = "/auth/google/callback";
 const USERS = "/users";
 const EDIT_PROFILE = "/edit-profile";
 const CHANGE_PASSWORD = "/change-password";
+const MY_PROFILE = "/my-profile";
 const USER_DETAIL = "/:id";
 
 //videos
@@ -45,6 +46,7 @@ const routes = {
       return USER_DETAIL;
     }
   },
+  myProfile: MY_PROFILE,
   editProfile: EDIT_PROFILE,
   changePassword: CHANGE_PASSWORD,
   videos: VIDEOS,
