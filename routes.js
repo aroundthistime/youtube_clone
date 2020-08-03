@@ -9,6 +9,8 @@ const CATEGORY = "/:category";
 //social-login
 const GOOGLE = "/auth/google";
 const GOOGLE_CALLBACK = "/auth/google/callback";
+const FACEBOOK = "/auth/facebook";
+const FACEBOOK_CALLBACK = "/auth/facebook/callback";
 
 // users
 const USERS = "/users";
@@ -74,6 +76,8 @@ const routes = {
   },
   google: GOOGLE,
   googleCallback: GOOGLE_CALLBACK,
+  facebook: FACEBOOK,
+  facebookCallback: FACEBOOK_CALLBACK,
 };
 
 export default routes;

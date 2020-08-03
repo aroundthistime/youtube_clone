@@ -69,14 +69,56 @@ export const postGoogleLogin = (req, res) => {
   res.redirect(routes.home);
 };
 
+export const facebookLogin = passport.authenticate("facebook", {
+  scope: ["email"],
+});
+
+export const facebookLoginCallback = async (_, __, profile, cb) => {
+  const {
+    _json: { id, name, email },
+    profileUrl: avatarUrl,
+  } = profile;
+  try {
+    const user = await User.findOne({ email });
+    if (user) {
+      user.facebookId = id;
+      user.save();
+      return cb(null, user);
+    }
+    if (avatarUrl === undefined) {
+      const newUser = await User.create({
+        email,
+        name,
+        facebookId: id,
+      });
+      return cb(null, newUser);
+    }
+    const newUser = await User.create({
+      email,
+      name,
+      facebookId: id,
+      avatarUrl: avatar_url,
+    });
+    return cb(null, newUser);
+  } catch (error) {
+    return cb(error);
+  }
+};
+
+export const postFacebookLogin = (req, res) => res.redirect(routes.home);
+
 export const logout = (req, res) => {
   req.logout();
   res.redirect(routes.home);
 };
 export const users = (req, res) => res.render("users", { pageTitle: "Users" });
 
-export const myProfile = (req, res) =>
+export const myProfile = async (req, res) => {
+  const users = await User.find({});
+  console.log(users);
   res.render("userDetail", { pageTitle: "My profile", user: req.user });
+};
+
 export const userDetail = async (req, res) => {
   const {
     params: { id },
