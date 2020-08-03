@@ -5,6 +5,11 @@ const LOGIN = "/login";
 const LOGOUT = "/logout";
 const SEARCH = "/search";
 const CATEGORY = "/:category";
+
+//social-login
+const GOOGLE = "/auth/google";
+const GOOGLE_CALLBACK = "/auth/google/callback";
+
 // users
 const USERS = "/users";
 const EDIT_PROFILE = "/edit-profile";
@@ -65,6 +70,8 @@ const routes = {
       return DELETE_VIDEO;
     }
   },
+  google: GOOGLE,
+  googleCallback: GOOGLE_CALLBACK,
 };
 
 export default routes;
