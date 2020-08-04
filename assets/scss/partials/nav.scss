@@ -22,12 +22,15 @@
       width: 6px;
       // display: none;
     }
+    &::-webkit-scrollbar-thumb:hover {
+      background-color: rgb(185, 185, 185);
+    }
     &::-webkit-scrollbar-track {
       background-color: transparent;
     }
     &::-webkit-scrollbar-thumb {
       border-radius: 3px;
-      background-color: rgb(185, 185, 185);
+      background-color: rgb(207, 207, 207);
     }
     &::-webkit-scrollbar-button {
       width: 0;
@@ -70,6 +73,7 @@
     .nav__categories {
       font-size: 22px;
       background-color: $tab;
+      height: 96.2vh;
       .nav__category {
         overflow: hidden;
         align-items: initial;

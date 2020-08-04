@@ -1,5 +1,3 @@
-// const { doc } = require("prettier");
-
 const videoDetail = document.querySelector(".videoDetail");
 const videoDescription = videoDetail.querySelector(".video__description");
 const videoDescriptionContent = videoDescription.querySelector(

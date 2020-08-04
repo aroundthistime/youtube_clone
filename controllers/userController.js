@@ -76,8 +76,8 @@ export const facebookLogin = passport.authenticate("facebook", {
 export const facebookLoginCallback = async (_, __, profile, cb) => {
   const {
     _json: { id, name, email },
-    profileUrl: avatarUrl,
   } = profile;
+  const avatarUrl = `https://graph.facebook.com/${id}/picture/type=large`;
   try {
     const user = await User.findOne({ email });
     if (user) {
@@ -85,19 +85,11 @@ export const facebookLoginCallback = async (_, __, profile, cb) => {
       user.save();
       return cb(null, user);
     }
-    if (avatarUrl === undefined) {
-      const newUser = await User.create({
-        email,
-        name,
-        facebookId: id,
-      });
-      return cb(null, newUser);
-    }
     const newUser = await User.create({
       email,
       name,
       facebookId: id,
-      avatarUrl: avatar_url,
+      avatarUrl, //can I check whether the image is default image of facebook profile?
     });
     return cb(null, newUser);
   } catch (error) {
@@ -115,7 +107,6 @@ export const users = (req, res) => res.render("users", { pageTitle: "Users" });
 
 export const myProfile = async (req, res) => {
   const users = await User.find({});
-  console.log(users);
   res.render("userDetail", { pageTitle: "My profile", user: req.user });
 };
 
@@ -131,7 +122,40 @@ export const userDetail = async (req, res) => {
   }
 };
 
-export const editProfile = (req, res) =>
+export const getEditProfile = (req, res) =>
   res.render("editProfile", { pageTitle: "Profile edit" });
-export const changePassword = (req, res) =>
+
+export const postEditProfile = async (req, res) => {
+  const {
+    body: { name, status },
+    file,
+  } = req;
+  console.log(name);
+  try {
+    await User.findByIdAndUpdate(req.user.id, {
+      name,
+      status,
+      avatarUrl: file ? file.path : req.user.avatarUrl,
+    });
+    res.redirect(routes.myProfile);
+  } catch (error) {
+    console.log(error);
+    res.render("editProfile", { pageTitle: "Edit Profile" });
+  }
+};
+
+export const getChangePassword = (req, res) =>
   res.render("changePassword", { pageTitle: "Change Password" });
+
+export const postChangePassword = async (req, res) => {
+  const {
+    body: { currentPassword: oldPassword, password: newPassword },
+  } = req;
+  try {
+    await req.user.changePassword(oldPassword, newPassword);
+    res.redirect(routes.myProfile);
+  } catch (error) {
+    res.status(400);
+    res.redirect(routes.users + routes.changePassword);
+  }
+};

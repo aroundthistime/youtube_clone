@@ -10,13 +10,15 @@ import passport from "passport";
 
 passport.use(User.createStrategy());
 
+const ngrokSite = "https://cf64b149ca87.ngrok.io";
+
 //social-logins
 passport.use(
   new googleStrategy(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: `http://localhost:${process.env.PORT}${routes.googleCallback}`,
+      callbackURL: ngrokSite + routes.googleCallback,
     },
     googleLoginCallback
   )
@@ -27,7 +29,7 @@ passport.use(
     {
       clientID: process.env.FACEBOOK_CLIENT_ID,
       clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
-      callbackURL: `https://bbf11cf88423.ngrok.io${routes.facebookCallback}`,
+      callbackURL: ngrokSite + routes.facebookCallback,
       profileFields: ["id", "displayName", "photos", "email"],
       scope: ["public_profile", "email"],
     },

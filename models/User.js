@@ -6,8 +6,14 @@ const UserSchema = new mongoose.Schema({
   email: String,
   avatarUrl: {
     type: String,
+    // default:
+    //   "https://img.pngio.com/no-avatar-png-transparent-png-download-for-free-3856300-trzcacak-png-avatar-920_954.png",
     default:
-      "https://img.pngio.com/no-avatar-png-transparent-png-download-for-free-3856300-trzcacak-png-avatar-920_954.png",
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQuIM2Kwi_1IOCBHfB3z2CZWpjl7igvaMpYZw&usqp=CAU",
+  },
+  status: {
+    type: String,
+    default: "I'm feeling well!",
   },
   facebookId: Number,
   googleId: Number,

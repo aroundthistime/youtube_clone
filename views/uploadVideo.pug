@@ -2,7 +2,7 @@ extends layouts/main.pug
 //- include mixins/selectBox.pug
 
 block content
-    .form-container
+    .form-container.no-drag
         form(action=routes.videos+routes.upload, method = "post", enctype="multipart/form-data")
             .file-upload
                 label(for="file") Video File

@@ -44,10 +44,20 @@
       }
     }
 
+    .verify-password {
+      width: 450px;
+      padding: 0px 7px;
+      color: red;
+      height: 20px;
+    }
+
     input[type="submit"] {
       margin-top: 20px;
       background-color: $graybtn;
       color: $gray;
+      &:focus {
+        outline: none;
+      }
     }
     .file-upload {
       display: flex;
