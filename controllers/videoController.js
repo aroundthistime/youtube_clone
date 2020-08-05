@@ -4,7 +4,7 @@ import stringSimilarity from "string-similarity";
 
 export const home = async (req, res) => {
   try {
-    const videos = await Video.find({}).sort({ _id: -1 });
+    const videos = await Video.find({}).populate("creator").sort({ _id: -1 });
     res.render("home", { pageTitle: "Home", videos });
   } catch (error) {
     console.log(error);
@@ -20,7 +20,7 @@ export const search = async (req, res) => {
     //checks exact same words only ignoring upper or lower cases.
     videos = await Video.find({
       title: { $regex: searchingBy, $options: "i" },
-    });
+    }).populate("creator");
   } catch (error) {
     console.log(error);
   }
@@ -46,7 +46,7 @@ export const category = async (req, res) => {
     params: { category },
   } = req;
   try {
-    const videos = await Video.find({ category });
+    const videos = await Video.find({ category }).populate("creator");
     res.render("category", { pageTitle: category, category, videos });
   } catch (error) {
     console.log(error);
@@ -68,7 +68,10 @@ export const postVideoUpload = async (req, res) => {
     title,
     description,
     category,
+    creator: req.user.id,
   });
+  req.user.videos.push(newVideo.id);
+  req.user.save();
   res.redirect(routes.videoDetail(newVideo.id));
 };
 
@@ -77,7 +80,7 @@ export const videoDetail = async (req, res) => {
     params: { id },
   } = req;
   try {
-    const video = await Video.findById(id);
+    const video = await Video.findById(id).populate("creator");
     const category = video.category;
     let videosRecommended = [];
     const sameCategory = await Video.find({ category }).sort({ views: -1 }); //should change to real recommendations.
@@ -104,7 +107,7 @@ export const videoDetail = async (req, res) => {
       videosRecommended,
     });
   } catch (error) {
-    res.redirect(routes.home); //해당 영상이 존재하지 않는다는 페이지 만들기?
+    res.render("userDetail", { pageTitle: "Video not Found", user: null });
   }
 };
 export const getEditVideo = async (req, res) => {
@@ -113,7 +116,11 @@ export const getEditVideo = async (req, res) => {
   } = req;
   try {
     const video = await Video.findById(id);
-    res.render("editVideo", { pageTitle: `[Edit] ${video.title}`, video });
+    if (req.user && video.creator.id === req.user.id) {
+      res.render("editVideo", { pageTitle: `[Edit] ${video.title}`, video });
+    } else {
+      res.render("editVideo", { pageTitle: "Video Edit Error", video: null });
+    }
   } catch (error) {
     res.redirect(routes.home);
   }
@@ -137,7 +144,13 @@ export const deleteVideo = async (req, res) => {
     params: { id },
   } = req;
   try {
-    await Video.findByIdAndRemove(id);
+    const video = await Video.findById(id);
+    if (req.user && video.creator.id === req.user.id) {
+      await Video.findByIdAndRemove(id);
+      res.render(routes.home);
+    } else {
+      res.render("editVideo", { pageTitle: "Video Delete Error", video: null });
+    }
   } catch (error) {}
   res.redirect(routes.home);
 };

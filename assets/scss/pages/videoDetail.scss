@@ -13,14 +13,29 @@
       border-bottom: 1px solid rgb(216, 216, 216);
       .video__title {
         font-size: 25px;
-        margin-bottom: 8px;
         word-break: break-all;
       }
       .video__more {
         font-size: 13.5px;
+        border-bottom: 1.5px solid $border;
+        padding: 13px 0px;
       }
       .video__description {
         padding: 12px 0px;
+        display: flex;
+        .video__description__column:nth-child(2) {
+          padding-top: 10px;
+          width: 100%;
+        }
+        .video__description-creator-img {
+          width: 50px;
+          margin-right: 20px;
+          border-radius: 50%;
+        }
+        .video__description-creator {
+          font-size: 15px;
+          color: black;
+        }
         .video__description-content {
           word-break: break-all;
         }
@@ -95,7 +110,10 @@
         }
         .video__description {
           position: relative;
-
+          padding: 20px 0px;
+          .video__description-creator {
+            font-size: 20px;
+          }
           .video__description-content {
             padding: 20px 5px;
             width: 92%;

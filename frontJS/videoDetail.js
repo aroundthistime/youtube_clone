@@ -57,7 +57,7 @@ const createDescriptionBtn = () => {
 };
 
 const moreThanTwoLines = () => {
-  let compStyle = window.getComputedStyle(videoDescription);
+  let compStyle = window.getComputedStyle(videoDescriptionContent);
   const descriptionHeight = parseInt(compStyle.getPropertyValue("height")) - 40;
   const descriptionFont = parseInt(compStyle.getPropertyValue("font-size"));
   if (descriptionHeight >= descriptionFont * 2) {

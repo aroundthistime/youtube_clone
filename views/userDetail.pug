@@ -1,14 +1,19 @@
 extends layouts/main.pug
 
 block content
-    .user-profile.no-drag
-        img.profile-img(src=user.avatarUrl)
-        p.profile-name=user.name
-        p.profile-status=user.status
-        if user.id === loggedUser.id
-            .profile-btns
-                a(href=routes.users+routes.editProfile)
-                    .profile-btn Edit Profile
-                a(href=routes.users+routes.changePassword)
-                    .profile-btn Change Password
-    .user-videos
+    if user
+        .user-profile.no-drag
+            img.profile-img(src=user.avatarUrl)
+            p.profile-name=user.name
+            p.profile-status=user.status
+            if user.id === loggedUser.id
+                .profile-btns
+                    a(href=routes.users+routes.editProfile)
+                        .profile-btn Edit Profile
+                    a(href=routes.users+routes.changePassword)
+                        .profile-btn Change Password
+        .user-videos
+    else
+        .user-profile.no-drag
+            img.no-user-img(src="https://qotoqot.com/sad-animations/img/150/silent_tears/silent_tears.gif")
+            p.profile-name=pageTitle
