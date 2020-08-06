@@ -1,15 +1,17 @@
 extends layouts/main
-include mixins/videoBlockSearch
+include mixins/videoBlock
 
 block content
-    .search
-        .search__header
-            h3 Searching by #{searchingBy} - 
+    ul.home__videos
+        li
+            p.videos-topic Searching by #{searchingBy} - 
                 if videos.length === 1
                     |#{videos.length} result found
                 else
                     |#{videos.length} results found
-        .search__videos
-            each video in videos
-                +videoBlockSearch(video)
+            .videos
+                each video in videos
+                    +videoBlock(video)
     include ./partials/nav
+    script
+        include ../frontJS/home.js

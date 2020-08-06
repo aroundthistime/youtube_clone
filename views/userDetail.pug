@@ -6,7 +6,7 @@ block content
             img.profile-img(src=user.avatarUrl)
             p.profile-name=user.name
             p.profile-status=user.status
-            if user.id === loggedUser.id
+            if loggedUser && user.id === loggedUser.id
                 .profile-btns
                     a(href=routes.users+routes.editProfile)
                         .profile-btn Edit Profile

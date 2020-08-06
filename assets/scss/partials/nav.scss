@@ -62,7 +62,7 @@
   }
 }
 
-@media /*(min-width: 481px) and*/ (max-width: 1200px) {
+@media /*(min-width: 481px) and*/ (max-width: 1350px) {
   .home__videos,
   .search {
     padding-left: 55px;
@@ -103,6 +103,14 @@
       &:hover .nav__category-name {
         display: inline-block;
       }
+    }
+  }
+}
+
+@media (min-device-width: 320px) and (max-device-width: 480px) {
+  .nav {
+    .nav__categories {
+      height: 99vh;
     }
   }
 }

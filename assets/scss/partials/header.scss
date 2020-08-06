@@ -1,10 +1,10 @@
 .header {
-  width: 100%;
+  width: 100vw;
   height: 55px;
   padding: 0px 25px;
   background-color: $black;
   display: grid;
-  grid-template-columns: 0.8fr 1.5fr 1fr;
+  grid-template-columns: minmax(110px, 0.8fr) minmax(230px, 1.5fr) 0.7fr;
   align-items: center;
   position: sticky;
   top: 0;
@@ -53,6 +53,7 @@
 
 .header__column button {
   width: 8%;
+  min-width: 30px;
   display: flex;
   justify-content: center;
   align-items: center;
