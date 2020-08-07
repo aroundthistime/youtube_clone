@@ -33,6 +33,7 @@ export const postJoin = async (req, res, next) => {
 };
 export const getLogin = (req, res) =>
   res.render("login", { pageTitle: "Login" });
+
 export const postLogin = passport.authenticate("local", {
   failureRedirect: routes.login,
   successRedirect: routes.home,
@@ -106,8 +107,28 @@ export const logout = (req, res) => {
 export const users = (req, res) => res.render("users", { pageTitle: "Users" });
 
 export const myProfile = async (req, res) => {
-  const users = await User.find({});
-  res.render("userDetail", { pageTitle: "My profile", user: req.user });
+  const {
+    query: { sort },
+  } = req;
+  if (sort == 1) {
+    // sort by most popular - most views come first
+    const user = await User.findById(req.user.id).populate({
+      path: "videos",
+      options: { sort: { views: 1 } },
+    });
+    res.render("userDetail", { pageTitle: "My profile", user });
+  } else if (sort == 2) {
+    // sort by date(oldest)
+    const user = await User.findById(req.user.id).populate("videos");
+    res.render("userDetail", { pageTitle: "My profile", user });
+  } else {
+    // sort by date(newest) - default
+    const user = await User.findById(req.user.id).populate({
+      path: "videos",
+      options: { sort: { _id: -1 } },
+    });
+    res.render("userDetail", { pageTitle: "My profile", user });
+  }
 };
 
 export const userDetail = async (req, res) => {
@@ -115,7 +136,7 @@ export const userDetail = async (req, res) => {
     params: { id },
   } = req;
   try {
-    const user = await User.findById(id);
+    const user = await User.findById(id).populate("videos");
     res.render("userDetail", { pageTitle: "User Details", user });
   } catch (error) {
     res.render("userDetail", { pageTitle: "User not Found", user: null });

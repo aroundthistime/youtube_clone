@@ -1,0 +1,32 @@
+mixin videoPlayer(video = {})
+    .video__player#jsVideoPlayer
+        video(src=`${routes.home+video.fileUrl}`)
+        .video__player__effect
+            <i class="fas fa-pause"></i>
+        .video__player__controls
+            .video__player__progress-bar
+                .progress-bar__current
+                    .current-dot
+            .video__player__controls-bar
+                .video__player__column
+                    .play-pause.video__control
+                        <i class="fas fa-play"></i>
+                        .control-name.no-drag Play
+                        //- <i class="fas fa-pause"></i>
+                    .volume-btn.video__control
+                        <i class="fas fa-volume-down"></i>
+                        .control-name.no-drag Mute
+                    .volume-bar.video__control
+                    .timestamp
+                        span.timestamp-current 0:00
+                        |&nbsp;/&nbsp;
+                        span.timestamp-total 10:00
+                .video__player__column
+                    .settings.video__control
+                        <i class="fas fa-cog"></i>
+                        .control-name.no-drag Settings
+                    .expand.video__control
+                        <i class="fas fa-expand"></i>
+                        .control-name.no-drag Full Screen
+    script
+        include ../../frontJS/videoPlayer.js

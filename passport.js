@@ -10,7 +10,7 @@ import passport from "passport";
 
 passport.use(User.createStrategy());
 
-const ngrokSite = "https://cf64b149ca87.ngrok.io";
+const ngrokSite = "https://6b595c469e94.ngrok.io";
 
 //social-logins
 passport.use(
@@ -18,7 +18,7 @@ passport.use(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: ngrokSite + routes.googleCallback,
+      callbackURL: "http://localhost:4000" + routes.googleCallback,
     },
     googleLoginCallback
   )
