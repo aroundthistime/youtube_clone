@@ -10,23 +10,55 @@ mixin videoPlayer(video = {})
             .video__player__controls-bar
                 .video__player__column
                     .play-pause.video__control
-                        <i class="fas fa-play"></i>
+                        <i class="fas fa-play control-icon"></i>
                         .control-name.no-drag Play
                         //- <i class="fas fa-pause"></i>
                     .volume-btn.video__control
-                        <i class="fas fa-volume-down"></i>
+                        .volume-icon
+                            <i class="fas fa-volume-down control-icon"></i>
                         .control-name.no-drag Mute
-                    .volume-bar.video__control
+                        .volume-bar
+                            input.volume-range(type="range", min="0", max="1", step = "0.01", value = "0.5")
                     .timestamp
                         span.timestamp-current 0:00
                         |&nbsp;/&nbsp;
                         span.timestamp-total 10:00
                 .video__player__column
                     .settings.video__control
-                        <i class="fas fa-cog"></i>
+                        <i class="fas fa-cog control-icon"></i>
                         .control-name.no-drag Settings
+                        .settings__main.no-drag.settingsBox
+                            .settings-speed.settings__main__category.settings-bar
+                                .settings__category-column.settings__main__category-title Playback Speed
+                                .settings__category-column
+                                    span.settings__main__category-value Normal
+                                    <i class="fas fa-chevron-right"></i>
+                        .settings__category.settings-speed.no-drag.settingsBox
+                            .category-title
+                                <i class="fas fa-chevron-left"></i>
+                                |Playback Speed
+                            .category-option.settings-bar
+                                .category-option-check
+                                    <i class="fas"></i>
+                                |0.5
+                            .category-option.settings-bar
+                                .category-option-check
+                                    <i class="fas"></i>
+                                |0.75
+                            .category-option.settings-bar 
+                                .category-option-check
+                                    <i class="fas fa-check"></i>
+                                |Normal
+                            .category-option.settings-bar
+                                .category-option-check
+                                    <i class="fas"></i>
+                                |1.25
+                            .category-option.settings-bar
+                                .category-option-check
+                                    <i class="fas"></i>
+                                |1.5
                     .expand.video__control
-                        <i class="fas fa-expand"></i>
+                        <i class="fas fa-expand control-icon"></i>
                         .control-name.no-drag Full Screen
     script
         include ../../frontJS/videoPlayer.js

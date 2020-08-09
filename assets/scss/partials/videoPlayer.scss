@@ -68,14 +68,103 @@
           margin-right: 20px;
         }
         .volume-btn {
-          margin-right: 15px;
+          margin-right: 10px;
+          display: flex;
+          &:hover .volume-bar {
+            width: 75px;
+          }
+          .volume-icon {
+            width: 23px;
+            margin-right: 5px;
+          }
+          .volume-bar {
+            width: 0px;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+            transition: all 0.1s linear;
+            input[type="range"] {
+              width: 70px;
+              background: transparent;
+              -webkit-appearance: none;
+              box-shadow: 0 1px 2px rgba(0, 0, 0, 0.07),
+                0 2px 4px rgba(0, 0, 0, 0.07), 0 4px 8px rgba(0, 0, 0, 0.07),
+                0 8px 16px rgba(0, 0, 0, 0.07), 0 16px 32px rgba(0, 0, 0, 0.07),
+                0 32px 64px rgba(0, 0, 0, 0.07);
+              &:focus {
+                outline: none;
+              }
+              &::-webkit-slider-runnable-track {
+                background-color: $gray;
+                height: 3.5px;
+              }
+              &::-webkit-slider-thumb {
+                -webkit-appearance: none; /* Override default look */
+                appearance: none;
+                width: 12px;
+                height: 12px;
+                background-color: $gray;
+                border-radius: 50%;
+                margin-top: -4px;
+              }
+            }
+          }
         }
         .settings {
           margin-right: 20px;
+          .settings__main,
+          .settings__category {
+            position: absolute;
+            bottom: 50px;
+            right: -30px;
+            width: 260px;
+            background-color: rgba(0, 0, 0, 0.8);
+            font-size: 13px;
+            font-weight: 600;
+            border-radius: 2px;
+            color: rgba(252, 252, 252, 0.9);
+            padding: 8px 0px;
+            // display: none;
+            overflow: hidden;
+          }
+          .settings-bar {
+            padding: 13px 20px;
+            &:hover {
+              background-color: rgba(158, 157, 157, 0.4);
+            }
+          }
+          .settings__main {
+            display: none;
+            .settings__main__category {
+              display: flex;
+              justify-content: space-between;
+              cursor: pointer;
+              i {
+                margin-left: 8px;
+              }
+            }
+          }
+          .settings__category {
+            width: 0;
+            .category-title {
+              padding: 15px 20px;
+              border-bottom: 1px solid gray;
+              i {
+                margin-right: 10px;
+              }
+            }
+            .category-option {
+              cursor: pointer;
+              .category-option-check {
+                width: 25px;
+                display: inline-block;
+              }
+            }
+          }
         }
         .video__control {
           position: relative;
-          &:hover .control-name {
+          .control-icon:hover + .control-name {
             opacity: 1;
           }
           .control-name {

@@ -9,10 +9,19 @@ const videoPlayerEffectAnimation = [
   { zIndex: "-1", transform: "none" },
 ];
 let videoPlayerControls;
-let playPause;
+let playPause; //playPause
 let playPauseIcon;
 let playPauseName;
-let volumeBtn;
+let volumeBtn; //volume
+let volumeIcon;
+let volumeRange;
+let settings; //settings
+let settingsIcon;
+let settingsMain;
+let settingsCategories;
+let settingsVisible = false;
+let fullScreenBtn; //fullScreen
+let isFullScreen = false;
 
 const setProgressBarCurrent = () => {
   const progressBarCurrent = progressBar.querySelector(
@@ -158,14 +167,22 @@ const jumpProgressBar = (e) => {
 const handleMute = (e) => {
   //fix more details because there can be many states of volumes
   const volumeControlName = volumeBtn.querySelector(".control-name");
-  const volumeIcon = volumeBtn.querySelector("i");
   if (video.muted) {
+    volumeRange.value = `${video.volume}`;
     volumeIcon.classList.remove("fa-volume-mute");
-    volumeIcon.classList.add("fa-volume-down");
+    if (video.volume > 0.5) {
+      volumeIcon.classList.remove("fa-volume-down");
+      volumeIcon.classList.add("fa-volume-up");
+    } else {
+      volumeIcon.classList.remove("fa-volume-up");
+      volumeIcon.classList.add("fa-volume-down");
+    }
     volumeControlName.innerText = "Mute";
     volumeControlName.style.left = "-15px";
   } else {
+    volumeRange.value = "0";
     volumeIcon.classList.remove("fa-volume-down");
+    volumeIcon.classList.remove("fa-volume-up");
     volumeIcon.classList.add("fa-volume-mute");
     volumeControlName.innerText = "Unmute";
     volumeControlName.style.left = "-21px";
@@ -173,21 +190,262 @@ const handleMute = (e) => {
   video.muted = !video.muted;
 };
 
-const handleVideoPlayer = () => {
+const handleVolumeIcon = (volume) => {
+  if (volume === 0) {
+    video.volume = 0.5;
+    handleMute(null);
+  } else {
+    video.volume = volume;
+    video.muted = true;
+    handleMute(null);
+  }
+};
+
+const handleVolumeRange = (e) => {
+  const volume = parseFloat(e.target.value);
+  video.volume = volume;
+  handleVolumeIcon(volume);
+};
+
+const hideSettings = () => {
+  settings.querySelectorAll(".settingsBox").forEach((settingsBox) => {
+    settingsBox.style.display = "none";
+  });
+};
+
+const showSettings = () => {
+  settingsMain.style.display = "block";
+};
+
+const showingSettings = () => {
+  const settingsBoxes = Array.from(settings.querySelectorAll(".settingsBox"));
+  return settingsBoxes.some((settingsBox) => {
+    return settingsBox.style.display === "block";
+  });
+};
+
+const handleSettings = (e) => {
+  if (showingSettings()) {
+    settingsVisible = false;
+  } else {
+    showSettings();
+    settingsVisible = true;
+  }
+};
+
+const getChosenSettingsCategory = (target) => {
+  let chosenCategory;
+  let chosenCategoryName;
+  if (target.classList.contains("settings__main__category")) {
+    chosenCategoryName = target.querySelector(".settings__category-column")
+      .innerText;
+  } else {
+    if (target.tagName === "I" || target.tagName === "SPAN") {
+      chosenCategoryName = target.parentNode.parentNode.querySelector(
+        ".settings__category-column"
+      ).innerText;
+    } else {
+      chosenCategoryName = target.parentNode.querySelector(
+        ".settings__category-column"
+      ).innerText;
+    }
+  }
+  if (chosenCategoryName === "Playback Speed") {
+    chosenCategory = settingsCategories[0];
+  } // we'll add more if there becomes other categories of settings
+  return chosenCategory;
+};
+
+const showSettingsMain = () => {
+  settingsMain.animate(
+    [
+      { transform: "none", textIndent: "-10000px", width: "0" },
+      { width: "260px", textIndent: "0" },
+    ],
+    250
+  );
+  settingsMain.style.display = "block";
+  settingsMain.style.width = "260px";
+  // setTimeout(function () {
+  //   settingsMain.style.display = "none";
+  // }, 250);
+};
+
+const hideSettingsMain = () => {
+  settingsMain.animate(
+    [{ transform: "none", textIndent: "-10000px" }, { width: "0" }],
+    250
+  );
+  setTimeout(function () {
+    settingsMain.style.display = "none";
+  }, 250);
+};
+
+const showSettingsCategory = (chosenCategory) => {
+  chosenCategory.style.display = "block";
+  chosenCategory.animate(
+    [
+      { width: "0", textIndent: "-10000px" },
+      { textIndent: 0, width: "260px" },
+    ],
+    250
+  );
+  chosenCategory.style.width = "260px";
+};
+
+const hideSettingsCategory = (chosenCategory) => {
+  chosenCategory.animate(
+    [
+      { width: "260px", textIndent: "-10000px" },
+      { textIndent: "0", width: "0px" },
+    ],
+    250
+  );
+  chosenCategory.style.width = "0px";
+};
+
+const moveToSettingsCategory = (e) => {
+  settingsVisible = true;
+  const chosenCategory = getChosenSettingsCategory(e.target);
+  hideSettingsMain();
+  setTimeout(showSettingsCategory(chosenCategory), 250);
+};
+
+const getvideoPlayerDOM = () => {
   videoPlayerControls = videoPlayer.querySelector(".video__player__controls");
   videoPlayerControls.style.display = "block";
   playPause = videoPlayerControls.querySelector(".play-pause");
   playPauseIcon = playPause.querySelector("i");
   playPauseName = playPause.querySelector(".control-name");
   volumeBtn = videoPlayer.querySelector(".volume-btn");
+  volumeIcon = volumeBtn.querySelector("i");
+  volumeRange = volumeBtn.querySelector(".volume-range");
+  settings = videoPlayerControls.querySelector(".settings");
+  settingsIcon = videoPlayerControls.querySelector(".fa-cog");
+  settingsMain = settings.querySelector(".settings__main");
+  settingsCategories = settings.querySelectorAll(".settings__category");
+  fullScreenBtn = videoPlayerControls
+    .querySelector(".expand")
+    .querySelector("i");
+};
+
+const backToSettingsMain = (e) => {
+  settingsVisible = true;
+  let currentSettingsCategory;
+  if (e.target === undefined) {
+    currentSettingsCategory = e; //when e is not an event but an element, and you are going back to the settings main by selecting an option
+  } else {
+    currentSettingsCategory = e.target; //if e is an event, when you are going back with the left btn from settings category title
+  }
+  while (true) {
+    if (currentSettingsCategory.classList.contains("settings__category")) {
+      break;
+    }
+    currentSettingsCategory = currentSettingsCategory.parentNode;
+  }
+  hideSettingsCategory(currentSettingsCategory);
+  showSettingsMain();
+};
+
+const setVideoSpeed = (speed) => {
+  video.playbackRate = speed; //set the video Speed
+};
+
+const checkSelectedOption = (selectedOption) => {
+  selectedOption.parentNode
+    .querySelectorAll("i")
+    .forEach((categoryOptionCheck) => {
+      categoryOptionCheck.classList.remove("fa-check");
+    });
+  selectedOption.querySelector("i").classList.add("fa-check");
+};
+
+const selectSettingsOption = (e) => {
+  let selectedOption = e.target;
+  while (!selectedOption.classList.contains("category-option")) {
+    selectedOption = selectedOption.parentNode;
+  }
+  if (selectedOption.parentNode.classList.contains("settings-speed")) {
+    //add more
+    if (selectedOption.innerText === "Normal") {
+      setVideoSpeed(1);
+    } else {
+      setVideoSpeed(parseFloat(selectedOption.innerText));
+    }
+    settingsMain
+      .querySelectorAll(".settings__main__category")[0]
+      .querySelector(".settings__main__category-value").innerText =
+      selectedOption.innerText;
+  }
+  checkSelectedOption(selectedOption);
+  backToSettingsMain(selectedOption);
+};
+
+const unclickSettings = () => {
+  if (!settingsVisible) {
+    hideSettingsCategory;
+    hideSettings();
+  }
+  settingsVisible = false;
+};
+
+const preventUnclickSettings = (e) => {
+  settingsVisible = true;
+};
+
+const handleVideoScreen = (e) => {
+  const fullScreenControlName = fullScreenBtn.parentNode.querySelector(
+    ".control-name"
+  );
+  if (isFullScreen) {
+    fullScreenBtn.classList.remove("fa-compress");
+    fullScreenBtn.classList.add("fa-expand");
+    fullScreenControlName.innerText = "Full Screen";
+    fullScreenControlName.style.left = "-33px";
+    document.exitFullscreen();
+  } else {
+    fullScreenBtn.classList.remove("fa-expand");
+    fullScreenBtn.classList.add("fa-compress");
+    fullScreenControlName.innerText = "Exit Full Screen";
+    fullScreenControlName.style.left = "-60px";
+    videoPlayer.requestFullscreen();
+  }
+  isFullScreen = !isFullScreen;
+};
+
+const handleVideoPlayer = () => {
+  getvideoPlayerDOM(); // queryselect the dom elements necessary;
   getVideoLength(); //get the total length of video and set innerText
   setVideoPlayerControlsWidth(); //first when the page loads
   setProgressBarCurrent(); //color the progress bar red as the amount that is watched
   handlePlayPause(); //automatically start video when page is loaded
-  volumeBtn.addEventListener("click", handleMute);
-  playPause.addEventListener("click", handlePlayPause);
+  volumeIcon.addEventListener("click", handleMute); //volume
+  volumeRange.addEventListener("input", handleVolumeRange);
+  video.volume = 0.5; //set the default of video volume to 0.5
+  playPause.addEventListener("click", handlePlayPause); //play, pause
   video.addEventListener("click", handlePlayPause);
-  progressBar.addEventListener("click", jumpProgressBar);
+  settingsIcon.addEventListener("click", handleSettings); //settings
+  document.addEventListener("click", unclickSettings);
+  settingsMain
+    .querySelectorAll(".settings__main__category")
+    .forEach((settingsMainCategory) => {
+      settingsMainCategory.addEventListener("click", moveToSettingsCategory);
+    });
+  settingsCategories.forEach((settingsCategory) => {
+    settingsCategory.addEventListener("click", preventUnclickSettings);
+    settingsCategory
+      .querySelector(".fa-chevron-left")
+      .addEventListener("click", backToSettingsMain);
+    settingsCategory
+      .querySelectorAll(".category-option")
+      .forEach((categoryOption) => {
+        categoryOption.addEventListener("click", selectSettingsOption);
+      });
+  });
+  settingsMain.style.height = `${39.6 * settingsCategories.length + 16}px`;
+  fullScreenBtn.addEventListener("click", handleVideoScreen);
+  video.addEventListener("dblclick", handleVideoScreen);
+  progressBar.addEventListener("click", jumpProgressBar); //progress-bar
   window.addEventListener("resize", setVideoPlayerControlsWidth); //when the page is resize and the width of videoBlock changes
 };
 
