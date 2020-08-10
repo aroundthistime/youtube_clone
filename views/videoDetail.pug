@@ -23,12 +23,33 @@ block content
             .video__comments
                 .comments__header
                     if video.comments.length === 1
-                        span.video__comments-count 1 comment
+                        span.video__comments-count#jsCommentsCount 1 comment
                     else
-                        span.video__comments-count #{video.comments.length} comments
+                        span.video__comments-count#jsCommentsCount #{video.comments.length} comments
                     if loggedUser && video.creator.id === loggedUser.id
                         a(href=routes.editVideo(video.id))|Edit Video   
-
+                .comments-form
+                    if loggedUser
+                        img.comment-profile(src=loggedUser.avatarUrl)
+                    else
+                        .comment-profile
+                    form#jsFormAddComment
+                        input(type="text", placeholder = "Add a comment...")
+                        .underline
+                        .comment-buttons
+                            button.addComment-cancel Cancel
+                            button.addComment-commit Commit
+                ul.comments-list#jsCommentsList
+                    each comment in video.comments.reverse()
+                        li
+                            //- .comment-creator-img
+                            .comment-box
+                                .comment-title
+                                    //- span.comment-creator=comment.creator.name
+                                    span.comment-date=comment.uploadTime.toString().substring(4, 21)
+                                .comment-content=comment.text
+                            .comment-more
+                                <i class="fas fa-ellipsis-v"></i>
         .recommends
             p.recommends-title 추천 동영상
             each videoRecommended in videosRecommended

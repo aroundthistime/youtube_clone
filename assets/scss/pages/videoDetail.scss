@@ -42,23 +42,6 @@
         }
       }
     }
-    .video__comments {
-      .comments__header {
-        padding: 20px 0px;
-        display: flex;
-        justify-content: space-between;
-        a {
-          width: 130px;
-          height: 40px;
-          color: $gray;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          border-radius: 5px;
-          background-color: $red;
-        }
-      }
-    }
   }
   .recommends {
     .videoBlock {

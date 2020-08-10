@@ -1,0 +1,78 @@
+.video__comments {
+  .comments__header {
+    padding: 20px 0px;
+    display: flex;
+    justify-content: space-between;
+    a {
+      width: 130px;
+      height: 40px;
+      color: $gray;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 5px;
+      background-color: $red;
+    }
+  }
+  .comments-form {
+    display: flex;
+    align-items: center;
+    margin-bottom: 75px;
+    .comment-profile {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      margin-right: 15px;
+    }
+    form {
+      width: 100%;
+      position: relative;
+      input {
+        width: 100%;
+        padding: 8px 0px;
+        background: none;
+        outline: none;
+        border: none;
+        font-size: 16px;
+        border-bottom: 1px solid $border;
+        &:focus ~ .underline {
+          width: 100%;
+        }
+      }
+      .underline {
+        position: absolute;
+        height: 2px;
+        margin: 0 0 auto;
+        width: 0;
+        background-color: #030303;
+        transition: all 0.1s ease-in;
+      }
+      .comment-buttons {
+        position: absolute;
+        bottom: -45px;
+        right: 0;
+        button {
+          width: 90px;
+          height: 35px;
+          margin-left: 8px;
+          font-size: 15px;
+          border: none;
+          outline: none;
+          cursor: pointer;
+          border-radius: 3px;
+        }
+        .addComment-cancel {
+          color: rgb(117, 117, 117);
+          background: none;
+        }
+        .addComment-commit {
+          color: $gray;
+          background-color: rgb(170, 169, 169);
+          &.abled {
+            background-color: #065fd4;
+          }
+        }
+      }
+    }
+  }
+}

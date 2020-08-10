@@ -23,6 +23,11 @@ let settingsVisible = false;
 let fullScreenBtn; //fullScreen
 let isFullScreen = false;
 
+const registerView = () => {
+  const videoId = window.location.href.split("/videos/")[1];
+  fetch(`/api/${videoId}/view`, { method: "POST" });
+};
+
 const setProgressBarCurrent = () => {
   const progressBarCurrent = progressBar.querySelector(
     ".progress-bar__current"
@@ -445,6 +450,7 @@ const handleVideoPlayer = () => {
   settingsMain.style.height = `${39.6 * settingsCategories.length + 16}px`;
   fullScreenBtn.addEventListener("click", handleVideoScreen);
   video.addEventListener("dblclick", handleVideoScreen);
+  video.addEventListener("ended", registerView);
   progressBar.addEventListener("click", jumpProgressBar); //progress-bar
   window.addEventListener("resize", setVideoPlayerControlsWidth); //when the page is resize and the width of videoBlock changes
 };

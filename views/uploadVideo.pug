@@ -3,6 +3,14 @@ extends layouts/main.pug
 
 block content
     .form-container.no-drag
+        .record-container#jsRecordContainer
+            video#jsRecordPreview
+            .record-btns
+                button#jsRecordStartBtn <i class="fas fa-video"></i> Start Recording
+                .record-btns--recording
+                    button#jsRecordPauseBtn <i class="fas fa-pause"></i> Pause Recording
+                    button#jsRecordResumeBtn <i class="fas fa-play"></i> Resume Recording
+                    button#jsRecordStopBtn <i class="fas fa-stop"></i> Stop Recording
         form(action=routes.videos+routes.upload, method = "post", enctype="multipart/form-data")
             .file-upload
                 label(for="file") Video File
