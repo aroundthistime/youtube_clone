@@ -17,6 +17,10 @@ const CommentSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
   },
+  isEdited: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const model = mongoose.model("Comment", CommentSchema);

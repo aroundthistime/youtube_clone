@@ -1,6 +1,7 @@
 import routes from "../routes";
 import Video from "../models/Video";
 import Comment from "../models/Comment";
+import User from "../models/User";
 import stringSimilarity from "string-similarity";
 
 export const home = async (req, res) => {
@@ -82,8 +83,16 @@ export const videoDetail = async (req, res) => {
   } = req;
   try {
     const video = await Video.findById(id)
-      .populate("creator")
-      .populate("comments");
+      .populate({
+        path: "creator",
+        model: "User",
+        populate: { path: "blockedComments", model: "Comment" },
+      })
+      .populate({
+        path: "comments",
+        model: "Comment",
+        populate: { path: "creator", model: "User" },
+      });
     const category = video.category;
     let videosRecommended = [];
     const sameCategory = await Video.find({ category }).sort({ views: -1 }); //should change to real recommendations.
@@ -110,6 +119,7 @@ export const videoDetail = async (req, res) => {
       videosRecommended,
     });
   } catch (error) {
+    console.log(error);
     res.render("userDetail", { pageTitle: "Video not Found", user: null });
   }
 };
@@ -188,6 +198,77 @@ export const postAddComment = async (req, res) => {
     });
     video.comments.push(newComment.id);
     video.save();
+  } catch (error) {
+    res.status(400);
+  } finally {
+    res.end();
+  }
+};
+
+export const postEditComment = async (req, res) => {
+  const {
+    params: { id },
+    body: { comment },
+    user,
+  } = req;
+  try {
+    const video = await Video.findById(id);
+    const newComment = await Comment.create({
+      text: comment,
+      creator: user.id,
+      isEdited: true,
+    });
+    video.comments.push(newComment.id);
+    video.save();
+  } catch (error) {
+    res.status(400);
+  } finally {
+    res.end();
+  }
+};
+
+export const postDeleteComment = async (req, res) => {
+  const {
+    params: { id },
+    body: { commentId },
+    user,
+  } = req;
+  try {
+    const video = await Video.findById(id);
+    if (commentId === "") {
+      // if the comment is just created, not by pug but by javascript create element function => so it doesnt have id
+      const commentToDelete = video.comments[video.comments.length - 1];
+      console.log(commentToDelete.id);
+      await Comment.findByIdAndRemove(commentToDelete.id);
+      video.comments.pop();
+    } else {
+      // when the comment is created before loading the page, and has its id in html
+      await Comment.findByIdAndRemove(commentId);
+      const filteredVideoComments = await video.comments.filter(
+        (comment) => comment._id != commentId
+      );
+      video.comments = filteredVideoComments;
+    }
+    video.save();
+  } catch (error) {
+    res.status(400);
+  } finally {
+    res.end();
+  }
+};
+
+export const postBlockComment = async (req, res) => {
+  const {
+    body: { commentId },
+    user,
+  } = req;
+  try {
+    console.log(user.id);
+    console.log(user._id);
+    const currentUser = await User.findById(user.id);
+    console.log(currentUser);
+    currentUser.blockedComments.push(commentId);
+    currentUser.save();
   } catch (error) {
     res.status(400);
   } finally {

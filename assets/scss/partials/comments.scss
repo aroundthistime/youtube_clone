@@ -18,12 +18,6 @@
     display: flex;
     align-items: center;
     margin-bottom: 75px;
-    .comment-profile {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      margin-right: 15px;
-    }
     form {
       width: 100%;
       position: relative;
@@ -69,10 +63,148 @@
           color: $gray;
           background-color: rgb(170, 169, 169);
           &.abled {
-            background-color: #065fd4;
+            background-color: $yesBtn;
           }
         }
       }
+    }
+  }
+  .comments-list {
+    li {
+      width: 100%;
+      display: flex;
+      position: relative;
+      padding-right: 80px;
+      margin-bottom: 30px;
+      &:hover .comment-more {
+        display: flex;
+      }
+      a {
+        color: black;
+      }
+      .comment-box {
+        width: 100%;
+        word-break: break-all;
+        .comment-title {
+          margin-bottom: 8px;
+          font-size: 13px;
+          .comment-creator {
+            margin-right: 8px;
+          }
+          .comment-date {
+            font-size: 12px;
+          }
+        }
+      }
+      .hidden {
+        display: none;
+      }
+      .comment-moreBox {
+        position: absolute;
+        top: 0;
+        right: 55px;
+        padding: 5px 0px;
+        background-color: #fcfcfc;
+        box-shadow: 0 1px 1px rgba(0, 0, 0, 0.11), 0 2px 2px rgba(0, 0, 0, 0.11),
+          0 4px 4px rgba(0, 0, 0, 0.11);
+        border-radius: 5px;
+        .comment-moreTab {
+          padding: 10px 17px;
+          background-color: white;
+          font-size: 14px;
+          cursor: pointer;
+          &:hover {
+            background-color: #e4e1e1;
+          }
+          i {
+            margin-right: 10px;
+            opacity: 0.5;
+          }
+        }
+      }
+      .comment-more {
+        position: absolute;
+        top: 0;
+        right: 10px;
+        display: none;
+        justify-content: center;
+        align-items: center;
+        opacity: 0.3;
+        cursor: pointer;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        &:hover {
+          opacity: 0.6;
+        }
+        &:active {
+          background-color: #d4d4d4;
+        }
+      }
+    }
+  }
+  .comment-profile {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 15px;
+  }
+}
+
+.overlay {
+  width: 100vw;
+  height: calc(100vh - 55px);
+  background: rgba(61, 61, 61, 0.5);
+  position: fixed;
+  top: 55px;
+  left: 0;
+  display: none;
+}
+
+.confirm {
+  display: none;
+  position: fixed;
+  background-color: #fcfcfc;
+  width: 310px;
+  height: 180px;
+  top: 50%;
+  left: 50%;
+  margin-top: -155px;
+  margin-left: -90px;
+  border: 2px solid black;
+  border-radius: 3.5px;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.11), 0 2px 2px rgba(0, 0, 0, 0.11),
+    0 4px 4px rgba(0, 0, 0, 0.11), 0 6px 8px rgba(0, 0, 0, 0.11),
+    0 8px 16px rgba(0, 0, 0, 0.11);
+  padding: 25px 25px 10px 25px;
+  .confirm-title {
+    margin-bottom: 25px;
+    font-size: 17.5px;
+  }
+  .confirm-buttons {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    display: flex;
+    .confirm-button {
+      width: 85px;
+      height: 40px;
+      margin-left: 8px;
+      border-radius: 3px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 14px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .confirm-button__cancel {
+      background-color: $cancelBtn;
+      opacity: 0.65;
+    }
+    .confirm-button__approve {
+      background-color: $yesBtn;
+      color: $gray;
     }
   }
 }

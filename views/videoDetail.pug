@@ -31,26 +31,60 @@ block content
                 .comments-form
                     if loggedUser
                         img.comment-profile(src=loggedUser.avatarUrl)
+                        .loggedUserName.hiddenInfo=loggedUser.name
+                        .loggedUserId.hiddenInfo=loggedUser.id
                     else
                         .comment-profile
                     form#jsFormAddComment
-                        input(type="text", placeholder = "Add a comment...")
+                        if loggedUser
+                            input(type="text", placeholder = "Add a comment...", maxlength = "800")
+                        else
+                             input(type="text", placeholder = "Add a comment... (Login required)", maxlength = "800")
                         .underline
                         .comment-buttons
                             button.addComment-cancel Cancel
                             button.addComment-commit Commit
                 ul.comments-list#jsCommentsList
                     each comment in video.comments.reverse()
-                        li
-                            //- .comment-creator-img
-                            .comment-box
-                                .comment-title
-                                    //- span.comment-creator=comment.creator.name
-                                    span.comment-date=comment.uploadTime.toString().substring(4, 21)
-                                .comment-content=comment.text
-                            .comment-more
-                                <i class="fas fa-ellipsis-v"></i>
+                        if !loggedUser || !(loggedUser.blockedComments.includes(comment.id))
+                            li(id=comment.id)
+                                a(href=`/users/${comment.creator.id}`)
+                                    img.comment-profile(src=comment.creator.avatarUrl)
+                                .comment-box
+                                    .comment-title
+                                        a(href=`/users/${comment.creator.id}`)
+                                            span.comment-creator=comment.creator.name
+                                        if comment.isEdited
+                                            span.comment-date.light=`${comment.uploadTime.toString().substring(4, 21)} (Edited)`
+                                        else
+                                            span.comment-date.light=comment.uploadTime.toString().substring(4, 21)
+                                    .comment-content=comment.text
+                                .comment-moreBox.no-drag.hidden
+                                    if loggedUser && comment.creator.id === loggedUser.id
+                                        .comment-moreTab.comment-more__delete
+                                            <i class="fas fa-trash"></i>
+                                            span Delete
+                                        .comment-moreTab.comment-more__edit
+                                            <i class="fas fa-pen"></i>
+                                            span Edit
+                                    else
+                                        .comment-moreTab.comment-more__block
+                                            <i class="fas fa-ban"></i>
+                                            span Block
+                                .comment-more
+                                    <i class="fas fa-ellipsis-v"></i>
         .recommends
             p.recommends-title 추천 동영상
             each videoRecommended in videosRecommended
                 +videoBlockRecommend(videoRecommended)
+    .overlay
+    .confirm.no-drag
+        .confirm-title
+            span.confirm__comment-job
+            |   comment
+        .confirm-message.light
+            span.confirm__comment-job
+            |   the comment permanently?
+        .confirm-buttons
+            .confirm-button.confirm-button__cancel CANCEL
+            .confirm-button.confirm-button__approve DELETE
