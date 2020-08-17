@@ -46,14 +46,56 @@ export const search = async (req, res) => {
 export const category = async (req, res) => {
   const {
     params: { category },
+    query: { sort },
   } = req;
+  let videos;
   try {
-    const videos = await Video.find({ category }).populate("creator");
+    if (sort == 1) {
+      // sort by most popular - most views come first
+      videos = await Video.find({ category })
+        .populate("creator")
+        .sort({ views: -1 });
+    } else if (sort == 2) {
+      // sort by date(oldest)
+      videos = await Video.find({ category }).populate("creator");
+    } else {
+      // sort by date(newest) - default
+      videos = await Video.find({ category })
+        .populate("creator")
+        .sort({ _id: -1 });
+    }
     res.render("category", { pageTitle: category, category, videos });
   } catch (error) {
     console.log(error);
     res.redirect(routes.home);
   }
+};
+
+export const getHistory = async (req, res) => {
+  const user = await User.findById(req.user._id);
+  user.populate({
+    path: "history",
+    model: "Video",
+    populate: { path: "creator", model: "User" },
+  });
+  let videos = [];
+  for (let i = 0; i < user.history.length; i++) {
+    const historyVideo = await Video.findById(user.history[i]).populate(
+      "creator"
+    );
+    videos.push(historyVideo);
+  }
+  // user.history.forEach(async (video) => {
+  //   const historyVideo = await Video.findById(video).populate("creator");
+  //   console.log(historyVideo);
+  //   videos.push(historyVideo);
+  // });
+  const category = "History";
+  res.render("category", {
+    pageTitle: category,
+    category,
+    videos,
+  });
 };
 
 export const getVideoUpload = (req, res) =>
@@ -95,14 +137,18 @@ export const videoDetail = async (req, res) => {
       });
     const category = video.category;
     let videosRecommended = [];
-    const sameCategory = await Video.find({ category }).sort({ views: -1 }); //should change to real recommendations.
+    const sameCategory = await Video.find({ category })
+      .populate("creator")
+      .sort({ views: -1 }); //should change to real recommendations.
     sameCategory.some((v) => {
       if (video.id !== v.id) {
         videosRecommended.push(v);
       }
       return videosRecommended.length >= 5;
     });
-    const popularVideos = await (await Video.find({}).sort({ _id: -1 })).filter(
+    const popularVideos = await (
+      await Video.find({}).populate("creator").sort({ _id: -1 })
+    ).filter(
       (v) =>
         !videosRecommended.find(
           (videoRecommended) =>
@@ -113,6 +159,19 @@ export const videoDetail = async (req, res) => {
       videosRecommended.push(v);
       return videosRecommended.length >= 10;
     });
+    if (req.user) {
+      // add the video to user's history
+      const user = await User.findById(req.user._id);
+      const index = user.history.indexOf(video);
+      if (index > -1) {
+        user.history.splice(index, 1);
+      }
+      user.history.push(video);
+      if (user.history.length > 50) {
+        user.history.shift();
+      }
+      user.save();
+    }
     res.render("videoDetail", {
       pageTitle: video.title,
       video,

@@ -4,6 +4,7 @@ const JOIN = "/join";
 const LOGIN = "/login";
 const LOGOUT = "/logout";
 const SEARCH = "/search";
+const HISTORY = "/history";
 const CATEGORY = "/:category";
 
 //social-login
@@ -41,6 +42,7 @@ const routes = {
   login: LOGIN,
   logout: LOGOUT,
   search: SEARCH,
+  history: HISTORY,
   category: (category) => {
     if (category) {
       return "/${category}";

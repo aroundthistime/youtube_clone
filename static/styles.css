@@ -1342,7 +1342,7 @@ main {
 .home__videos li {
   padding-top: 25px;
   padding-bottom: 25px; }
-  .home__videos li .videos-topic {
+  .home__videos li .videos-title {
     font-size: 20px;
     margin-left: 5px;
     margin-bottom: 15px; }
@@ -1540,21 +1540,25 @@ main {
       width: 100%;
       height: 80%;
       margin-bottom: 0; }
-    .videoDetail .recommends .videoBlock .videoBlock__column:nth-child(2) {
-      padding: 10px 0px; }
-      .videoDetail .recommends .videoBlock .videoBlock__column:nth-child(2) .videoBlock__title {
-        margin-bottom: 7px;
-        width: -webkit-calc(((100vw - 40px) / 4 - 10px) * 4 / 7);
-        width: -moz-calc(((100vw - 40px) / 4 - 10px) * 4 / 7);
-        width: calc(((100vw - 40px) / 4 - 10px) * 4 / 7);
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        max-height: 55px;
-        overflow: hidden;
-        -o-text-overflow: ellipsis;
-           text-overflow: ellipsis; }
-      .videoDetail .recommends .videoBlock .videoBlock__column:nth-child(2) .videoBlock__info {
-        font-size: 13px; }
+    .videoDetail .recommends .videoBlock .videoBlock__column:nth-child(2) a {
+      color: black; }
+    .videoDetail .recommends .videoBlock .videoBlock__column:nth-child(2) .videoBlock__title {
+      margin-bottom: 8px;
+      width: -webkit-calc(((100vw - 40px) / 4 - 10px) * 4 / 7);
+      width: -moz-calc(((100vw - 40px) / 4 - 10px) * 4 / 7);
+      width: calc(((100vw - 40px) / 4 - 10px) * 4 / 7);
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      max-height: 55px;
+      overflow: hidden;
+      -o-text-overflow: ellipsis;
+         text-overflow: ellipsis;
+      font-size: 17px; }
+    .videoDetail .recommends .videoBlock .videoBlock__column:nth-child(2) .videoBlock__creator {
+      font-size: 12px;
+      margin-bottom: 5px; }
+    .videoDetail .recommends .videoBlock .videoBlock__column:nth-child(2) .videoBlock__info {
+      font-size: 12px; }
 
 @media (min-device-width: 320px) and (max-device-width: 480px) {
   .videoDetail {

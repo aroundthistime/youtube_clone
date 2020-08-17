@@ -6,6 +6,13 @@ nav.nav
                     i.fas.fa-home
                 .nav__category-name
                     |Home
+        if loggedUser
+            a(href=routes.history)
+                li.nav__category
+                    .nav__category-icon
+                       <i class="fas fa-history"></i>
+                    .nav__category-name
+                        |History
         a(href="#")
             li.nav__category
                 .nav__category-icon

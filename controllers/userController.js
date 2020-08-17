@@ -114,7 +114,7 @@ export const myProfile = async (req, res) => {
     // sort by most popular - most views come first
     const user = await User.findById(req.user.id).populate({
       path: "videos",
-      options: { sort: { views: 1 } },
+      options: { sort: { views: -1 } },
     });
     res.render("userDetail", { pageTitle: "My profile", user });
   } else if (sort == 2) {
@@ -133,11 +133,28 @@ export const myProfile = async (req, res) => {
 
 export const userDetail = async (req, res) => {
   const {
-    params: { id },
+    params: { id, sort },
   } = req;
   try {
-    const user = await User.findById(id).populate("videos");
-    res.render("userDetail", { pageTitle: "User Details", user });
+    if (sort == 1) {
+      // sort by most popular - most views come first
+      const user = await User.findById(id).populate({
+        path: "videos",
+        options: { sort: { views: -1 } },
+      });
+      res.render("userDetail", { pageTitle: user.name, user });
+    } else if (sort == 2) {
+      // sort by date(oldest)
+      const user = await User.findById(id).populate("videos");
+      res.render("userDetail", { pageTitle: user.name, user });
+    } else {
+      // sort by date(newest) - default
+      const user = await User.findById(id).populate({
+        path: "videos",
+        options: { sort: { _id: -1 } },
+      });
+      res.render("userDetail", { pageTitle: user.name, user });
+    }
   } catch (error) {
     res.render("userDetail", { pageTitle: "User not Found", user: null });
   }

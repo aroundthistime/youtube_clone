@@ -1,7 +1,12 @@
 import express from "express";
 import passport from "passport";
 import routes from "../routes";
-import { home, search, category } from "../controllers/videoController";
+import {
+  home,
+  search,
+  category,
+  getHistory,
+} from "../controllers/videoController";
 import {
   join,
   login,
@@ -28,6 +33,7 @@ globalRouter.post(routes.login, onlyPublic, postLogin);
 globalRouter.get(routes.logout, onlyPrivate, logout);
 globalRouter.get(routes.myProfile, onlyPrivate, myProfile);
 globalRouter.get(routes.search, search);
+globalRouter.get(routes.history, getHistory);
 globalRouter.get(routes.category(), category);
 
 //social-logins

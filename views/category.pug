@@ -4,7 +4,16 @@ include mixins/videoBlock
 block content
     ul.home__videos
         li
-            p.videos-topic #{category}
+            .videos-header
+                .videos-title #{category}
+                .videos__sort.no-drag <i class="fas fa-sort"></i> Sort By
+                    .videos__sort-standards.hidden
+                        a(href="?sort=1")
+                            .videos__sort-standard Most popular
+                        a(href="?sort=2")
+                            .videos__sort-standard Date (oldest)
+                        a(href="?sort=3")
+                            .videos__sort-standard Date (newest)
             if videos.length === 0
                 .noVideo No videos found 😥
             .videos
@@ -13,5 +22,7 @@ block content
     include ./partials/nav
     script
         include ../frontJS/home.js
+    script
+        include ../frontJS/videosHeader.js
 
 //- shares home.scss
