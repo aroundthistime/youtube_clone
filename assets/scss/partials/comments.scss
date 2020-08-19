@@ -41,6 +41,9 @@
         background-color: #030303;
         transition: all 0.1s ease-in;
       }
+      input[type="submit"] {
+        display: none;
+      }
       .comment-buttons {
         position: absolute;
         bottom: -45px;

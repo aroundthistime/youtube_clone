@@ -13,20 +13,23 @@ block content
                         .profile-btn Edit Profile
                     a(href=routes.users+routes.changePassword)
                         .profile-btn Change Password
-        .uploaded-videos
-            .videos-header
-                .videos-title Uploaded Videos
-                .videos__sort.no-drag <i class="fas fa-sort"></i> Sort By
-                    .videos__sort-standards.hidden
-                        a(href="?sort=1")
-                            .videos__sort-standard Most popular
-                        a(href="?sort=2")
-                            .videos__sort-standard Date (oldest)
-                        a(href="?sort=3")
-                            .videos__sort-standard Date (newest)
-            .videos
-                each video in user.videos
-                    +videoBlockUploaded(video)
+        if user.videos.length
+            .uploaded-videos
+                .videos-header
+                    .videos-title Uploaded Videos
+                    .videos__sort.no-drag <i class="fas fa-sort"></i> Sort By
+                        .videos__sort-standards.hidden
+                            a(href="?sort=1")
+                                .videos__sort-standard Most popular
+                            a(href="?sort=2")
+                                .videos__sort-standard Date (oldest)
+                            a(href="?sort=3")
+                                .videos__sort-standard Date (newest)
+                .videos
+                    each video in user.videos
+                        +videoBlockUploaded(video)
+        else
+            .no-content.no-drag This channel doesn't have any content
     else
         .user-profile.no-drag
             img.no-user-img(src="https://qotoqot.com/sad-animations/img/150/silent_tears/silent_tears.gif")

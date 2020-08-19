@@ -23,13 +23,14 @@ const hideSortStandards = (e) => {
 
 const paintSelectedSort = () => {
   const urlParams = new URLSearchParams(window.location.search);
-  let selectedIndex = 2;
+  const sortStandardsList = sortStandards.querySelectorAll(
+    ".videos__sort-standard"
+  );
+  let selectedIndex = sortStandardsList.length - 1;
   if (urlParams.get("sort")) {
     selectedIndex = parseInt(urlParams.get("sort")) - 1;
   }
-  sortStandards
-    .querySelectorAll(".videos__sort-standard")
-    [selectedIndex].classList.add("selected");
+  sortStandardsList[selectedIndex].classList.add("selected");
 };
 
 paintSelectedSort();

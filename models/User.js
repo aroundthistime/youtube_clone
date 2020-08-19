@@ -13,7 +13,7 @@ const UserSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    default: "I'm feeling well!",
+    default: "",
   },
   facebookId: Number,
   googleId: Number,

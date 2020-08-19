@@ -41,6 +41,8 @@ block content
                         else
                              input(type="text", placeholder = "Add a comment... (Login required)", maxlength = "800")
                         .underline
+                        input(type="submit")
+                        //- without this, the html thinks the button below is input type=submit, so I have to put an invisible input type submit to occur submit when pressing enter
                         .comment-buttons
                             button.addComment-cancel Cancel
                             button.addComment-commit Commit

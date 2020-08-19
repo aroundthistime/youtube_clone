@@ -4,14 +4,28 @@ include mixins/videoBlock
 block content
     ul.home__videos
         li
-            p.videos-topic Searching by #{searchingBy} - 
-                if videos.length === 1
-                    |#{videos.length} result found
-                else
-                    |#{videos.length} results found
+            .videos-header
+                .videos-title Searching by #{searchingBy} - 
+                    if videos.length === 1
+                        |#{videos.length} result found
+                    else
+                        |#{videos.length} results found
+                if videos.length
+                    .videos__sort.no-drag <i class="fas fa-sort"></i> Sort By
+                        .videos__sort-standards.hidden
+                            a(href=`?term=${searchingBy}&sort=1`)
+                                .videos__sort-standard Most popular
+                            a(href=`?term=${searchingBy}&sort=2`)
+                                .videos__sort-standard Date (oldest)
+                            a(href=`?term=${searchingBy}&sort=3`)
+                                .videos__sort-standard Date (newest)
+                            a(href=`?term=${searchingBy}&sort=4`)
+                                .videos__sort-standard Relevance
             .videos
                 each video in videos
                     +videoBlock(video)
     include ./partials/nav
     script
         include ../frontJS/home.js
+    script
+        include ../frontJS/videosHeader.js

@@ -13,9 +13,20 @@ export const home = async (req, res) => {
     res.render("home", { pageTitle: "Home", videos: [] });
   }
 };
+
+const compare_by_view = (a, b) => {
+  return a.views * -1 - b.views * -1;
+};
+
+const compare_by_oldest = (a, b) =>
+  new Date(a.uploadTime) - new Date(b.uploadTime);
+
+const compare_by_newest = (a, b) =>
+  new Date(b.uploadTime) - new Date(a.uploadTime);
+
 export const search = async (req, res) => {
   const {
-    query: { term: searchingBy },
+    query: { term: searchingBy, sort },
   } = req; // = const searchingBy = query.term
   let videos = [];
   try {
@@ -40,6 +51,16 @@ export const search = async (req, res) => {
   } catch (error) {
     console.log(error);
   }
+  if (sort == 1) {
+    // sort by most popular - most views come first
+    videos.sort(compare_by_view);
+  } else if (sort == 2) {
+    // sort by date(oldest)
+    videos.sort(compare_by_oldest);
+  } else if (sort == 3) {
+    //sort by date(newest)
+    videos.sort(compare_by_newest);
+  } // else == relevance, don't have to do anything
   res.render("search", { pageTitle: "Search", searchingBy, videos }); // if the value is same as the key, you can just send the name of the key only (then it will automatically think that the key has a value which is a variable of a same name of the key)
 };
 
@@ -85,11 +106,7 @@ export const getHistory = async (req, res) => {
     );
     videos.push(historyVideo);
   }
-  // user.history.forEach(async (video) => {
-  //   const historyVideo = await Video.findById(video).populate("creator");
-  //   console.log(historyVideo);
-  //   videos.push(historyVideo);
-  // });
+  videos.reverse();
   const category = "History";
   res.render("category", {
     pageTitle: category,
@@ -162,7 +179,7 @@ export const videoDetail = async (req, res) => {
     if (req.user) {
       // add the video to user's history
       const user = await User.findById(req.user._id);
-      const index = user.history.indexOf(video);
+      const index = user.history.indexOf(video._id);
       if (index > -1) {
         user.history.splice(index, 1);
       }
@@ -256,7 +273,9 @@ export const postAddComment = async (req, res) => {
       creator: user.id,
     });
     video.comments.push(newComment.id);
+    user.comments.push(newComment.id);
     video.save();
+    user.save();
   } catch (error) {
     res.status(400);
   } finally {
@@ -278,7 +297,9 @@ export const postEditComment = async (req, res) => {
       isEdited: true,
     });
     video.comments.push(newComment.id);
+    user.comments.push(newComment.id);
     video.save();
+    user.save();
   } catch (error) {
     res.status(400);
   } finally {
@@ -292,14 +313,20 @@ export const postDeleteComment = async (req, res) => {
     body: { commentId },
     user,
   } = req;
+  await user.populate("comments");
   try {
     const video = await Video.findById(id);
-    if (commentId === "") {
+    if (!isNaN(commentId) && commentId < 0) {
       // if the comment is just created, not by pug but by javascript create element function => so it doesnt have id
-      const commentToDelete = video.comments[video.comments.length - 1];
-      console.log(commentToDelete.id);
-      await Comment.findByIdAndRemove(commentToDelete.id);
-      video.comments.pop();
+      // in this case, user.comments.length + commentId means the index number of the comment to delete in user.comments array
+      const commentIdToDelete =
+        user.comments[user.comments.length + commentId]._id;
+      user.comments.splice(user.comments.length + commentId, 1);
+      await Comment.findByIdAndRemove(commentIdToDelete);
+      const videoIndex = video.comments.indexOf(commentIdToDelete);
+      if (videoIndex > -1) {
+        video.comments.splice(videoIndex, 1);
+      }
     } else {
       // when the comment is created before loading the page, and has its id in html
       await Comment.findByIdAndRemove(commentId);
@@ -307,9 +334,15 @@ export const postDeleteComment = async (req, res) => {
         (comment) => comment._id != commentId
       );
       video.comments = filteredVideoComments;
+      const userIndex = user.comments.indexOf(commentId);
+      if (userIndex > -1) {
+        user.comments.splice(userIndex, 1);
+      }
     }
+    user.save();
     video.save();
   } catch (error) {
+    console.log(error);
     res.status(400);
   } finally {
     res.end();
@@ -322,10 +355,7 @@ export const postBlockComment = async (req, res) => {
     user,
   } = req;
   try {
-    console.log(user.id);
-    console.log(user._id);
     const currentUser = await User.findById(user.id);
-    console.log(currentUser);
     currentUser.blockedComments.push(commentId);
     currentUser.save();
   } catch (error) {

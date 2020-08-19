@@ -150,9 +150,9 @@ const sendEditedComment = async (comment) => {
   }
 };
 
-const handleSubmit = (e) => {
-  if (e) {
-    e.preventDefault();
+const handleSubmit = (event) => {
+  if (event) {
+    event.preventDefault();
     if (!isloggedIn()) {
       alert("You need to login to leave a comment.");
       window.location.assign("/login");
@@ -221,11 +221,25 @@ const handleCommentMoreBoxDisplay = (e) => {
 };
 
 const deleteCommentVisually = () => {
-  clickedComment.parentNode.removeChild(clickedComment);
+  try {
+    clickedComment.parentNode.removeChild(clickedComment);
+  } catch (error) {}
 };
 
 const deleteComment = async (afterEditting) => {
-  const commentId = clickedComment.id; //actually delete comment from db
+  let commentId = clickedComment.id; //actually delete comment from db
+  if (commentId === "") {
+    // if the comment is just created and doesn't have ID, get the index of the the comment's index in the user's comments array. (store it into commentId)
+    commentId = 0;
+    Array.from(
+      document.getElementById("jsCommentsList").querySelectorAll("li")
+    ).some((comment) => {
+      if (comment.id === "") {
+        commentId -= 1;
+      }
+      return comment === clickedComment;
+    });
+  }
   const videoId = getVideoId();
   const response = await axios({
     url: `/api/${videoId}/delete-comment`,

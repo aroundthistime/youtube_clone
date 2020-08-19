@@ -783,6 +783,8 @@ a {
       -o-transition: all 0.1s ease-in;
       -moz-transition: all 0.1s ease-in;
       transition: all 0.1s ease-in; }
+    .video__comments .comments-form form input[type="submit"] {
+      display: none; }
     .video__comments .comments-form form .comment-buttons {
       position: absolute;
       bottom: -45px;
@@ -1777,6 +1779,16 @@ main {
     .uploaded-videos .videos a .videoBlock .videoBlock__info {
       margin-top: 5px;
       font-size: 12.5px; }
+
+.no-content {
+  width: -webkit-max-content;
+  width: -moz-max-content;
+  width: max-content;
+  left: 50%;
+  margin-top: 20px;
+  margin-left: -176px;
+  position: absolute;
+  font-size: 20px; }
 
 * {
   -webkit-box-sizing: border-box;
