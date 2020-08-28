@@ -5,6 +5,37 @@ main {
   background-color: $gray;
 }
 
+#videoBlockActionNotice {
+  width: 280px;
+  height: 50px;
+  position: fixed;
+  right: 60px;
+  bottom: -50px; //40px
+  background-color: $small-popup;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.11), 0 2px 2px rgba(0, 0, 0, 0.11),
+    0 4px 4px rgba(0, 0, 0, 0.11), 0 6px 8px rgba(0, 0, 0, 0.11),
+    0 8px 16px rgba(0, 0, 0, 0.11);
+  border-radius: 2px;
+  display: flex;
+  padding: 0px 20px;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+  .videoBlockActionResult {
+    color: $gray;
+  }
+  .videoBlockActionLink {
+    cursor: pointer;
+    color: $skyblue;
+    a {
+      color: $skyblue;
+    }
+  }
+  .videoBlockActionTarget {
+    display: none;
+  }
+}
+
 @media (min-device-width: 320px) and (max-device-width: 480px) {
   main {
     padding: 20px 3vw;

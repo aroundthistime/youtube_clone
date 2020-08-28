@@ -1,6 +1,32 @@
 mixin videoBlockUploaded(video = {})
-    a(href=routes.videoDetail(video.id))
-        .videoBlock
+    .videoBlock
+        a(href=routes.videoDetail(video.id))
             video.videoBlock__thumbnail(src=`${routes.home+video.fileUrl}`)
-            p.videoBlock__title=video.title
-            p.videoBlock__info.light 조회수 #{video.views}회 • #{video.uploadTime.toString().substring(4, 15)}
+        .videoBlock__info
+            a(href=routes.userDetail(user.id)).userDetailLink
+            a(href=routes.videoDetail(video.id)).videoDetailLink
+                p.videoBlock__title=video.title
+            a(href=routes.videoDetail(video.id))
+                p.videoBlock__more.light 조회수 #{video.views}회 • #{video.uploadTime.toString().substring(4, 15)}
+            .videoBlock__action-btn
+                <i class="fas fa-ellipsis-v"></i>
+            if loggedUser && loggedUser.id === user.id
+                .videoBlock__action-box.no-drag
+                    a(href=`${routes.videos}/${video.id}/edit`)
+                        .videoBlock__action-bar <i class="fas fa-edit"></i> Edit Video
+                    .videoBlock__action-bar.deleteVideo <i class="fas fa-trash"></i> Delete Video
+            else
+                .videoBlock__action-box.no-drag
+                    .videoBlock__action-bar.watchLater <i class="fas fa-clock"></i> Save to Watch later
+                    .videoBlock__action-bar.noInterest <i class="far fa-meh"></i> Not Interested
+                    .videoBlock__action-bar.blockCreator <i class="fas fa-ban"></i> Block Channel
+        .videoBlock--removed.no-drag
+            span.videoBlock--removed-notice Video removed
+            if !loggedUser
+                span.videoBlock--removed-notLoggedIn The Video has been removed temporarily<br />Please Login to remove the video Permanently
+            if loggedUser
+                span.videoBlock--removed-undo.videoBlock--removed-button UNDO
+            else
+                .videoBlock--removed-buttons
+                    span.videoBlock--removed-undo.videoBlock--removed-button UNDO
+                    a(href="/login").videoBlock--removed-button LOGIN

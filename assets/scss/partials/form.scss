@@ -18,11 +18,11 @@
 }
 
 .form-container {
+  position: relative;
   margin-top: 30px;
   display: flex;
   width: 100%;
   flex-direction: column;
-
   align-items: center;
   form {
     display: flex;
@@ -49,6 +49,7 @@
       padding: 0px 7px;
       color: red;
       height: 20px;
+      position: relative;
     }
 
     input[type="submit"] {
@@ -222,4 +223,26 @@
       background-color: $facebook;
     }
   }
+}
+
+#loginFailed {
+  margin-top: 50px;
+  color: red;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+#joinFailed {
+  position: absolute;
+  top: 0;
+  left: 10px;
+  color: red;
+}
+
+#changePasswordFailed {
+  position: absolute;
+  top: 0;
+  left: 10px;
+  color: red;
 }

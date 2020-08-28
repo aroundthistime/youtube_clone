@@ -36,11 +36,11 @@ app.use(
     store: new CookieStore({ mongooseConnection: mongoose.connection }),
   })
 );
+
 app.use(passport.initialize());
 app.use(passport.session());
 
 app.use(localsMiddleware);
-
 app.use(routes.home, globalRouter);
 app.use(routes.users, userRouter);
 app.use(routes.videos, videoRouter);

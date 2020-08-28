@@ -6,7 +6,7 @@ import User from "../models/User";
 import passport from "passport";
 
 export const getJoin = (req, res) => {
-  res.render("join", { pageTitle: "Join" });
+  res.render("join", { pageTitle: "Join", joinFail: false });
 };
 export const postJoin = async (req, res, next) => {
   const {
@@ -24,20 +24,27 @@ export const postJoin = async (req, res, next) => {
       await User.register(user, password);
       next();
     } catch (error) {
-      console.log(error);
-      res.redirect(routes.home);
+      res.redirect(routes.joinFail);
     }
 
     //회원가입되었을 때 정보 등록 + 로그인시키기
   }
 };
+
+export const getJoinFail = (req, res) =>
+  res.render("join", { pageTitle: "Join", joinFail: true });
+
 export const getLogin = (req, res) =>
-  res.render("login", { pageTitle: "Login" });
+  res.render("login", { pageTitle: "Login", loginFailed: false });
 
 export const postLogin = passport.authenticate("local", {
-  failureRedirect: routes.login,
+  failureRedirect: routes.loginFail,
   successRedirect: routes.home,
 });
+
+export const getLoginFail = (req, res) => {
+  res.render("login", { pageTitle: "Login", loginFailed: true });
+};
 
 export const googleLogin = passport.authenticate("google", {
   scope: ["profile", "email"],
@@ -183,7 +190,17 @@ export const postEditProfile = async (req, res) => {
 };
 
 export const getChangePassword = (req, res) =>
-  res.render("changePassword", { pageTitle: "Change Password" });
+  res.render("changePassword", {
+    pageTitle: "Change Password",
+    changePasswordFail: false,
+  });
+
+export const getChangePasswordFail = (req, res) => {
+  res.render("changePassword", {
+    pageTitle: "Change Password",
+    changePasswordFail: true,
+  });
+};
 
 export const postChangePassword = async (req, res) => {
   const {
@@ -194,6 +211,6 @@ export const postChangePassword = async (req, res) => {
     res.redirect(routes.myProfile);
   } catch (error) {
     res.status(400);
-    res.redirect(routes.users + routes.changePassword);
+    res.redirect(routes.users + routes.changePasswordFail);
   }
 };

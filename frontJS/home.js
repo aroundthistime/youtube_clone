@@ -1,5 +1,4 @@
 const home = document.querySelector(".home__videos");
-const videoContainer = home.querySelector(".videos");
 const videos = home.querySelectorAll(".videoBlock");
 
 const checkIsMobile2 = () => {
@@ -39,34 +38,45 @@ const handleVideoResize = () => {
       videoBlock_width -
       videoBlock__info_paddingRight -
       15 -
-      videoBlockCreator_width
+      videoBlockCreator_width -
+      20
     }px`;
   });
 };
 
 const handleGridGapResize = () => {
-  if (window.innerWidth >= 1000 && window.innerWidth <= 1350) {
-    videos.forEach((video) => {
-      video.style.width = `${
-        ((window.innerWidth * 94) / 100 - 55 - 70 - 15) / 3
-      }px`;
-    });
-  } else if (window.innerWidth < 1000) {
-    videos.forEach((video) => {
-      video.style.width = `${(window.innerWidth * 94) / 100 - 55 - 10}px`;
-    });
-  } else if (window.innerWidth > 1350) {
-    videos.forEach((video) => {
-      video.style.width = `${
-        ((window.innerWidth * 94) / 100 - 235 - 105 - 20) / 4
-      }px`;
-    });
+  videos.forEach((video) => {
+    const videoHeight =
+      (parseFloat(window.getComputedStyle(video).getPropertyValue("width")) *
+        9) /
+      16;
+
+    video.querySelector(
+      ".videoBlock__thumbnail"
+    ).style.height = `${videoHeight}px`;
+    video.style.height = `${videoHeight + 80}px`;
+  });
+};
+
+const handleVideoRemovedResize = () => {
+  if (videos.length) {
+    const videoWidth =
+      parseFloat(window.getComputedStyle(videos[0]).getPropertyValue("width")) +
+      1;
+    const videoHeight = (videoWidth * 9) / 16;
+    home
+      .querySelectorAll(".videoBlock--removed")
+      .forEach((videoBlockRemoved) => {
+        videoBlockRemoved.style.width = `${videoWidth}px`;
+        videoBlockRemoved.style.height = `${videoHeight}px`;
+      });
   }
 };
 
-const handleHomeResize = (e) => {
+const handleHomeResize = (event) => {
   handleGridGapResize();
   handleVideoResize();
+  handleVideoRemovedResize();
 };
 
 if (!checkIsMobile2()) {

@@ -10,7 +10,7 @@ block content
             +videoPlayer(video)
             .video__info
                 p.video__title=video.title
-                p.video__more.light 조회수 #{video.views}회 • #{Date(video.uploadTime).toString().substring(4, 15)}
+                p.video__more.light 조회수 #{video.views}회 • #{video.uploadTime.toString().substring(4, 15)}
                 .video__description
                     .video__description__column
                         a(href=routes.userDetail(video.creator.id))
@@ -90,3 +90,5 @@ block content
         .confirm-buttons
             .confirm-button.confirm-button__cancel CANCEL
             .confirm-button.confirm-button__approve DELETE
+    script
+            include ../frontJS/videoDetail.js

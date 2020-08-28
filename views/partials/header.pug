@@ -17,9 +17,12 @@ header.header.no-drag
                     a(href=routes.login) Login
             else
                 li
+                    a(href=routes.myProfile).header__myProfileLink
+                        img.header__userProfileImg(src=loggedUser.avatarUrl)
+                        .header__username #{loggedUser.name}
+                li#loggedHeader
                     a(href=routes.videos+routes.upload) Upload
-                li
-                    a(href=routes.myProfile) Profile
+                
                 li
                     a(href=routes.logout) Logout
 script

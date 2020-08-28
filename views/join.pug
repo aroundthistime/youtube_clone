@@ -8,10 +8,20 @@ block content
         p.userForm-letter Join Yutube for daily entertainment!
     .form-container
         form(action=routes.join, method = "post").containPassword
-            input(type = "text", name="name", placeholder="성명/Full Name", required=true)
+            input(type = "text", name="name", placeholder="성명/Full Name", required=true, maxlength="20")
             input(type = "email", name="email", placeholder="이메일/email", required=true)
             input(type = "password", name="password", placeholder = "비밀번호/Password", required=true)
             input(type = "password", name="password2", placeholder = "비밀번호 확인/Verify Password", required=true)
             .verify-password
+                if joinFail
+                    #joinFailed The email already has an account
             input(type = "submit", value = "Join Now")
         include partials/socialLogin
+    
+    script
+        include ../frontJS/passwordMatch.js
+    script.
+        const loginFailed = document.getElementById("joinFailed");
+        setTimeout(function(){
+            loginFailed.style.opacity = 0;
+            }, 3500);

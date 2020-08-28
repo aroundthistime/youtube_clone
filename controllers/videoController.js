@@ -3,10 +3,38 @@ import Video from "../models/Video";
 import Comment from "../models/Comment";
 import User from "../models/User";
 import stringSimilarity from "string-similarity";
+// import { reset } from "nodemon"; // not sure why this thing came out
+
+const checkVideoUnblocked = (video, user) => {
+  if (
+    !user.noInterest.includes(video.id) &&
+    !user.blockedUsers.includes(video.creator.id)
+  ) {
+    return true;
+  } else {
+    return false;
+  }
+};
+
+const checkVideoNotAlreadyWatched = (video, user) => {
+  if (!user.history.includes(video.id)) {
+    return true;
+  } else {
+    return false;
+  }
+};
 
 export const home = async (req, res) => {
   try {
-    const videos = await Video.find({}).populate("creator").sort({ _id: -1 });
+    let videos = await Video.find({}).populate("creator").sort({ _id: -1 });
+    if (req.user) {
+      // when logged in, filter nointerest and blocked channel videos
+      videos = videos.filter(
+        (video) =>
+          checkVideoUnblocked(video, req.user) &&
+          checkVideoNotAlreadyWatched(video, req.user)
+      );
+    }
     res.render("home", { pageTitle: "Home", videos });
   } catch (error) {
     console.log(error);
@@ -51,6 +79,10 @@ export const search = async (req, res) => {
   } catch (error) {
     console.log(error);
   }
+  if (req.user) {
+    // when logged in, filter nointerest and blocked channel videos
+    videos = videos.filter((video) => checkVideoUnblocked(video, req.user));
+  }
   if (sort == 1) {
     // sort by most popular - most views come first
     videos.sort(compare_by_view);
@@ -64,7 +96,7 @@ export const search = async (req, res) => {
   res.render("search", { pageTitle: "Search", searchingBy, videos }); // if the value is same as the key, you can just send the name of the key only (then it will automatically think that the key has a value which is a variable of a same name of the key)
 };
 
-export const category = async (req, res) => {
+export const getCategory = async (req, res) => {
   const {
     params: { category },
     query: { sort },
@@ -85,6 +117,10 @@ export const category = async (req, res) => {
         .populate("creator")
         .sort({ _id: -1 });
     }
+    if (req.user) {
+      // when logged in, filter nointerest and blocked channel videos
+      videos = videos.filter((video) => checkVideoUnblocked(video, req.user));
+    }
     res.render("category", { pageTitle: category, category, videos });
   } catch (error) {
     console.log(error);
@@ -93,6 +129,7 @@ export const category = async (req, res) => {
 };
 
 export const getHistory = async (req, res) => {
+  //not going to filter videos in history, instead, you can delete from history
   const user = await User.findById(req.user._id);
   user.populate({
     path: "history",
@@ -108,6 +145,31 @@ export const getHistory = async (req, res) => {
   }
   videos.reverse();
   const category = "History";
+  res.render("category", {
+    pageTitle: category,
+    category,
+    videos,
+  });
+};
+
+export const clearHistory = async (req, res) => {
+  req.user.history = [];
+  req.user.save();
+  res.redirect(routes.home);
+};
+
+export const getWatchLater = async (req, res) => {
+  //this one as well, not going to filter video if the user already added the video to watch Later
+  console.log("GETWATCHLATER");
+  let videos = [];
+  for (let i = 0; i < req.user.watchLater.length; i++) {
+    const video = await Video.findById(req.user.watchLater[i]).populate(
+      "creator"
+    );
+    videos.push(video);
+  }
+  videos.reverse();
+  const category = "Watch Later";
   res.render("category", {
     pageTitle: category,
     category,
@@ -158,7 +220,12 @@ export const videoDetail = async (req, res) => {
       .populate("creator")
       .sort({ views: -1 }); //should change to real recommendations.
     sameCategory.some((v) => {
-      if (video.id !== v.id) {
+      if (
+        video.id !== v.id &&
+        (!req.user ||
+          (checkVideoUnblocked(v, req.user) &&
+            checkVideoNotAlreadyWatched(v, req.user)))
+      ) {
         videosRecommended.push(v);
       }
       return videosRecommended.length >= 5;
@@ -170,7 +237,10 @@ export const videoDetail = async (req, res) => {
         !videosRecommended.find(
           (videoRecommended) =>
             videoRecommended.id === v.id || v.id === video.id
-        )
+        ) &&
+        (!req.user ||
+          (checkVideoUnblocked(v, req.user) &&
+            checkVideoNotAlreadyWatched(v, req.user)))
     );
     popularVideos.some((v) => {
       videosRecommended.push(v);
@@ -197,6 +267,7 @@ export const videoDetail = async (req, res) => {
   } catch (error) {
     console.log(error);
     res.render("userDetail", { pageTitle: "Video not Found", user: null });
+    //don't worry about movign to userDetail, if the video doesn't exist the user goes to a page that says the video doensn't exist which just shares userDetail pug file
   }
 };
 export const getEditVideo = async (req, res) => {
@@ -359,6 +430,136 @@ export const postBlockComment = async (req, res) => {
     currentUser.blockedComments.push(commentId);
     currentUser.save();
   } catch (error) {
+    res.status(400);
+  } finally {
+    res.end();
+  }
+};
+
+export const postAddWatchLater = async (req, res) => {
+  const {
+    params: { id },
+    user,
+  } = req;
+  try {
+    if (!user.watchLater.includes(id)) {
+      const video = await Video.findById(id);
+      user.watchLater.push(video);
+    }
+    user.save();
+  } catch (error) {
+    res.status(400);
+  } finally {
+    res.end();
+  }
+};
+
+export const postUndoAddWatchLater = async (req, res) => {
+  const {
+    params: { id },
+    user,
+  } = req;
+  try {
+    const index = user.watchLater.indexOf(id);
+    if (index > -1) {
+      user.watchLater.splice(index, 1);
+      user.save();
+    }
+  } catch (error) {
+    res.status(400);
+  } finally {
+    res.end();
+  }
+};
+
+export const postNoInterest = async (req, res) => {
+  const {
+    params: { id },
+    user,
+  } = req;
+  try {
+    if (!user.noInterest.includes(id)) {
+      const video = await Video.findById(id);
+      user.noInterest.push(video);
+    }
+    user.save();
+  } catch (error) {
+    res.status(400);
+  } finally {
+    res.end();
+  }
+};
+
+export const postUndoNoInterest = (req, res) => {
+  const {
+    params: { id },
+    user,
+  } = req;
+  try {
+    const index = user.noInterest.indexOf(id);
+    if (index > -1) {
+      user.noInterest.splice(index, 1);
+      user.save();
+    }
+  } catch (error) {
+    res.status(400);
+  } finally {
+    res.end();
+  }
+};
+
+export const postBlockChannel = async (req, res) => {
+  const {
+    params: { id },
+    user,
+  } = req;
+  try {
+    if (user.id === id) {
+      res.status(202); // when the user is trying to ban himself
+    } else if (!user.blockedUsers.includes(id)) {
+      // preventing the user from banning a same user multiple times
+      const selectedUser = await User.findById(id);
+      user.blockedUsers.push(selectedUser);
+      user.save();
+    }
+  } catch (error) {
+    res.status(400);
+  } finally {
+    res.end();
+  }
+};
+
+export const postUndoBlockChannel = (req, res) => {
+  const {
+    params: { id },
+    user,
+  } = req;
+  try {
+    const index = user.blockedUsers.indexOf(id);
+    if (index > -1) {
+      user.blockedUsers.splice(index, 1);
+      user.save();
+    }
+  } catch (error) {
+    res.status(400);
+  } finally {
+    res.end();
+  }
+};
+
+export const postRemoveHistory = async (req, res) => {
+  const {
+    params: { id },
+    user,
+  } = req;
+  try {
+    const index = user.history.indexOf(id);
+    if (index > -1) {
+      user.history.splice(index, 1);
+      user.save();
+    }
+  } catch (error) {
+    console.log(error);
     res.status(400);
   } finally {
     res.end();

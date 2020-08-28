@@ -1,10 +1,14 @@
 // global
 const HOME = "/";
 const JOIN = "/join";
+const JOIN_FAIL = "/joinFail";
 const LOGIN = "/login";
+const LOGIN_FAIL = "/loginFail";
 const LOGOUT = "/logout";
 const SEARCH = "/search";
 const HISTORY = "/history";
+const CLEAR_HISTORY = "/clearHistory;";
+const WATCH_LATER = "/watchLater";
 const CATEGORY = "/:category";
 
 //social-login
@@ -17,6 +21,7 @@ const FACEBOOK_CALLBACK = "/auth/facebook/callback";
 const USERS = "/users";
 const EDIT_PROFILE = "/edit-profile";
 const CHANGE_PASSWORD = "/change-password";
+const CHANGE_PASSWORD_FAIL = "/change-password-fail";
 const MY_PROFILE = "/my-profile";
 const USER_DETAIL = "/:id";
 
@@ -35,14 +40,25 @@ const ADD_COMMENT = "/:id/comment";
 const EDIT_COMMENT = "/:id/edit-comment";
 const DELETE_COMMENT = "/:id/delete-comment";
 const BLOCK_COMMENT = "/block-comment";
+const ADD_WATCH_LATER = "/:id/addWatchLater";
+const UNDO_WATCH_LATER = "/:id/undoWatchLater";
+const NO_INTEREST = "/:id/noInterest";
+const UNDO_NO_INTEREST = "/:id/undoNoInterest";
+const BLOCK_CHANNEL = "/:id/blockChannel";
+const UNDEO_BLOCK_CHANNEL = "/:id/undoBlockChannel";
+const REMOVE_HISTORY = "/:id/removeHistory";
 
 const routes = {
   home: HOME,
   join: JOIN,
+  joinFail: JOIN_FAIL,
   login: LOGIN,
+  loginFail: LOGIN_FAIL,
   logout: LOGOUT,
   search: SEARCH,
   history: HISTORY,
+  clearHistory: CLEAR_HISTORY,
+  watchLater: WATCH_LATER,
   category: (category) => {
     if (category) {
       return "/${category}";
@@ -61,6 +77,7 @@ const routes = {
   myProfile: MY_PROFILE,
   editProfile: EDIT_PROFILE,
   changePassword: CHANGE_PASSWORD,
+  changePasswordFail: CHANGE_PASSWORD_FAIL,
   videos: VIDEOS,
   upload: UPLOAD,
   videoDetail: (id) => {
@@ -94,6 +111,13 @@ const routes = {
   editComment: EDIT_COMMENT,
   deleteComment: DELETE_COMMENT,
   blockComment: BLOCK_COMMENT,
+  addWatchLater: ADD_WATCH_LATER,
+  undoWatchLater: UNDO_WATCH_LATER,
+  noInterest: NO_INTEREST,
+  undoNoInterest: UNDO_NO_INTEREST,
+  blockChannel: BLOCK_CHANNEL,
+  undoBlockChannel: UNDEO_BLOCK_CHANNEL,
+  removeHistory: REMOVE_HISTORY,
 };
 
 export default routes;

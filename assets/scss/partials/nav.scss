@@ -18,6 +18,7 @@
     height: 92.5vh;
     background-color: $tab;
     overflow-y: scroll;
+    padding-bottom: 15px;
     &::-webkit-scrollbar {
       width: 6px;
       // display: none;

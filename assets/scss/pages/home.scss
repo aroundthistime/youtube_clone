@@ -1,26 +1,30 @@
 .home__videos li {
   padding-top: 25px;
   padding-bottom: 25px;
-  .videos-title {
-    font-size: 20px;
+  .videos-topic {
+    font-size: 19px;
     margin-left: 5px;
     margin-bottom: 15px;
+    font-weight: 600;
+    opacity: 0.8;
   }
   .noVideo {
     padding-top: 10px;
   }
   .videos {
     display: grid;
-    grid-template-columns: repeat(4, minmax(140px, 1fr));
-    grid-template-rows: minmax(140px, 15vw);
-    grid-auto-flow: row;
-    grid-auto-rows: minmax(140px, 15vw);
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    grid-auto-rows: minmax(210px, 1fr);
     grid-column-gap: 35px;
-    grid-row-gap: 60px;
+    grid-row-gap: 30px;
+    .videoBlock:hover .videoBlock__action-btn {
+      display: flex;
+    }
+
     .videoBlock__thumbnail {
       width: 100%;
-      height: 80%;
-      margin-bottom: 5px;
+      margin-bottom: 8px;
+      background-color: black;
     }
     .videoBlock__info {
       display: grid;
@@ -28,6 +32,7 @@
       padding-right: 20px;
       grid-template-columns: minmax(33px, 1.5fr) 8fr;
       gap: 15px;
+      position: relative;
       .videoBlock__creator-img {
         width: 100%;
         max-width: 50px;
@@ -39,15 +44,15 @@
         color: black;
       }
       .videoBlock__title {
-        // display: -webkit-box;
+        display: -webkit-box;
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
-        max-height: 45px;
+        max-height: 35px;
         overflow: hidden;
         text-overflow: ellipsis;
         font-size: 1.05rem;
         margin-bottom: 7px;
-        white-space: normal;
+        white-space: no-wrap;
       }
       .videoBlock__creator {
         font-size: 12px;
@@ -55,6 +60,9 @@
         opacity: 0.5;
         margin-bottom: 2.5px;
         transition: opacity 0.1s linear;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
         &:hover {
           opacity: 0.65;
         }
@@ -62,6 +70,41 @@
       .videoBlock__more {
         font-size: 12px;
         opacity: 0.5;
+      }
+      .videoBlock__action-btn {
+        position: absolute;
+        right: 0px;
+        top: 0;
+        opacity: 0.4;
+        display: none;
+        cursor: pointer;
+        width: 15px;
+        justify-content: center;
+        &:hover {
+          opacity: 0.7;
+        }
+      }
+      .videoBlock__action-box {
+        position: absolute;
+        display: none;
+        z-index: 2;
+        right: 20px;
+        background-color: $gray;
+        box-shadow: 0 1px 1px rgba(0, 0, 0, 0.11), 0 2px 2px rgba(0, 0, 0, 0.11),
+          0 4px 4px rgba(221, 204, 204, 0.11), 0 6px 8px rgba(0, 0, 0, 0.11),
+          0 8px 16px rgba(0, 0, 0, 0.11);
+        padding: 5px 0px;
+        font-size: 14px;
+        .videoBlock__action-bar {
+          padding: 12px 10px;
+          cursor: pointer;
+          i {
+            margin-right: 6px;
+          }
+          &:hover {
+            background-color: $selected-tab;
+          }
+        }
       }
     }
   }
@@ -72,12 +115,6 @@
     width: calc(94vw - 55px);
     .videos {
       width: calc(94vw - 55px);
-      grid-template-columns: repeat(3, minmax(280px, 1fr));
-      grid-template-rows: minmax(140px, 15vw);
-      grid-auto-flow: row;
-      grid-auto-rows: minmax(140px, 15vw);
-      grid-column-gap: 35px;
-      grid-row-gap: 60px;
       .videoBlock__info {
         .videoBlock__creator-img {
           max-width: 35px;

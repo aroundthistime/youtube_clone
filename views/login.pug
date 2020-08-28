@@ -12,3 +12,12 @@ block content
             input(type = "password", name="password", placeholder = "비밀번호/Password", required=true)
             input(type = "submit", value = "Login")
         include partials/socialLogin
+    if loginFailed
+        #loginFailed Please check your ID and Password
+    script
+            include ../frontJS/passwordMatch.js
+    script.
+        const loginFailed = document.getElementById("loginFailed");
+        setTimeout(function(){
+            loginFailed.style.opacity = 0;
+            }, 3500);

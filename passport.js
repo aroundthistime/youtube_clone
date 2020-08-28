@@ -8,7 +8,7 @@ import {
 } from "./controllers/userController";
 import passport from "passport";
 
-passport.use(User.createStrategy());
+passport.use(User.createStrategy({ passReqToCallback: true }));
 
 const ngrokSite = "https://6b595c469e94.ngrok.io";
 

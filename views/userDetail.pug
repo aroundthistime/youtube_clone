@@ -28,13 +28,21 @@ block content
                 .videos
                     each video in user.videos
                         +videoBlockUploaded(video)
+            if loggedUser && user.id == loggedUser.id
+                    .overlay
+                    .confirm.no-drag
+                        .confirm-title Delete Video
+                        .confirm-message.light Are you sure you want to delete this video permanently?
+                        .confirm-buttons
+                            .confirm-button.confirm-button__cancel CANCEL
+                            a#deleteVideoLink
+                                .confirm-button.confirm-button__approve DELETE
         else
             .no-content.no-drag This channel doesn't have any content
     else
         .user-profile.no-drag
             img.no-user-img(src="https://qotoqot.com/sad-animations/img/150/silent_tears/silent_tears.gif")
             p.profile-name=pageTitle
-
     script
         include ../frontJS/uploadedVideo.js
     script
