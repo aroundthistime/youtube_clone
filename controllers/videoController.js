@@ -160,7 +160,6 @@ export const clearHistory = async (req, res) => {
 
 export const getWatchLater = async (req, res) => {
   //this one as well, not going to filter video if the user already added the video to watch Later
-  console.log("GETWATCHLATER");
   let videos = [];
   for (let i = 0; i < req.user.watchLater.length; i++) {
     const video = await Video.findById(req.user.watchLater[i]).populate(
@@ -206,7 +205,6 @@ export const postVideoUpload = async (req, res) => {
       creator: req.user.id,
     });
   }
-  console.log(newVideo);
   req.user.videos.push(newVideo.id);
   req.user.save();
   res.redirect(routes.videoDetail(newVideo.id));
@@ -244,14 +242,13 @@ export const videoDetail = async (req, res) => {
       }
       return videosRecommended.length >= 5;
     });
-    const popularVideos = await (
-      await Video.find({}).populate("creator").sort({ _id: -1 })
-    ).filter(
+    let popularVideos = await Video.find({})
+      .populate("creator")
+      .sort({ _id: -1 });
+    popularVideos = popularVideos.filter(
       (v) =>
-        !videosRecommended.find(
-          (videoRecommended) =>
-            videoRecommended.id === v.id || v.id === video.id
-        ) &&
+        video.id !== v.id &&
+        !videosRecommended.includes(v) &&
         (!req.user ||
           (checkVideoUnblocked(v, req.user) &&
             checkVideoNotAlreadyWatched(v, req.user)))

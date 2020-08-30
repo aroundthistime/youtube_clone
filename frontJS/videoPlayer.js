@@ -27,6 +27,7 @@ let fullScreenBtn; //fullScreen
 let isFullScreen = false;
 let usingAutoplay = videoPlayerAutoplayCheckBox.checked; //나중에 다시
 let showNextAutoPlayVideoCount = 0;
+let nextVideoUrl;
 
 const registerView = () => {
   const videoId = window.location.href.split("/videos/")[1];
@@ -144,6 +145,10 @@ const handleAutoplayCancelBtnClick = (event) => {
   hideNextAutoPlayVideo();
 };
 
+const moveToNextVideo = (event) => {
+  window.location = nextVideoUrl;
+};
+
 const showNextAutoPlayVideo = () => {
   showNextAutoPlayVideoCount += 1;
   const currentShowNextAutoPlayVideoCount = showNextAutoPlayVideoCount;
@@ -153,8 +158,12 @@ const showNextAutoPlayVideo = () => {
   const nextVideoLink = nextVideo.querySelector(".videoDetailLink");
   const nextVideoTitle = nextVideo.querySelector(".videoBlock__title")
     .innerText;
+  document.getElementById("autoplayNextVideoTitle").innerText = nextVideoTitle;
   const nextVideoCreator = nextVideo.querySelector(".videoBlock__creator")
     .innerText;
+  document.getElementById(
+    "autoplayNextVideoCreator"
+  ).innerText = nextVideoCreator;
   const nextVideoThumbnail = nextVideo.querySelector(".videoBlock__thumbnail");
   if (nextVideoThumbnail.poster) {
     videoPlayerAutoplay.style.backgroundImage = `url(${nextVideoThumbnail.poster})`;
@@ -165,9 +174,10 @@ const showNextAutoPlayVideo = () => {
     videoPlayerAutoplay.style.background = `url(${dataUrl})`;
   }
   videoPlayerAutoplay.style.display = "flex";
+  nextVideoUrl = nextVideoLink.href;
   setTimeout(function () {
     if (currentShowNextAutoPlayVideoCount == showNextAutoPlayVideoCount) {
-      window.location = nextVideoLink.href;
+      moveToNextVideo();
     }
   }, 10000);
 };
@@ -531,7 +541,12 @@ const handleVideoPlayer = () => {
   videoPlayerAutoplay
     .querySelector(".autoplay__cancel")
     .addEventListener("click", handleAutoplayCancelBtnClick);
-  videoPlayerAutoplay.querySelector(".autoplay__play");
+  videoPlayerAutoplay
+    .querySelector(".autoplay__btn")
+    .addEventListener("click", moveToNextVideo);
+  videoPlayerAutoplay
+    .querySelector(".autoplay__btn-icon")
+    .addEventListener("click", moveToNextVideo);
   window.addEventListener("resize", setVideoPlayerSectionsResize); //when the page is resize and the width of videoBlock changes
 };
 

@@ -237,6 +237,12 @@
     .next-video__title {
       font-size: 24px;
       margin-bottom: 15px;
+      word-break: break-all;
+      padding: 0px 60px;
+      margin-top: -20px;
+    }
+    .next-video__creator {
+      font-size: 17px;
     }
     .autoplay__play {
       position: absolute;
@@ -285,7 +291,7 @@
       }
       .autoplay__cancel {
         position: absolute;
-        font-size: 1.35vw;
+        font-size: 18px;
         bottom: -50px;
         left: 50%;
         // width: 90px;
@@ -311,6 +317,10 @@
       }
     }
   }
+}
+
+canvas {
+  display: none;
 }
 
 @keyframes rotate {
