@@ -3,6 +3,17 @@ mixin videoPlayer(video = {})
         video(src=`${routes.home+video.fileUrl}`)
         .video__player__effect
             <i class="fas fa-pause"></i>
+        .autoplay#autoplay
+            .next-video__title 영상의 제목을 예시로 들어보겠다 이말이오
+            .next-video__creator 니니즈 TV
+            .autoplay__play
+                svg.autoplay__loading-bar
+                    circle(cx="40", cy="40", r ="40")
+                .autoplay__btn
+                <i class="fas fa-step-forward"></i>
+                .autoplay__cancel
+                    .autoplay__cancel__background
+                    span Cancel
         .video__player__controls
             .video__player__progress-bar
                 .progress-bar__current
@@ -60,5 +71,6 @@ mixin videoPlayer(video = {})
                     .expand.video__control
                         <i class="fas fa-expand control-icon"></i>
                         .control-name.no-drag Full Screen
+        canvas#canvas
     script
         include ../../frontJS/videoPlayer.js

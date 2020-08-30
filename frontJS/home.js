@@ -41,6 +41,10 @@ const handleVideoResize = () => {
       videoBlockCreator_width -
       20
     }px`;
+    const videoBlockCreatorName = videoBlock__info.querySelector(
+      ".videoBlock__creator"
+    );
+    videoBlockCreatorName.style.width = videoBlockTitle.style.width;
   });
 };
 

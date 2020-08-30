@@ -181,18 +181,32 @@ export const getVideoUpload = (req, res) =>
   res.render("uploadVideo", { pageTitle: "Upload" });
 
 export const postVideoUpload = async (req, res) => {
+  const fileUrl = req.files.videoFile[0].path;
   const {
     body: { title, description, category },
-    file: { path },
   } = req;
   //upload and save video, after it finishes uploading, redirect user to the videodetail page of the video
-  const newVideo = await Video.create({
-    fileUrl: path,
-    title,
-    description,
-    category,
-    creator: req.user.id,
-  });
+  let newVideo;
+  if (req.files.thumbnailImage) {
+    const thumbnailUrl = req.files.thumbnailImage[0].path;
+    newVideo = await Video.create({
+      fileUrl,
+      thumbnailUrl,
+      title,
+      description,
+      category,
+      creator: req.user.id,
+    });
+  } else {
+    newVideo = await Video.create({
+      fileUrl,
+      title,
+      description,
+      category,
+      creator: req.user.id,
+    });
+  }
+  console.log(newVideo);
   req.user.videos.push(newVideo.id);
   req.user.save();
   res.redirect(routes.videoDetail(newVideo.id));

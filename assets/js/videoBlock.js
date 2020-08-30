@@ -202,24 +202,26 @@ const handleWatchLater = async (videoId) => {
 
 const undoNoInterest = async (event) => {
   let response;
-  if (event.target.parentNode.classList.contains("videoBlock--removed")) {
-    let selectedVideoBlock = event.target;
-    while (!selectedVideoBlock.classList.contains("videoBlock")) {
-      selectedVideoBlock = selectedVideoBlock.parentNode;
-    }
-    const videoId = selectedVideoBlock
-      .querySelector(".videoDetailLink")
-      .href.split("videos/")[1];
-    if (isDoingVideoBlockJobFromHome()) {
-      response = await axios({
-        url: `/api/${videoId}/undoNoInterest`,
-        method: "POST",
-      });
-    } else {
-      response = await axios({
-        url: `../api/${videoId}/undoNoInterest`,
-        method: "POST",
-      });
+  if (document.getElementById("loggedHeader")) {
+    if (event.target.parentNode.classList.contains("videoBlock--removed")) {
+      let selectedVideoBlock = event.target;
+      while (!selectedVideoBlock.classList.contains("videoBlock")) {
+        selectedVideoBlock = selectedVideoBlock.parentNode;
+      }
+      const videoId = selectedVideoBlock
+        .querySelector(".videoDetailLink")
+        .href.split("videos/")[1];
+      if (isDoingVideoBlockJobFromHome()) {
+        response = await axios({
+          url: `/api/${videoId}/undoNoInterest`,
+          method: "POST",
+        });
+      } else {
+        response = await axios({
+          url: `../api/${videoId}/undoNoInterest`,
+          method: "POST",
+        });
+      }
     }
   }
   if (response === undefined || response.status === 200) {
@@ -411,7 +413,10 @@ const handleVideoBlockActionBoxClick = (event) => {
         confirmDeleteVideo(videoId);
       }
     } else {
-      const video = clicked.parentNode.parentNode.parentNode;
+      let video = clicked;
+      while (!video.classList.contains("videoBlock")) {
+        video = video.parentNode;
+      }
       if (clicked.classList.contains("noInterest")) {
         handleNoInterest(video);
       } else if (clicked.classList.contains("blockCreator")) {

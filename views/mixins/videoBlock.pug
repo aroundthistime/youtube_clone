@@ -1,7 +1,10 @@
 mixin videoBlock(video = {}, isHistory = false, isWatchLater = false)
     .videoBlock
         a(href=routes.videoDetail(video.id))
-            video.videoBlock__thumbnail(src=`${routes.home+video.fileUrl}`)
+            if video.thumbnailUrl
+                video.videoBlock__thumbnail(src=`${routes.home+video.fileUrl}`, poster = video.thumbnailUrl)
+            else
+                video.videoBlock__thumbnail(src=`${routes.home+video.fileUrl}`)
         .videoBlock__info
             .videoBlock__column
                 a(href=routes.userDetail(video.creator.id)).userDetailLink
@@ -10,9 +13,16 @@ mixin videoBlock(video = {}, isHistory = false, isWatchLater = false)
                 a(href=routes.videoDetail(video.id)).videoDetailLink
                     .videoBlock__title=video.title
                 a(href=routes.userDetail(video.creator.id))
-                    p.videoBlock__creator.light=video.creator.name
+                    .videoBlock__creator.light=video.creator.name
                 a(href=routes.videoDetail(video.id))
-                    p.videoBlock__more.light 조회수 #{video.views}회 • #{video.uploadTime.toString().substring(4, 15)}
+                    if video.views < 1000
+                        p.videoBlock__more.light 조회수 #{video.views}회 • #{video.uploadTime.toString().substring(4, 15)}
+                    else if video.views / 1000 >= 10
+                        p.videoBlock__more.light 조회수 #{video.views/1000}K 회 • #{video.uploadTime.toString().substring(4, 15)}
+                    else if parseInt((video.views / 1000).toFixed(1)) === (video.views/1000).toFixed(1)
+                        p.videoBlock__more.light 조회수 #{parseInt(video.views/1000)}K 회 • #{video.uploadTime.toString().substring(4, 15)}
+                    else
+                        p.videoBlock__more.light 조회수 #{(video.views/1000).toFixed(1)}K 회 • #{video.uploadTime.toString().substring(4, 15)}
             .videoBlock__action-btn
                 <i class="fas fa-ellipsis-v"></i>
             .videoBlock__action-box.no-drag

@@ -15,6 +15,9 @@ block content
             .file-upload
                 label(for="file") Video File
                 input(type="file", id = "file", name="videoFile", required=true, accept="video/*")
+            .file-upload
+                label(for="thumbnail") Thumbnail<br>(Optional)
+                input(type="file", id="thumbnail", name="thumbnailImage", accept="image/*")
             input(type="text", placeholder="Title", name="title", required=true, maxlength="80")
             textarea(name="description", placeholder="description", required=true, maxlength="300")
             .selectBox

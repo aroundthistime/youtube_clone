@@ -3,6 +3,8 @@ const video = videoPlayer.querySelector("video");
 const progressBar = videoPlayer.querySelector(".video__player__progress-bar");
 const videoPlayerEffect = videoPlayer.querySelector(".video__player__effect");
 const videoPlayerEffectIcon = videoPlayerEffect.querySelector("i");
+const videoPlayerAutoplay = document.getElementById("autoplay");
+const canvas = document.getElementById("canvas");
 const videoPlayerEffectAnimation = [
   { opacity: "1", zIndex: "0", transform: "none" },
   { opacity: "0", transform: "scale(1.5)" },
@@ -22,6 +24,8 @@ let settingsCategories;
 let settingsVisible = false;
 let fullScreenBtn; //fullScreen
 let isFullScreen = false;
+let usingAutoplay = true; //나중에 다시
+let showNextAutoPlayVideoCount = 0;
 
 const registerView = () => {
   const videoId = window.location.href.split("/videos/")[1];
@@ -129,12 +133,57 @@ const getVideoLength = () => {
   timestampTotal.innerText = changeTimeFormat(videoLength);
 };
 
+const hideNextAutoPlayVideo = () => {
+  videoPlayerAutoplay.style.display = "none";
+  showNextAutoPlayVideoCount += 1;
+};
+
+const handleAutoplayCancelBtnClick = (event) => {
+  usingAutoplay = false;
+  hideNextAutoPlayVideo();
+};
+
+const showNextAutoPlayVideo = () => {
+  showNextAutoPlayVideoCount += 1;
+  const currentShowNextAutoPlayVideoCount = showNextAutoPlayVideoCount;
+  const nextVideo = document
+    .getElementById("recommends")
+    .querySelector(".videoBlock");
+  const nextVideoLink = nextVideo.querySelector(".videoDetailLink");
+  const nextVideoTitle = nextVideo.querySelector(".videoBlock__title")
+    .innerText;
+  const nextVideoCreator = nextVideo.querySelector(".videoBlock__creator")
+    .innerText;
+  const nextVideoThumbnail = nextVideo.querySelector(".videoBlock__thumbnail");
+  if (nextVideoThumbnail.poster) {
+    videoPlayerAutoplay.style.backgroundImage = `url(${nextVideoThumbnail.poster})`;
+  } else {
+    const context = canvas.getContext("2d");
+    context.drawImage(nextVideoThumbnail, 0, 0, canvas.width, canvas.height);
+    const dataUrl = canvas.toDataURL();
+    videoPlayerAutoplay.style.background = `url(${dataUrl})`;
+  }
+  videoPlayerAutoplay.style.display = "flex";
+  setTimeout(function () {
+    if (currentShowNextAutoPlayVideoCount == showNextAutoPlayVideoCount) {
+      window.location = nextVideoLink.href;
+    }
+  }, 10000);
+};
+
 const checkVideoEnd = () => {
   if (video.ended) {
     playPauseIcon.classList.remove("fa-play");
     playPauseIcon.classList.remove("fa-pause");
     playPauseIcon.classList.add("fa-undo");
     playPauseName.innerText = "Replay";
+    if (
+      usingAutoplay &&
+      (!videoPlayerAutoplay.style.display ||
+        videoPlayerAutoplay.style.display === "none")
+    ) {
+      showNextAutoPlayVideo();
+    }
   }
 };
 
@@ -150,10 +199,23 @@ const getVideoCurrentTime = () => {
   }, setIntervalPeriod);
 };
 
-const setVideoPlayerControlsWidth = () => {
-  videoPlayerControls.style.width = `${parseFloat(
+const setVideoPlayerSectionsResize = (event) => {
+  const videoPlayerWidth = `${parseFloat(
     window.getComputedStyle(videoPlayer).getPropertyValue("width")
   )}px`;
+  const videoPlayerHeight = `${parseFloat(
+    window.getComputedStyle(videoPlayer).getPropertyValue("height")
+  )}px`;
+  videoPlayerControls.style.width = videoPlayerWidth;
+  videoPlayerAutoplay.style.width = videoPlayerWidth;
+  videoPlayerAutoplay.style.height = videoPlayerHeight;
+  videoPlayerAutoplay.style.backgroundSize = `${videoPlayerWidth} ${videoPlayerHeight}`;
+  canvas.width = parseFloat(
+    window.getComputedStyle(videoPlayer).getPropertyValue("width")
+  );
+  canvas.height = parseFloat(
+    window.getComputedStyle(videoPlayer).getPropertyValue("height")
+  );
 };
 
 const jumpProgressBar = (e) => {
@@ -165,6 +227,7 @@ const jumpProgressBar = (e) => {
     percentage = 1;
   }
   video.currentTime = parseInt(video.duration * percentage);
+  hideNextAutoPlayVideo();
   setProgressBarCurrent();
   playVideo();
 };
@@ -421,7 +484,7 @@ const handleVideoScreen = (e) => {
 const handleVideoPlayer = () => {
   getvideoPlayerDOM(); // queryselect the dom elements necessary;
   getVideoLength(); //get the total length of video and set innerText
-  setVideoPlayerControlsWidth(); //first when the page loads
+  setVideoPlayerSectionsResize(); //first when the page loads
   setProgressBarCurrent(); //color the progress bar red as the amount that is watched
   handlePlayPause(); //automatically start video when page is loaded
   volumeIcon.addEventListener("click", handleMute); //volume
@@ -452,7 +515,11 @@ const handleVideoPlayer = () => {
   video.addEventListener("dblclick", handleVideoScreen);
   video.addEventListener("ended", registerView);
   progressBar.addEventListener("click", jumpProgressBar); //progress-bar
-  window.addEventListener("resize", setVideoPlayerControlsWidth); //when the page is resize and the width of videoBlock changes
+  videoPlayerAutoplay
+    .querySelector(".autoplay__cancel")
+    .addEventListener("click", handleAutoplayCancelBtnClick);
+  videoPlayerAutoplay.querySelector(".autoplay__play");
+  window.addEventListener("resize", setVideoPlayerSectionsResize); //when the page is resize and the width of videoBlock changes
 };
 
 if (videoPlayer) {
