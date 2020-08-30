@@ -4,6 +4,7 @@ const progressBar = videoPlayer.querySelector(".video__player__progress-bar");
 const videoPlayerEffect = videoPlayer.querySelector(".video__player__effect");
 const videoPlayerEffectIcon = videoPlayerEffect.querySelector("i");
 const videoPlayerAutoplay = document.getElementById("autoplay");
+const videoPlayerAutoplayCheckBox = document.getElementById("autoplayCheckbox");
 const canvas = document.getElementById("canvas");
 const videoPlayerEffectAnimation = [
   { opacity: "1", zIndex: "0", transform: "none" },
@@ -24,7 +25,7 @@ let settingsCategories;
 let settingsVisible = false;
 let fullScreenBtn; //fullScreen
 let isFullScreen = false;
-let usingAutoplay = true; //나중에 다시
+let usingAutoplay = videoPlayerAutoplayCheckBox.checked; //나중에 다시
 let showNextAutoPlayVideoCount = 0;
 
 const registerView = () => {
@@ -457,8 +458,16 @@ const unclickSettings = () => {
   settingsVisible = false;
 };
 
-const preventUnclickSettings = (e) => {
+const preventUnclickSettings = (event) => {
   settingsVisible = true;
+};
+
+const handleSettingsAutoPlayOptionClick = (event) => {
+  settingsVisible = true;
+  if (event.target.tagName !== "INPUT") {
+    videoPlayerAutoplayCheckBox.checked = !videoPlayerAutoplayCheckBox.checked;
+  }
+  usingAutoplay = videoPlayerAutoplayCheckBox.checked;
 };
 
 const handleVideoScreen = (e) => {
@@ -495,10 +504,11 @@ const handleVideoPlayer = () => {
   settingsIcon.addEventListener("click", handleSettings); //settings
   document.addEventListener("click", unclickSettings);
   settingsMain
-    .querySelectorAll(".settings__main__category")
-    .forEach((settingsMainCategory) => {
-      settingsMainCategory.addEventListener("click", moveToSettingsCategory);
-    });
+    .querySelector(".settings-speed.settings__main__category")
+    .addEventListener("click", moveToSettingsCategory);
+  settingsMain
+    .querySelector(".settings-autoplay.settings__main__category")
+    .addEventListener("click", handleSettingsAutoPlayOptionClick);
   settingsCategories.forEach((settingsCategory) => {
     settingsCategory.addEventListener("click", preventUnclickSettings);
     settingsCategory
@@ -510,7 +520,10 @@ const handleVideoPlayer = () => {
         categoryOption.addEventListener("click", selectSettingsOption);
       });
   });
-  settingsMain.style.height = `${39.6 * settingsCategories.length + 16}px`;
+  settingsMain.style.height = `${
+    39.6 * settingsMain.querySelectorAll(".settings__main__category").length +
+    16
+  }px`;
   fullScreenBtn.addEventListener("click", handleVideoScreen);
   video.addEventListener("dblclick", handleVideoScreen);
   video.addEventListener("ended", registerView);

@@ -39,6 +39,10 @@ mixin videoPlayer(video = {})
                         <i class="fas fa-cog control-icon"></i>
                         .control-name.no-drag Settings
                         .settings__main.no-drag.settingsBox
+                            .settings-autoplay.settings__main__category.settings-bar
+                                    .settings__category-column.settings__main__category-title Autoplay
+                                    .settings__category-column
+                                        input(type="checkbox", checked)#autoplayCheckbox
                             .settings-speed.settings__main__category.settings-bar
                                 .settings__category-column.settings__main__category-title Playback Speed
                                 .settings__category-column
