@@ -1,6 +1,6 @@
 mixin videoPlayer(video = {})
     .video__player#jsVideoPlayer
-        video(src=video.fileUrl)
+        video(src=`${routes.home+video.fileUrl}`)
         .video__player__effect
             <i class="fas fa-pause"></i>
         .autoplay#autoplay
