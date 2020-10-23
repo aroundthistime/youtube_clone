@@ -180,14 +180,14 @@ export const getVideoUpload = (req, res) =>
   res.render("uploadVideo", { pageTitle: "Upload" });
 
 export const postVideoUpload = async (req, res) => {
-  const fileUrl = req.files.videoFile[0].path;
+  const fileUrl = req.files.videoFile[0].location;
   const {
     body: { title, description, category },
   } = req;
   //upload and save video, after it finishes uploading, redirect user to the videodetail page of the video
   let newVideo;
   if (req.files.thumbnailImage) {
-    const thumbnailUrl = req.files.thumbnailImage[0].path;
+    const thumbnailUrl = req.files.thumbnailImage[0].location;
     newVideo = await Video.create({
       fileUrl,
       thumbnailUrl,
