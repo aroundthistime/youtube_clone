@@ -1,4 +1,3 @@
-import { reset } from "nodemon";
 import { response } from "express";
 import routes from "../routes";
 import { render } from "pug";
