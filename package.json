@@ -55,7 +55,7 @@
     "build": "npm run build:server && npm run build:assets && npm run copyAll",
     "prebuild": "rm -rf build",
     "start": "node build/init.js",
-    "prestart" : "npm run build"
+    "prestart": "npm run build"
   },
   "devDependencies": {
     "cross-env": "^7.0.2",
@@ -64,7 +64,7 @@
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-import": "^2.22.0",
     "eslint-plugin-prettier": "^3.1.4",
-    "nodemon": "^2.0.4",
+    "nodemon": "^2.0.6",
     "prettier": "^2.0.5"
   }
 }
