@@ -10,7 +10,7 @@ import passport from "passport";
 
 passport.use(User.createStrategy({ passReqToCallback: true }));
 
-const ngrokSite = "https://6b595c469e94.ngrok.io";
+const herokuSite = "https://stormy-coast-59422.herokuapp.com";
 
 //social-logins
 passport.use(
@@ -18,7 +18,7 @@ passport.use(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: "http://localhost:4000" + routes.googleCallback,
+      callbackURL: herokuSite + routes.googleCallback,
     },
     googleLoginCallback
   )
@@ -29,7 +29,7 @@ passport.use(
     {
       clientID: process.env.FACEBOOK_CLIENT_ID,
       clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
-      callbackURL: ngrokSite + routes.facebookCallback,
+      callbackURL: herokuSite + routes.facebookCallback,
       profileFields: ["id", "displayName", "photos", "email"],
       scope: ["public_profile", "email"],
     },
