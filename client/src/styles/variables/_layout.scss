@@ -1,0 +1,60 @@
+//padding
+@function padding-vertical($size: 'default') {
+  @if $size == 'small' {
+    @return 0.5rem;
+  } @else if $size == 'default' {
+    @return 1.2rem;
+  } @else if $size == 'large' {
+    @return 2.5rem;
+  } @else if $size == 'x-large' {
+    @return 3rem;
+  }
+}
+
+@function padding-horizontal($size: 'default') {
+  @if $size == 'small' {
+    @return 0.5rem;
+  } @else if $size == 'default' {
+    @return 1.2rem;
+  } @else if $size == 'large' {
+    @return 2.5rem;
+  } @else if $size == 'x-large' {
+    @return 3rem;
+  }
+}
+
+%default-padding {
+  padding: padding-vertical() padding-horizontal();
+}
+
+//border-radius
+$border-radius: 10px;
+
+//gap
+@function column-gap($size: 'default') {
+  @if $size == 'x-small' {
+    @return 0.2rem;
+  } @else if $size == 'small' {
+    @return 0.5rem;
+  } @else if $size == 'default' {
+    @return 1.2rem;
+  } @else if $size == 'large' {
+    @return 2.5rem;
+  } @else if $size == 'x-large' {
+    @return 3rem;
+  }
+}
+
+@function row-gap($size: 'default') {
+  @if $size == 'x-small' {
+    @return 0.2rem;
+  } @else if $size == 'small' {
+    @return 0.5rem;
+  } @else if $size == 'default' {
+    @return 1.2rem;
+  } @else if $size == 'large' {
+    @return 2.5rem;
+  } @else if $size == 'x-large' {
+    @return 3rem;
+  }
+}

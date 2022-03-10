@@ -1,0 +1,9 @@
+@import './colors';
+
+@function light-gray-border($style: 'default') {
+  @if $style == 'default' {
+    @return 1px solid $light-gray;
+  } @else {
+    @return 2.5px solid $light-gray;
+  }
+}
