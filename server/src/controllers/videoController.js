@@ -1,14 +1,14 @@
-import stringSimilarity from 'string-similarity';
-import routes from '../routes';
-import Video from '../models/Video';
-import Comment from '../models/Comment';
-import User from '../models/User';
+import stringSimilarity from "string-similarity";
+import routes from "../routes";
+import Video from "../models/Video";
+import Comment from "../models/Comment";
+import User from "../models/User";
 // import { reset } from "nodemon"; // not sure why this thing came out
 
 const checkVideoUnblocked = (video, user) => {
   if (
-    !user.noInterest.includes(video.id)
-    && !user.blockedUsers.includes(video.creator.id)
+    !user.noInterest.includes(video.id) &&
+    !user.blockedUsers.includes(video.creator.id)
   ) {
     return true;
   }
@@ -24,26 +24,29 @@ const checkVideoNotAlreadyWatched = (video, user) => {
 
 export const home = async (req, res) => {
   try {
-    let videos = await Video.find({}).populate('creator').sort({ _id: -1 });
+    let videos = await Video.find({}).populate("creator").sort({ _id: -1 });
     if (req.user) {
       // when logged in, filter nointerest and blocked channel videos
       videos = videos.filter(
-        (video) => checkVideoUnblocked(video, req.user)
-          && checkVideoNotAlreadyWatched(video, req.user),
+        (video) =>
+          checkVideoUnblocked(video, req.user) &&
+          checkVideoNotAlreadyWatched(video, req.user)
       );
     }
-    res.render('home', { pageTitle: 'Home', videos });
+    res.render("home", { pageTitle: "Home", videos });
   } catch (error) {
     console.log(error);
-    res.render('home', { pageTitle: 'Home', videos: [] });
+    res.render("home", { pageTitle: "Home", videos: [] });
   }
 };
 
 const compare_by_view = (a, b) => a.views * -1 - b.views * -1;
 
-const compare_by_oldest = (a, b) => new Date(a.uploadTime) - new Date(b.uploadTime);
+const compare_by_oldest = (a, b) =>
+  new Date(a.uploadTime) - new Date(b.uploadTime);
 
-const compare_by_newest = (a, b) => new Date(b.uploadTime) - new Date(a.uploadTime);
+const compare_by_newest = (a, b) =>
+  new Date(b.uploadTime) - new Date(a.uploadTime);
 
 export const search = async (req, res) => {
   const {
@@ -53,8 +56,8 @@ export const search = async (req, res) => {
   try {
     // checks exact same words only ignoring upper or lower cases.
     videos = await Video.find({
-      title: { $regex: searchingBy, $options: 'i' },
-    }).populate('creator');
+      title: { $regex: searchingBy, $options: "i" },
+    }).populate("creator");
   } catch (error) {
     console.log(error);
   }
@@ -63,8 +66,8 @@ export const search = async (req, res) => {
     const allVideos = await Video.find({});
     allVideos.forEach((video) => {
       if (
-        stringSimilarity.compareTwoStrings(video.title, searchingBy) >= 0.3
-        && !videos.find((v) => v.id === video.id)
+        stringSimilarity.compareTwoStrings(video.title, searchingBy) >= 0.3 &&
+        !videos.find((v) => v.id === video.id)
       ) {
         videos.push(video);
       }
@@ -86,7 +89,7 @@ export const search = async (req, res) => {
     // sort by date(newest)
     videos.sort(compare_by_newest);
   } // else == relevance, don't have to do anything
-  res.render('search', { pageTitle: 'Search', searchingBy, videos }); // if the value is same as the key, you can just send the name of the key only (then it will automatically think that the key has a value which is a variable of a same name of the key)
+  res.render("search", { pageTitle: "Search", searchingBy, videos }); // if the value is same as the key, you can just send the name of the key only (then it will automatically think that the key has a value which is a variable of a same name of the key)
 };
 
 export const getCategory = async (req, res) => {
@@ -99,22 +102,22 @@ export const getCategory = async (req, res) => {
     if (sort == 1) {
       // sort by most popular - most views come first
       videos = await Video.find({ category })
-        .populate('creator')
+        .populate("creator")
         .sort({ views: -1 });
     } else if (sort == 2) {
       // sort by date(oldest)
-      videos = await Video.find({ category }).populate('creator');
+      videos = await Video.find({ category }).populate("creator");
     } else {
       // sort by date(newest) - default
       videos = await Video.find({ category })
-        .populate('creator')
+        .populate("creator")
         .sort({ _id: -1 });
     }
     if (req.user) {
       // when logged in, filter nointerest and blocked channel videos
       videos = videos.filter((video) => checkVideoUnblocked(video, req.user));
     }
-    res.render('category', { pageTitle: category, category, videos });
+    res.render("category", { pageTitle: category, category, videos });
   } catch (error) {
     console.log(error);
     res.redirect(routes.home);
@@ -125,20 +128,20 @@ export const getHistory = async (req, res) => {
   // not going to filter videos in history, instead, you can delete from history
   const user = await User.findById(req.user._id);
   user.populate({
-    path: 'history',
-    model: 'Video',
-    populate: { path: 'creator', model: 'User' },
+    path: "history",
+    model: "Video",
+    populate: { path: "creator", model: "User" },
   });
   const videos = [];
   for (let i = 0; i < user.history.length; i++) {
     const historyVideo = await Video.findById(user.history[i]).populate(
-      'creator',
+      "creator"
     );
     videos.push(historyVideo);
   }
   videos.reverse();
-  const category = 'History';
-  res.render('category', {
+  const category = "History";
+  res.render("category", {
     pageTitle: category,
     category,
     videos,
@@ -156,20 +159,21 @@ export const getWatchLater = async (req, res) => {
   const videos = [];
   for (let i = 0; i < req.user.watchLater.length; i++) {
     const video = await Video.findById(req.user.watchLater[i]).populate(
-      'creator',
+      "creator"
     );
     videos.push(video);
   }
   videos.reverse();
-  const category = 'Watch Later';
-  res.render('category', {
+  const category = "Watch Later";
+  res.render("category", {
     pageTitle: category,
     category,
     videos,
   });
 };
 
-export const getVideoUpload = (req, res) => res.render('uploadVideo', { pageTitle: 'Upload' });
+export const getVideoUpload = (req, res) =>
+  res.render("uploadVideo", { pageTitle: "Upload" });
 
 export const postVideoUpload = async (req, res) => {
   console.log(req.files);
@@ -210,40 +214,41 @@ export const videoDetail = async (req, res) => {
   try {
     const video = await Video.findById(id)
       .populate({
-        path: 'creator',
-        model: 'User',
-        populate: { path: 'blockedComments', model: 'Comment' },
+        path: "creator",
+        model: "User",
+        populate: { path: "blockedComments", model: "Comment" },
       })
       .populate({
-        path: 'comments',
-        model: 'Comment',
-        populate: { path: 'creator', model: 'User' },
+        path: "comments",
+        model: "Comment",
+        populate: { path: "creator", model: "User" },
       });
     const { category } = video;
     const videosRecommended = [];
     const sameCategory = await Video.find({ category })
-      .populate('creator')
+      .populate("creator")
       .sort({ views: -1 }); // should change to real recommendations.
     sameCategory.some((v) => {
       if (
-        video.id !== v.id
-        && (!req.user
-          || (checkVideoUnblocked(v, req.user)
-            && checkVideoNotAlreadyWatched(v, req.user)))
+        video.id !== v.id &&
+        (!req.user ||
+          (checkVideoUnblocked(v, req.user) &&
+            checkVideoNotAlreadyWatched(v, req.user)))
       ) {
         videosRecommended.push(v);
       }
       return videosRecommended.length >= 5;
     });
     let popularVideos = await Video.find({})
-      .populate('creator')
+      .populate("creator")
       .sort({ _id: -1 });
     popularVideos = popularVideos.filter(
-      (v) => video.id !== v.id
-        && !videosRecommended.includes(v)
-        && (!req.user
-          || (checkVideoUnblocked(v, req.user)
-            && checkVideoNotAlreadyWatched(v, req.user))),
+      (v) =>
+        video.id !== v.id &&
+        !videosRecommended.includes(v) &&
+        (!req.user ||
+          (checkVideoUnblocked(v, req.user) &&
+            checkVideoNotAlreadyWatched(v, req.user)))
     );
     popularVideos.some((v) => {
       videosRecommended.push(v);
@@ -262,14 +267,14 @@ export const videoDetail = async (req, res) => {
       }
       user.save();
     }
-    res.render('videoDetail', {
+    res.render("videoDetail", {
       pageTitle: video.title,
       video,
       videosRecommended,
     });
   } catch (error) {
     console.log(error);
-    res.render('userDetail', { pageTitle: 'Video not Found', user: null });
+    res.render("userDetail", { pageTitle: "Video not Found", user: null });
     // don't worry about movign to userDetail, if the video doesn't exist the user goes to a page that says the video doensn't exist which just shares userDetail pug file
   }
 };
@@ -280,9 +285,9 @@ export const getEditVideo = async (req, res) => {
   try {
     const video = await Video.findById(id);
     if (req.user && video.creator._id == req.user.id) {
-      res.render('editVideo', { pageTitle: `[Edit] ${video.title}`, video });
+      res.render("editVideo", { pageTitle: `[Edit] ${video.title}`, video });
     } else {
-      res.render('editVideo', { pageTitle: 'Video Edit Error', video: null });
+      res.render("editVideo", { pageTitle: "Video Edit Error", video: null });
     }
   } catch (error) {
     res.redirect(routes.home);
@@ -312,7 +317,7 @@ export const deleteVideo = async (req, res) => {
       await Video.findByIdAndRemove(id);
       res.render(routes.home);
     } else {
-      res.render('editVideo', { pageTitle: 'Video Delete Error', video: null });
+      res.render("editVideo", { pageTitle: "Video Delete Error", video: null });
     }
   } catch (error) {}
   res.redirect(routes.home);
@@ -387,13 +392,14 @@ export const postDeleteComment = async (req, res) => {
     body: { commentId },
     user,
   } = req;
-  await user.populate('comments');
+  await user.populate("comments");
   try {
     const video = await Video.findById(id);
     if (!isNaN(commentId) && commentId < 0) {
       // if the comment is just created, not by pug but by javascript create element function => so it doesnt have id
       // in this case, user.comments.length + commentId means the index number of the comment to delete in user.comments array
-      const commentIdToDelete = user.comments[user.comments.length + commentId]._id;
+      const commentIdToDelete =
+        user.comments[user.comments.length + commentId]._id;
       user.comments.splice(user.comments.length + commentId, 1);
       await Comment.findByIdAndRemove(commentIdToDelete);
       const videoIndex = video.comments.indexOf(commentIdToDelete);
@@ -404,7 +410,7 @@ export const postDeleteComment = async (req, res) => {
       // when the comment is created before loading the page, and has its id in html
       await Comment.findByIdAndRemove(commentId);
       const filteredVideoComments = await video.comments.filter(
-        (comment) => comment._id != commentId,
+        (comment) => comment._id != commentId
       );
       video.comments = filteredVideoComments;
       const userIndex = user.comments.indexOf(commentId);

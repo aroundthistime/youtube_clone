@@ -42,6 +42,8 @@ $border-radius: 10px;
     @return 2.5rem;
   } @else if $size == 'x-large' {
     @return 3rem;
+  } @else if $size == 'xx-large' {
+    @return 5rem;
   }
 }
 
@@ -56,5 +58,7 @@ $border-radius: 10px;
     @return 2.5rem;
   } @else if $size == 'x-large' {
     @return 3rem;
+  } @else if $size == 'xx-large' {
+    @return 5rem;
   }
 }

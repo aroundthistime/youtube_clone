@@ -1,9 +1,9 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {UserType} from '../@types/UserType';
 
-type UserState = UserType | undefined;
+export type UserState = UserType | null;
 
-const initialState = undefined as UserState;
+const initialState = null as UserState;
 
 const userSlice = createSlice({
   name: 'user',
@@ -13,7 +13,7 @@ const userSlice = createSlice({
       return payload;
     },
     clearUser() {
-      return undefined;
+      return null;
     },
   },
 });

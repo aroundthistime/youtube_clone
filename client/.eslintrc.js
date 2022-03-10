@@ -17,7 +17,7 @@ module.exports = {
     '@typescript-eslint/no-shadow': ['error'],
     'no-shadow': 'off',
     'no-undef': 'off',
-    'arrow-body-style': ['error', 'always'],
+    'arrow-body-style': 0,
     'prettier/prettier': [
       'error',
       {
@@ -37,6 +37,9 @@ module.exports = {
     ],
     'react/jsx-filename-extension': [1, {extensions: ['.js', '.jsx', '.tsx']}],
     'react/function-component-definition': 0,
+    'react/require-default-props': 'off',
+    'no-unused-vars': 'off',
+    'no-use-before-define': 'off',
   },
   settings: {
     'import/resolver': {node: {extensions: ['.js', '.jsx', '.ts', '.tsx']}},

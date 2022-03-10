@@ -5,9 +5,9 @@ import {Provider} from 'react-redux';
 import {PersistGate} from 'redux-persist/integration/react';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import configureStore from './configureStore';
+import useConfigureStore from './useConfigureStore';
 
-const {store, persistor} = configureStore();
+const {store, persistor} = useConfigureStore();
 
 ReactDOM.render(
   <React.StrictMode>
