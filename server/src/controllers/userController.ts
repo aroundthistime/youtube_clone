@@ -1,27 +1,30 @@
 import {Request, Response, NextFunction} from 'express';
-import {render} from 'pug';
 import passport from 'passport';
 import routes from '../routes';
 import User from '../models/User';
+import {failedResponse} from '../@types/responseType';
 
 export const getJoin = (req, res) => {
   res.render('join', {pageTitle: 'Join', joinFail: false});
 };
+
+type JoinRequiredFieldsType = {
+  name: string;
+  email: string;
+  password: string;
+};
+
 export const join = async (req: Request, res: Response, next: NextFunction) => {
-  const {
-    body: {name, email, password},
-  } = req;
+  const {name, email, password}: JoinRequiredFieldsType = req.body;
   try {
-    const user = await User({
+    const hashedPassword = await User.create({
       name,
       email,
+      password,
     });
-    await User.register(user, password);
     next();
   } catch (error) {
-    res.send({
-      success: false,
-    });
+    res.json(failedResponse);
   }
 };
 

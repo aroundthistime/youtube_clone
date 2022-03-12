@@ -1,5 +1,6 @@
 import mongoose, {Types} from 'mongoose';
 import passportLocalMongoose from 'passport-local-mongoose';
+import bcrypt from 'bcrypt';
 
 export interface UserType {
   name: string;
@@ -66,15 +67,13 @@ const UserSchema = new mongoose.Schema<UserType>({
       ref: 'Video',
     },
   ],
-  blockedUsers: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
-    },
-  ],
 });
 
 UserSchema.plugin(passportLocalMongoose, {usernameField: 'email'});
+
+UserSchema.pre('save', async function () {
+  this.password = await bcrypt.hash(this.password, process.env.SALT_ROUNDS);
+});
 
 const model = mongoose.model('User', UserSchema);
 
