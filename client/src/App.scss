@@ -4,4 +4,24 @@
   width: 100%;
   height: 100%;
   @include font-size();
+  display: grid;
+  grid-template-areas:
+    'header header'
+    'nav main';
+  grid-template-columns: min-content 1fr;
+  grid-template-rows: min-content;
+  grid-auto-rows: 1fr;
+}
+
+header {
+  grid-area: header;
+}
+
+nav {
+  grid-area: nav;
+}
+
+main {
+  grid-area: main;
+  background-color: $bg-color;
 }

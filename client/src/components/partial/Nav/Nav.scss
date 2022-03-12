@@ -1,0 +1,8 @@
+@import '../../../styles/variables/variables';
+
+nav {
+  @extend %default-padding;
+  background-color: white;
+  i {
+  }
+}

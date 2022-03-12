@@ -9,6 +9,10 @@ body {
   margin: 0;
 }
 
+#root {
+  height: 100%;
+}
+
 .no-drag {
   -ms-user-select: none;
   -moz-user-select: -moz-none;
