@@ -17,7 +17,7 @@ type JoinRequiredFieldsType = {
 export const join = async (req: Request, res: Response, next: NextFunction) => {
   const {name, email, password}: JoinRequiredFieldsType = req.body;
   try {
-    const hashedPassword = await User.create({
+    await User.create({
       name,
       email,
       password,
@@ -28,23 +28,31 @@ export const join = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export const getJoinFail = (req, res) =>
-  res.render('join', {pageTitle: 'Join', joinFail: true});
+export const handleAuthFail = (req: Request, res: Response) => {
+  res.status(400).json({
+    result: false,
+  });
+};
 
 export const postLogin = passport.authenticate('local', {
-  failureRedirect: routes.loginFail,
-  successRedirect: routes.home,
+  failureRedirect: routes.authFail,
+  successRedirect: routes.loginSuccess,
 });
 
-export const getLoginFail = (req, res) => {
-  res.render('login', {pageTitle: 'Login', loginFailed: true});
+export const handleLoginSuccess = (req: Request, res: Response) => {
+  if (req.user) {
+    res.status(200).json({
+      result: true,
+      user: req.user,
+    });
+  }
 };
 
 export const googleLogin = passport.authenticate('google', {
   scope: ['profile', 'email'],
 });
 
-export const googleLoginCallback = async (_, __, profile, cb) => {
+export const googleLoginCallback = async (_, __, profile, callback) => {
   const {
     _json: {sub: id, picture: avatar_url, name, email},
   } = profile;
@@ -53,7 +61,7 @@ export const googleLoginCallback = async (_, __, profile, cb) => {
     if (user) {
       user.googleId = id;
       user.save();
-      return cb(null, user);
+      return callback(null, user);
     }
     const newUser = await User.create({
       email,
@@ -61,9 +69,9 @@ export const googleLoginCallback = async (_, __, profile, cb) => {
       googleId: id,
       avatarUrl: avatar_url,
     });
-    return cb(null, newUser);
+    return callback(null, newUser);
   } catch (error) {
-    return cb(error);
+    return callback(error);
   }
 };
 
@@ -75,7 +83,7 @@ export const facebookLogin = passport.authenticate('facebook', {
   scope: ['email'],
 });
 
-export const facebookLoginCallback = async (_, __, profile, cb) => {
+export const facebookLoginCallback = async (_, __, profile, callback) => {
   const {
     _json: {id, name, email},
   } = profile;
@@ -85,7 +93,7 @@ export const facebookLoginCallback = async (_, __, profile, cb) => {
     if (user) {
       user.facebookId = id;
       user.save();
-      return cb(null, user);
+      return callback(null, user);
     }
     const newUser = await User.create({
       email,
@@ -93,9 +101,9 @@ export const facebookLoginCallback = async (_, __, profile, cb) => {
       facebookId: id,
       avatarUrl, // can I check whether the image is default image of facebook profile?
     });
-    return cb(null, newUser);
+    return callback(null, newUser);
   } catch (error) {
-    return cb(error);
+    return callback(error);
   }
 };
 

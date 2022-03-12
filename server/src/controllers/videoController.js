@@ -1,8 +1,8 @@
-import stringSimilarity from "string-similarity";
-import routes from "../routes";
-import Video from "../models/Video";
-import Comment from "../models/Comment";
-import User from "../models/User";
+import stringSimilarity from 'string-similarity';
+import routes from '../routes';
+import Video from '../models/Video';
+import Comment from '../models/Comment';
+import User from '../models/User';
 // import { reset } from "nodemon"; // not sure why this thing came out
 
 const checkVideoUnblocked = (video, user) => {
@@ -24,19 +24,19 @@ const checkVideoNotAlreadyWatched = (video, user) => {
 
 export const home = async (req, res) => {
   try {
-    let videos = await Video.find({}).populate("creator").sort({ _id: -1 });
+    let videos = await Video.find({}).populate('creator').sort({_id: -1});
     if (req.user) {
       // when logged in, filter nointerest and blocked channel videos
       videos = videos.filter(
         (video) =>
           checkVideoUnblocked(video, req.user) &&
-          checkVideoNotAlreadyWatched(video, req.user)
+          checkVideoNotAlreadyWatched(video, req.user),
       );
     }
-    res.render("home", { pageTitle: "Home", videos });
+    res.render('home', {pageTitle: 'Home', videos});
   } catch (error) {
     console.log(error);
-    res.render("home", { pageTitle: "Home", videos: [] });
+    res.render('home', {pageTitle: 'Home', videos: []});
   }
 };
 
@@ -50,14 +50,14 @@ const compare_by_newest = (a, b) =>
 
 export const search = async (req, res) => {
   const {
-    query: { term: searchingBy, sort },
+    query: {term: searchingBy, sort},
   } = req; // = const searchingBy = query.term
   let videos = [];
   try {
     // checks exact same words only ignoring upper or lower cases.
     videos = await Video.find({
-      title: { $regex: searchingBy, $options: "i" },
-    }).populate("creator");
+      title: {$regex: searchingBy, $options: 'i'},
+    }).populate('creator');
   } catch (error) {
     console.log(error);
   }
@@ -89,35 +89,33 @@ export const search = async (req, res) => {
     // sort by date(newest)
     videos.sort(compare_by_newest);
   } // else == relevance, don't have to do anything
-  res.render("search", { pageTitle: "Search", searchingBy, videos }); // if the value is same as the key, you can just send the name of the key only (then it will automatically think that the key has a value which is a variable of a same name of the key)
+  res.render('search', {pageTitle: 'Search', searchingBy, videos}); // if the value is same as the key, you can just send the name of the key only (then it will automatically think that the key has a value which is a variable of a same name of the key)
 };
 
 export const getCategory = async (req, res) => {
   const {
-    params: { category },
-    query: { sort },
+    params: {category},
+    query: {sort},
   } = req;
   let videos;
   try {
     if (sort == 1) {
       // sort by most popular - most views come first
-      videos = await Video.find({ category })
-        .populate("creator")
-        .sort({ views: -1 });
+      videos = await Video.find({category})
+        .populate('creator')
+        .sort({views: -1});
     } else if (sort == 2) {
       // sort by date(oldest)
-      videos = await Video.find({ category }).populate("creator");
+      videos = await Video.find({category}).populate('creator');
     } else {
       // sort by date(newest) - default
-      videos = await Video.find({ category })
-        .populate("creator")
-        .sort({ _id: -1 });
+      videos = await Video.find({category}).populate('creator').sort({_id: -1});
     }
     if (req.user) {
       // when logged in, filter nointerest and blocked channel videos
       videos = videos.filter((video) => checkVideoUnblocked(video, req.user));
     }
-    res.render("category", { pageTitle: category, category, videos });
+    res.render('category', {pageTitle: category, category, videos});
   } catch (error) {
     console.log(error);
     res.redirect(routes.home);
@@ -128,20 +126,20 @@ export const getHistory = async (req, res) => {
   // not going to filter videos in history, instead, you can delete from history
   const user = await User.findById(req.user._id);
   user.populate({
-    path: "history",
-    model: "Video",
-    populate: { path: "creator", model: "User" },
+    path: 'history',
+    model: 'Video',
+    populate: {path: 'creator', model: 'User'},
   });
   const videos = [];
   for (let i = 0; i < user.history.length; i++) {
     const historyVideo = await Video.findById(user.history[i]).populate(
-      "creator"
+      'creator',
     );
     videos.push(historyVideo);
   }
   videos.reverse();
-  const category = "History";
-  res.render("category", {
+  const category = 'History';
+  res.render('category', {
     pageTitle: category,
     category,
     videos,
@@ -159,13 +157,13 @@ export const getWatchLater = async (req, res) => {
   const videos = [];
   for (let i = 0; i < req.user.watchLater.length; i++) {
     const video = await Video.findById(req.user.watchLater[i]).populate(
-      "creator"
+      'creator',
     );
     videos.push(video);
   }
   videos.reverse();
-  const category = "Watch Later";
-  res.render("category", {
+  const category = 'Watch Later';
+  res.render('category', {
     pageTitle: category,
     category,
     videos,
@@ -173,13 +171,13 @@ export const getWatchLater = async (req, res) => {
 };
 
 export const getVideoUpload = (req, res) =>
-  res.render("uploadVideo", { pageTitle: "Upload" });
+  res.render('uploadVideo', {pageTitle: 'Upload'});
 
 export const postVideoUpload = async (req, res) => {
   console.log(req.files);
   const fileUrl = req.files.videoFile[0].path;
   const {
-    body: { title, description, category },
+    body: {title, description, category},
   } = req;
   // upload and save video, after it finishes uploading, redirect user to the videodetail page of the video
   let newVideo;
@@ -209,25 +207,25 @@ export const postVideoUpload = async (req, res) => {
 
 export const videoDetail = async (req, res) => {
   const {
-    params: { id },
+    params: {id},
   } = req;
   try {
     const video = await Video.findById(id)
       .populate({
-        path: "creator",
-        model: "User",
-        populate: { path: "blockedComments", model: "Comment" },
+        path: 'creator',
+        model: 'User',
+        populate: {path: 'blockedComments', model: 'Comment'},
       })
       .populate({
-        path: "comments",
-        model: "Comment",
-        populate: { path: "creator", model: "User" },
+        path: 'comments',
+        model: 'Comment',
+        populate: {path: 'creator', model: 'User'},
       });
-    const { category } = video;
+    const {category} = video;
     const videosRecommended = [];
-    const sameCategory = await Video.find({ category })
-      .populate("creator")
-      .sort({ views: -1 }); // should change to real recommendations.
+    const sameCategory = await Video.find({category})
+      .populate('creator')
+      .sort({views: -1}); // should change to real recommendations.
     sameCategory.some((v) => {
       if (
         video.id !== v.id &&
@@ -240,15 +238,15 @@ export const videoDetail = async (req, res) => {
       return videosRecommended.length >= 5;
     });
     let popularVideos = await Video.find({})
-      .populate("creator")
-      .sort({ _id: -1 });
+      .populate('creator')
+      .sort({_id: -1});
     popularVideos = popularVideos.filter(
       (v) =>
         video.id !== v.id &&
         !videosRecommended.includes(v) &&
         (!req.user ||
           (checkVideoUnblocked(v, req.user) &&
-            checkVideoNotAlreadyWatched(v, req.user)))
+            checkVideoNotAlreadyWatched(v, req.user))),
     );
     popularVideos.some((v) => {
       videosRecommended.push(v);
@@ -267,27 +265,27 @@ export const videoDetail = async (req, res) => {
       }
       user.save();
     }
-    res.render("videoDetail", {
+    res.render('videoDetail', {
       pageTitle: video.title,
       video,
       videosRecommended,
     });
   } catch (error) {
     console.log(error);
-    res.render("userDetail", { pageTitle: "Video not Found", user: null });
+    res.render('userDetail', {pageTitle: 'Video not Found', user: null});
     // don't worry about movign to userDetail, if the video doesn't exist the user goes to a page that says the video doensn't exist which just shares userDetail pug file
   }
 };
 export const getEditVideo = async (req, res) => {
   const {
-    params: { id },
+    params: {id},
   } = req;
   try {
     const video = await Video.findById(id);
     if (req.user && video.creator._id == req.user.id) {
-      res.render("editVideo", { pageTitle: `[Edit] ${video.title}`, video });
+      res.render('editVideo', {pageTitle: `[Edit] ${video.title}`, video});
     } else {
-      res.render("editVideo", { pageTitle: "Video Edit Error", video: null });
+      res.render('editVideo', {pageTitle: 'Video Edit Error', video: null});
     }
   } catch (error) {
     res.redirect(routes.home);
@@ -296,11 +294,11 @@ export const getEditVideo = async (req, res) => {
 
 export const postEditVideo = async (req, res) => {
   const {
-    params: { id },
-    body: { title, description },
+    params: {id},
+    body: {title, description},
   } = req;
   try {
-    await Video.findOneAndUpdate({ _id: id }, { title, description }); // remember! it is _id not id how things are saved in the mongoose db
+    await Video.findOneAndUpdate({_id: id}, {title, description}); // remember! it is _id not id how things are saved in the mongoose db
     res.redirect(routes.videoDetail(id));
   } catch (error) {
     res.redirect(routes.home);
@@ -309,7 +307,7 @@ export const postEditVideo = async (req, res) => {
 
 export const deleteVideo = async (req, res) => {
   const {
-    params: { id },
+    params: {id},
   } = req;
   try {
     const video = await Video.findById(id);
@@ -317,7 +315,7 @@ export const deleteVideo = async (req, res) => {
       await Video.findByIdAndRemove(id);
       res.render(routes.home);
     } else {
-      res.render("editVideo", { pageTitle: "Video Delete Error", video: null });
+      res.render('editVideo', {pageTitle: 'Video Delete Error', video: null});
     }
   } catch (error) {}
   res.redirect(routes.home);
@@ -325,7 +323,7 @@ export const deleteVideo = async (req, res) => {
 
 export const postRegisterView = async (req, res) => {
   const {
-    params: { id },
+    params: {id},
   } = req;
   try {
     const video = await Video.findById(id);
@@ -341,8 +339,8 @@ export const postRegisterView = async (req, res) => {
 
 export const postAddComment = async (req, res) => {
   const {
-    params: { id },
-    body: { comment },
+    params: {id},
+    body: {comment},
     user,
   } = req;
   try {
@@ -364,8 +362,8 @@ export const postAddComment = async (req, res) => {
 
 export const postEditComment = async (req, res) => {
   const {
-    params: { id },
-    body: { comment },
+    params: {id},
+    body: {comment},
     user,
   } = req;
   try {
@@ -388,11 +386,11 @@ export const postEditComment = async (req, res) => {
 
 export const postDeleteComment = async (req, res) => {
   const {
-    params: { id },
-    body: { commentId },
+    params: {id},
+    body: {commentId},
     user,
   } = req;
-  await user.populate("comments");
+  await user.populate('comments');
   try {
     const video = await Video.findById(id);
     if (!isNaN(commentId) && commentId < 0) {
@@ -410,7 +408,7 @@ export const postDeleteComment = async (req, res) => {
       // when the comment is created before loading the page, and has its id in html
       await Comment.findByIdAndRemove(commentId);
       const filteredVideoComments = await video.comments.filter(
-        (comment) => comment._id != commentId
+        (comment) => comment._id != commentId,
       );
       video.comments = filteredVideoComments;
       const userIndex = user.comments.indexOf(commentId);
@@ -430,7 +428,7 @@ export const postDeleteComment = async (req, res) => {
 
 export const postBlockComment = async (req, res) => {
   const {
-    body: { commentId },
+    body: {commentId},
     user,
   } = req;
   try {
@@ -446,7 +444,7 @@ export const postBlockComment = async (req, res) => {
 
 export const postAddWatchLater = async (req, res) => {
   const {
-    params: { id },
+    params: {id},
     user,
   } = req;
   try {
@@ -464,7 +462,7 @@ export const postAddWatchLater = async (req, res) => {
 
 export const postUndoAddWatchLater = async (req, res) => {
   const {
-    params: { id },
+    params: {id},
     user,
   } = req;
   try {
@@ -482,7 +480,7 @@ export const postUndoAddWatchLater = async (req, res) => {
 
 export const postNoInterest = async (req, res) => {
   const {
-    params: { id },
+    params: {id},
     user,
   } = req;
   try {
@@ -500,7 +498,7 @@ export const postNoInterest = async (req, res) => {
 
 export const postUndoNoInterest = (req, res) => {
   const {
-    params: { id },
+    params: {id},
     user,
   } = req;
   try {
@@ -518,7 +516,7 @@ export const postUndoNoInterest = (req, res) => {
 
 export const postBlockChannel = async (req, res) => {
   const {
-    params: { id },
+    params: {id},
     user,
   } = req;
   try {
@@ -539,7 +537,7 @@ export const postBlockChannel = async (req, res) => {
 
 export const postUndoBlockChannel = (req, res) => {
   const {
-    params: { id },
+    params: {id},
     user,
   } = req;
   try {
@@ -557,7 +555,7 @@ export const postUndoBlockChannel = (req, res) => {
 
 export const postRemoveHistory = async (req, res) => {
   const {
-    params: { id },
+    params: {id},
     user,
   } = req;
   try {
