@@ -1,4 +1,8 @@
+import {CategoryType} from './CategoryType';
+
 export type NavTabType = {
   text: string;
-  iconClassName: string;
+  iconClassName: IconClassNameType;
 };
+
+type IconClassNameType = 'Home' | 'History' | 'WatchLater' | CategoryType;
