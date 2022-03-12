@@ -1,60 +1,52 @@
-import { response } from "express";
-import routes from "../routes";
-import { render } from "pug";
-import User from "../models/User";
-import passport from "passport";
+import {Request, Response, NextFunction} from 'express';
+import {render} from 'pug';
+import passport from 'passport';
+import routes from '../routes';
+import User from '../models/User';
 
 export const getJoin = (req, res) => {
-  res.render("join", { pageTitle: "Join", joinFail: false });
+  res.render('join', {pageTitle: 'Join', joinFail: false});
 };
-export const postJoin = async (req, res, next) => {
+export const join = async (req: Request, res: Response, next: NextFunction) => {
   const {
-    body: { name, email, password, password2 },
+    body: {name, email, password},
   } = req;
-  if (password !== password2) {
-    res.status(400);
-    res.render("join", { pageTitle: "Join" });
-  } else {
-    try {
-      const user = await User({
-        name,
-        email,
-      });
-      await User.register(user, password);
-      next();
-    } catch (error) {
-      res.redirect(routes.joinFail);
-    }
-
-    //회원가입되었을 때 정보 등록 + 로그인시키기
+  try {
+    const user = await User({
+      name,
+      email,
+    });
+    await User.register(user, password);
+    next();
+  } catch (error) {
+    res.send({
+      success: false,
+    });
   }
 };
 
 export const getJoinFail = (req, res) =>
-  res.render("join", { pageTitle: "Join", joinFail: true });
+  res.render('join', {pageTitle: 'Join', joinFail: true});
 
-export const getLogin = (req, res) =>
-  res.render("login", { pageTitle: "Login", loginFailed: false });
-
-export const postLogin = passport.authenticate("local", {
+export const postLogin = passport.authenticate('local', {
   failureRedirect: routes.loginFail,
   successRedirect: routes.home,
 });
 
 export const getLoginFail = (req, res) => {
-  res.render("login", { pageTitle: "Login", loginFailed: true });
+  res.render('login', {pageTitle: 'Login', loginFailed: true});
 };
 
-export const googleLogin = passport.authenticate("google", {
-  scope: ["profile", "email"],
+export const googleLogin = passport.authenticate('google', {
+  scope: ['profile', 'email'],
 });
 
 export const googleLoginCallback = async (_, __, profile, cb) => {
   const {
-    _json: { sub: id, picture: avatar_url, name, email },
+    _json: {sub: id, picture: avatar_url, name, email},
   } = profile;
   try {
-    const user = await User.findOne({ email });
+    const user = await User.findOne({email});
     if (user) {
       user.googleId = id;
       user.save();
@@ -76,17 +68,17 @@ export const postGoogleLogin = (req, res) => {
   res.redirect(routes.home);
 };
 
-export const facebookLogin = passport.authenticate("facebook", {
-  scope: ["email"],
+export const facebookLogin = passport.authenticate('facebook', {
+  scope: ['email'],
 });
 
 export const facebookLoginCallback = async (_, __, profile, cb) => {
   const {
-    _json: { id, name, email },
+    _json: {id, name, email},
   } = profile;
   const avatarUrl = `https://graph.facebook.com/${id}/picture/type=large`;
   try {
-    const user = await User.findOne({ email });
+    const user = await User.findOne({email});
     if (user) {
       user.facebookId = id;
       user.save();
@@ -96,7 +88,7 @@ export const facebookLoginCallback = async (_, __, profile, cb) => {
       email,
       name,
       facebookId: id,
-      avatarUrl, //can I check whether the image is default image of facebook profile?
+      avatarUrl, // can I check whether the image is default image of facebook profile?
     });
     return cb(null, newUser);
   } catch (error) {
@@ -110,68 +102,70 @@ export const logout = (req, res) => {
   req.logout();
   res.redirect(routes.home);
 };
-export const users = (req, res) => res.render("users", { pageTitle: "Users" });
+export const users = (req, res) => res.render('users', {pageTitle: 'Users'});
 
 export const myProfile = async (req, res) => {
   const {
-    query: { sort },
+    query: {sort},
   } = req;
   if (sort == 1) {
     // sort by most popular - most views come first
     const user = await User.findById(req.user.id).populate({
-      path: "videos",
-      options: { sort: { views: -1 } },
+      path: 'videos',
+      options: {sort: {views: -1}},
     });
-    res.render("userDetail", { pageTitle: "My profile", user });
+    res.render('userDetail', {pageTitle: 'My profile', user});
   } else if (sort == 2) {
     // sort by date(oldest)
-    const user = await User.findById(req.user.id).populate("videos");
-    res.render("userDetail", { pageTitle: "My profile", user });
+    const user = await User.findById(req.user.id).populate('videos');
+    res.render('userDetail', {pageTitle: 'My profile', user});
   } else {
     // sort by date(newest) - default
     const user = await User.findById(req.user.id).populate({
-      path: "videos",
-      options: { sort: { _id: -1 } },
+      path: 'videos',
+      options: {sort: {_id: -1}},
     });
-    res.render("userDetail", { pageTitle: "My profile", user });
+    res.render('userDetail', {pageTitle: 'My profile', user});
   }
 };
 
 export const userDetail = async (req, res) => {
   const {
-    params: { id, sort },
+    params: {id, sort},
   } = req;
   try {
     if (sort == 1) {
       // sort by most popular - most views come first
       const user = await User.findById(id).populate({
-        path: "videos",
-        options: { sort: { views: -1 } },
+        path: 'videos',
+        options: {sort: {views: -1}},
       });
-      res.render("userDetail", { pageTitle: user.name, user });
+      res.render('userDetail', {pageTitle: user.name, user});
     } else if (sort == 2) {
       // sort by date(oldest)
-      const user = await User.findById(id).populate("videos");
-      res.render("userDetail", { pageTitle: user.name, user });
+      const user = await User.findById(id).populate('videos');
+      res.render('userDetail', {pageTitle: user.name, user});
     } else {
       // sort by date(newest) - default
       const user = await User.findById(id).populate({
-        path: "videos",
-        options: { sort: { _id: -1 } },
+        path: 'videos',
+        options: {sort: {_id: -1}},
       });
-      res.render("userDetail", { pageTitle: user.name, user });
+      res.render('userDetail', {pageTitle: user.name, user});
     }
   } catch (error) {
-    res.render("userDetail", { pageTitle: "User not Found", user: null });
+    res.render('userDetail', {pageTitle: 'User not Found', user: null});
   }
 };
 
 export const getEditProfile = (req, res) =>
-  res.render("editProfile", { pageTitle: "Profile edit" });
+  res.render('editProfile', {pageTitle: 'Profile edit'});
+
+export const editUser = (req, res) => {};
 
 export const postEditProfile = async (req, res) => {
   const {
-    body: { name, status },
+    body: {name, status},
     file,
   } = req;
   console.log(name);
@@ -184,26 +178,26 @@ export const postEditProfile = async (req, res) => {
     res.redirect(routes.myProfile);
   } catch (error) {
     console.log(error);
-    res.render("editProfile", { pageTitle: "Edit Profile" });
+    res.render('editProfile', {pageTitle: 'Edit Profile'});
   }
 };
 
 export const getChangePassword = (req, res) =>
-  res.render("changePassword", {
-    pageTitle: "Change Password",
+  res.render('changePassword', {
+    pageTitle: 'Change Password',
     changePasswordFail: false,
   });
 
 export const getChangePasswordFail = (req, res) => {
-  res.render("changePassword", {
-    pageTitle: "Change Password",
+  res.render('changePassword', {
+    pageTitle: 'Change Password',
     changePasswordFail: true,
   });
 };
 
 export const postChangePassword = async (req, res) => {
   const {
-    body: { currentPassword: oldPassword, password: newPassword },
+    body: {currentPassword: oldPassword, password: newPassword},
   } = req;
   try {
     await req.user.changePassword(oldPassword, newPassword);

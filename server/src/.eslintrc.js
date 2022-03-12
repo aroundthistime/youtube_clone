@@ -8,5 +8,7 @@ module.exports = {
     ecmaVersion: 11,
     sourceType: 'module',
   },
-  rules: {},
+  rules: {
+    'object-curly-spacing': 'off',
+  },
 };

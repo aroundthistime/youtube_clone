@@ -121,6 +121,8 @@ const routes = {
 
   // login
   login: '/login',
+  loginSuccess: '/success',
+  loginFail: '/fail',
   googleLogin: '/google',
   get googleLoginCallback() {
     return `${this.googleLogin}/callback`;

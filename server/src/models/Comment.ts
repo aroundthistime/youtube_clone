@@ -1,6 +1,13 @@
-import mongoose from 'mongoose';
+import mongoose, {Types} from 'mongoose';
 
-const CommentSchema = new mongoose.Schema({
+export interface CommentType {
+  text: string;
+  uploadTime: Date;
+  creator: Types.ObjectId;
+  isEdited: boolean;
+}
+
+const CommentSchema = new mongoose.Schema<CommentType>({
   text: {
     type: String,
     required: 'Text is required',
