@@ -1,4 +1,5 @@
 import {Request, Response} from 'express';
+import User from '../models/User';
 import Video from '../models/Video';
 import Comment from '../models/Comment';
 
@@ -17,13 +18,12 @@ export const addComment = async (req: Request, res: Response) => {
     user.comments.push(newComment.id);
     video.save();
     user.save();
+    res.status(200).json({
+      result: true,
+    });
   } catch (error) {
     res.status(400).json({
       result: false,
-    });
-  } finally {
-    res.status(200).json({
-      result: true,
     });
   }
 };
@@ -36,62 +36,43 @@ export const editComment = async (req: Request, res: Response) => {
   try {
     const comment = await Comment.findById(id);
     if (comment.creator._id !== user.id) {
-      throw Error;
+      throw Error("User doesn't have rights for the comment");
     }
     await Comment.findByIdAndUpdate(id, {
       text,
       isEdited: true,
     });
+    res.status(200).json({
+      result: true,
+    });
   } catch (error) {
     res.status(400).json({
       result: false,
     });
-  } finally {
-    res.status(200).json({
-      result: true,
-    });
   }
 };
 
-export const postDeleteComment = async (req, res) => {
-  const {
-    params: {id},
-    body: {commentId},
-    user,
-  } = req;
-  await user.populate('comments');
+export const deleteComment = async (req: Request, res: Response) => {
   try {
-    const video = await Video.findById(id);
-    if (!isNaN(commentId) && commentId < 0) {
-      // if the comment is just created, not by pug but by javascript create element function => so it doesnt have id
-      // in this case, user.comments.length + commentId means the index number of the comment to delete in user.comments array
-      const commentIdToDelete =
-        user.comments[user.comments.length + commentId]._id;
-      user.comments.splice(user.comments.length + commentId, 1);
-      await Comment.findByIdAndRemove(commentIdToDelete);
-      const videoIndex = video.comments.indexOf(commentIdToDelete);
-      if (videoIndex > -1) {
-        video.comments.splice(videoIndex, 1);
-      }
-    } else {
-      // when the comment is created before loading the page, and has its id in html
-      await Comment.findByIdAndRemove(commentId);
-      const filteredVideoComments = await video.comments.filter(
-        (comment) => comment._id != commentId,
-      );
-      video.comments = filteredVideoComments;
-      const userIndex = user.comments.indexOf(commentId);
-      if (userIndex > -1) {
-        user.comments.splice(userIndex, 1);
-      }
+    const {
+      body: {id},
+      user,
+    } = req;
+    const commentToDelete = await Comment.findById(id);
+    if (!commentToDelete) {
+      throw Error("Comment doesn't exist");
     }
-    user.save();
-    video.save();
+    if (commentToDelete.creator._id !== id) {
+      throw Error("User doesn't have rights for the comment");
+    }
+    await Comment.findByIdAndDelete(id);
+    res.status(200).json({
+      result: true,
+    });
   } catch (error) {
-    console.log(error);
-    res.status(400);
-  } finally {
-    res.end();
+    res.status(400).json({
+      result: false,
+    });
   }
 };
 
@@ -103,14 +84,13 @@ export const blockComment = async (req: Request, res: Response) => {
   try {
     const currentUser = await User.findById(user.id);
     currentUser.blockedComments.push(commentId);
-    currentUser.save();
+    await currentUser.save();
+    res.status(200).json({
+      result: true,
+    });
   } catch (error) {
     res.status(400).json({
       result: false,
-    });
-  } finally {
-    res.status(200).json({
-      result: true,
     });
   }
 };
