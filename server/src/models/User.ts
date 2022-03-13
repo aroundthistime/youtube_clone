@@ -2,9 +2,10 @@ import mongoose, {Types} from 'mongoose';
 import passportLocalMongoose from 'passport-local-mongoose';
 import bcrypt from 'bcrypt';
 
-export interface UserType {
+export interface UserType extends mongoose.Document {
   name: string;
   email: string;
+  password: string;
   avatarUrl: string;
   status: string;
   facebookId?: number;

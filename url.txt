@@ -1,6 +1,9 @@
-/ home
+/home
 /join
 /login
+/feed/watch-later
+/feed/liked-videos
+/feed/history
 
 /user/:id
 /user/me (if no user you must redirect to login page)
@@ -15,6 +18,11 @@
 --------------------------
 /category (get) - get list of categories
 /login (post)
+/login/google/ (get)
+/login/google/callback (get)
+/login/facebook/ (get)
+/login/facebook/callback (get)
+(로그아웃은 그냥 local에서 삭제하면됨)
 
 /video ? keyword, sortedBy, category all optional (get)
 /video - post (upload video) *
@@ -22,11 +30,14 @@
 /video/:id - get (video + user)
 /video/:id (edit) - put **
 /video/:id (delete) - delete **
+/video/:id/like - post *
+/video/:id/like - delete *
 /video/:id/comment?page=page - get (get comments of video)
 /video/:id/comment - post (add comment) *
 /video/:id/comment/:id - put (edit comment) **
 /video/:id/comment/:id - delete (delete comment) **
 
+/video/liked-videos - get
 /video/watch-later - get (get watch later videos) *
 /video/:id/watch-later - post (record) *
 /video/:id/watch-later - delete (목록에서 삭제) *
@@ -36,6 +47,19 @@
 /user - post (join)
 /user/ - patch (edit profile) *
 /user/:id - get (view user info)
+
+/user/history - get
+/feed/history - get *
+/feed/history/:id delete (시청기록 삭제) *
+/feed/history/ delete (시청기록 싹 다 지우기) *
+/feed/watch-later - get
+/feed/watch-later/:id - post
+/feed/watch-later - delete
+/feed/watch-later/:id - delete
+/feed/no-interest/ - get
+/feed/no-interest/:id - post
+/feed/no-interest - delete
+/feed/no-interest/:id - delete
 
 /comment/:id/block - post (block comment)
 /block/comment

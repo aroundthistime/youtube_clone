@@ -7,6 +7,7 @@ import {
   postLogin,
   handleLoginSuccess,
   handleAuthFail,
+  changeUserPassword,
 } from '../controllers/userController';
 
 const userRouter = express.Router();
@@ -14,6 +15,7 @@ const userRouter = express.Router();
 userRouter.post(routes.user, join, postLogin);
 userRouter.get(routes.loginSuccess, handleLoginSuccess);
 userRouter.get(routes.userDetail, userDetail);
-userRouter.put(routes.userDetail, editUser);
+userRouter.patch(routes.userDetail, editUser);
+userRouter.patch(routes.userPassword, changeUserPassword);
 
 export default userRouter;

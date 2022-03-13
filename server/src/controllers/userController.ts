@@ -1,8 +1,11 @@
 import {Request, Response, NextFunction} from 'express';
+import {Types} from 'mongoose';
 import passport from 'passport';
+import bcrypt from 'bcrypt';
 import routes from '../routes';
-import User from '../models/User';
+import User, {UserType} from '../models/User';
 import {failedResponse} from '../@types/responseType';
+import {OptionalPick} from '../@types/optionalPick';
 
 export const getJoin = (req, res) => {
   res.render('join', {pageTitle: 'Join', joinFail: false});
@@ -140,81 +143,128 @@ export const myProfile = async (req, res) => {
   }
 };
 
-export const userDetail = async (req, res) => {
+export const userDetail = async (req: Request, res: Response) => {
   const {
-    params: {id, sort},
+    params: {id},
   } = req;
   try {
-    if (sort == 1) {
-      // sort by most popular - most views come first
-      const user = await User.findById(id).populate({
-        path: 'videos',
-        options: {sort: {views: -1}},
-      });
-      res.render('userDetail', {pageTitle: user.name, user});
-    } else if (sort == 2) {
-      // sort by date(oldest)
-      const user = await User.findById(id).populate('videos');
-      res.render('userDetail', {pageTitle: user.name, user});
-    } else {
-      // sort by date(newest) - default
-      const user = await User.findById(id).populate({
-        path: 'videos',
-        options: {sort: {_id: -1}},
-      });
-      res.render('userDetail', {pageTitle: user.name, user});
-    }
-  } catch (error) {
-    res.render('userDetail', {pageTitle: 'User not Found', user: null});
+    const user = await User.findById(id).populate({
+      path: 'videos',
+      options: {sort: {views: -1}},
+    });
+    return {
+      result: true,
+      user,
+    };
+  } catch {
+    return {result: false};
   }
 };
 
-export const getEditProfile = (req, res) =>
-  res.render('editProfile', {pageTitle: 'Profile edit'});
+// export const userDetail = async (req, res) => {
+//   const {
+//     params: {id, sort},
+//   } = req;
+//   try {
+//     if (sort == 1) {
+//       // sort by most popular - most views come first
+//       const user = await User.findById(id).populate({
+//         path: 'videos',
+//         options: {sort: {views: -1}},
+//       });
+//       res.render('userDetail', {pageTitle: user.name, user});
+//     } else if (sort == 2) {
+//       // sort by date(oldest)
+//       const user = await User.findById(id).populate('videos');
+//       res.render('userDetail', {pageTitle: user.name, user});
+//     } else {
+//       // sort by date(newest) - default
+//       const user = await User.findById(id).populate({
+//         path: 'videos',
+//         options: {sort: {_id: -1}},
+//       });
+//       res.render('userDetail', {pageTitle: user.name, user});
+//     }
+//   } catch (error) {
+//     res.render('userDetail', {pageTitle: 'User not Found', user: null});
+//   }
+// };
 
-export const editUser = (req, res) => {};
+type EditUserRequiredFieldsType = Pick<
+  UserType,
+  'name' | 'status' | 'avatarUrl'
+>;
 
-export const postEditProfile = async (req, res) => {
-  const {
-    body: {name, status},
-    file,
-  } = req;
-  console.log(name);
+export const editUser = async (req: Request, res: Response) => {
+  const {name, status, avatarUrl}: EditUserRequiredFieldsType = req.body;
   try {
     await User.findByIdAndUpdate(req.user.id, {
       name,
       status,
-      avatarUrl: file ? file.path : req.user.avatarUrl,
+      avatarUrl: avatarUrl ? avatarUrl : req.user.avatarUrl,
     });
-    res.redirect(routes.myProfile);
+    res.json({
+      result: true,
+    });
   } catch (error) {
-    console.log(error);
-    res.render('editProfile', {pageTitle: 'Edit Profile'});
+    res.json({
+      result: false,
+    });
   }
 };
 
-export const getChangePassword = (req, res) =>
-  res.render('changePassword', {
-    pageTitle: 'Change Password',
-    changePasswordFail: false,
-  });
-
-export const getChangePasswordFail = (req, res) => {
-  res.render('changePassword', {
-    pageTitle: 'Change Password',
-    changePasswordFail: true,
-  });
+export const changeUserPassword = async (req: Request, res: Response) => {
+  try {
+    const {password, newPassword} = req.body;
+    const canChange = await canChangeUserPassword(
+      password,
+      newPassword,
+      req.user.id,
+    );
+    if (!canChange) {
+      throw Error;
+    }
+    await User.findByIdAndUpdate(req.user.id, {
+      password: newPassword,
+    });
+    res.json({
+      result: true,
+    });
+  } catch {
+    res.json({
+      result: false,
+    });
+  }
 };
 
-export const postChangePassword = async (req, res) => {
-  const {
-    body: {currentPassword: oldPassword, password: newPassword},
-  } = req;
+const canChangeUserPassword = async (
+  password: string | undefined,
+  newPassword: string | undefined,
+  userId: Types.ObjectId,
+): Promise<boolean> => {
   try {
-    await req.user.changePassword(oldPassword, newPassword);
-    res.redirect(routes.myProfile);
-  } catch (error) {
-    res.status(400);
-    res.redirect(routes.users + routes.changePasswordFail);
+    if (
+      password === undefined ||
+      newPassword === undefined ||
+      userId === undefined
+    ) {
+      throw Error;
+    } else if (password !== newPassword) {
+      throw Error;
+    }
+    const user = await User.findById(userId);
+    if (!user) {
+      throw Error;
+    }
+    const isVerifiedPassword = await bcrypt.compareSync(
+      password,
+      user.password,
+    );
+    if (!isVerifiedPassword) {
+      throw Error;
+    }
+    return true;
+  } catch {
+    return false;
   }
 };
