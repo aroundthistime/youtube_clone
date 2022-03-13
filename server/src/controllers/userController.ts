@@ -118,40 +118,51 @@ export const logout = (req, res) => {
 };
 export const users = (req, res) => res.render('users', {pageTitle: 'Users'});
 
-export const myProfile = async (req, res) => {
-  const {
-    query: {sort},
-  } = req;
-  if (sort == 1) {
-    // sort by most popular - most views come first
-    const user = await User.findById(req.user.id).populate({
-      path: 'videos',
-      options: {sort: {views: -1}},
+// export const myProfile = async (req, res) => {
+//   const {
+//     query: {sort},
+//   } = req;
+//   if (sort == 1) {
+//     // sort by most popular - most views come first
+//     const user = await User.findById(req.user.id).populate({
+//       path: 'videos',
+//       options: {sort: {views: -1}},
+//     });
+//     res.render('userDetail', {pageTitle: 'My profile', user});
+//   } else if (sort == 2) {
+//     // sort by date(oldest)
+//     const user = await User.findById(req.user.id).populate('videos');
+//     res.render('userDetail', {pageTitle: 'My profile', user});
+//   } else {
+//     // sort by date(newest) - default
+//     const user = await User.findById(req.user.id).populate({
+//       path: 'videos',
+//       options: {sort: {_id: -1}},
+//     });
+//     res.render('userDetail', {pageTitle: 'My profile', user});
+//   }
+// };
+
+export const mymProfile = async (req: Request, res: Response) => {
+  try {
+    const user = await User.findById(req.user._id);
+    res.status(200).json({
+      result: true,
+      user,
     });
-    res.render('userDetail', {pageTitle: 'My profile', user});
-  } else if (sort == 2) {
-    // sort by date(oldest)
-    const user = await User.findById(req.user.id).populate('videos');
-    res.render('userDetail', {pageTitle: 'My profile', user});
-  } else {
-    // sort by date(newest) - default
-    const user = await User.findById(req.user.id).populate({
-      path: 'videos',
-      options: {sort: {_id: -1}},
+  } catch {
+    res.status(400).json({
+      result: false,
     });
-    res.render('userDetail', {pageTitle: 'My profile', user});
   }
 };
 
 export const userDetail = async (req: Request, res: Response) => {
-  const {
-    params: {id},
-  } = req;
   try {
-    const user = await User.findById(id).populate({
-      path: 'videos',
-      options: {sort: {views: -1}},
-    });
+    const {
+      params: {id},
+    } = req;
+    const user = await User.findById(id);
     return {
       result: true,
       user,

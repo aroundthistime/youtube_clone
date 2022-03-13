@@ -6,6 +6,8 @@ import Comment from '../models/Comment';
 import User from '../models/User';
 // import { reset } from "nodemon"; // not sure why this thing came out
 
+const VIDEO_FETCH_UNIT = 20; //한 번에 fetch하는 video의 수
+
 const checkVideoUnblocked = (video, user) => {
   if (
     !user.noInterest.includes(video.id) &&
@@ -123,34 +125,69 @@ export const getCategory = async (req, res) => {
   }
 };
 
-export const getHistory = async (req, res) => {
-  // not going to filter videos in history, instead, you can delete from history
-  const user = await User.findById(req.user._id);
-  user.populate({
-    path: 'history',
-    model: 'Video',
-    populate: {path: 'creator', model: 'User'},
-  });
-  const videos = [];
-  for (let i = 0; i < user.history.length; i++) {
-    const historyVideo = await Video.findById(user.history[i]).populate(
-      'creator',
-    );
-    videos.push(historyVideo);
+export const getHistory = async (
+  req: Request<{page: number}>,
+  res: Response,
+) => {
+  try {
+    const {page} = req.params;
+    const currentUser = await User.findById(req.user._id);
+    await currentUser.populate({
+      path: 'history',
+      model: 'Video',
+      populate: {
+        path: 'creator',
+        model: 'User',
+        options: {
+          skip: (page - 1) * VIDEO_FETCH_UNIT,
+          limit: VIDEO_FETCH_UNIT,
+        },
+      },
+    });
+    const videos = [...currentUser.history].reverse();
+    res.status(200).json({
+      result: true,
+      hasNextPage: videos.length > 0,
+      videos,
+    });
+  } catch {
+    res.status(400).json({
+      result: false,
+    });
   }
-  videos.reverse();
-  const category = 'History';
-  res.render('category', {
-    pageTitle: category,
-    category,
-    videos,
-  });
 };
 
-export const clearHistory = async (req, res) => {
-  req.user.history = [];
-  req.user.save();
-  res.redirect(routes.home);
+export const clearHistory = async (req: Request, res: Response) => {
+  try {
+    req.user.history = [];
+    req.user.save();
+    res.status(200).json({
+      result: true,
+    });
+  } catch {
+    res.status(400).json({
+      result: false,
+    });
+  }
+};
+
+export const deleteHistory = async (req: Request, res: Response) => {
+  try {
+    const {
+      body: {id},
+    } = req;
+    const user = await User.findById(req.user.id);
+    const filteredHistory = user.history.filter((videoId) => videoId !== id);
+    user.history = filteredHistory;
+    await user.save();
+    res.status(200).json({
+      result: true,
+    });
+  } catch {
+    res.status(400).json({
+      result: false,
+    });
+  }
 };
 
 export const getWatchLater = async (req, res) => {

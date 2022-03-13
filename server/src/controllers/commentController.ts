@@ -12,12 +12,12 @@ export const addComment = async (req: Request, res: Response) => {
     const video = await Video.findById(videoId);
     const newComment = await Comment.create({
       text,
-      creator: user.id,
+      creator: user._id,
     });
     video.comments.push(newComment.id);
     user.comments.push(newComment.id);
-    video.save();
-    user.save();
+    await video.save();
+    await user.save();
     res.status(200).json({
       result: true,
     });
