@@ -1,6 +1,6 @@
 import mongoose, {Types} from 'mongoose';
 
-export interface VideoType {
+export interface VideoType extends mongoose.Document {
   fileUrl: string;
   thumbnailUrl: string;
   title: string;
@@ -15,17 +15,17 @@ export interface VideoType {
 const VideoSchema = new mongoose.Schema<VideoType>({
   fileUrl: {
     type: String,
-    required: 'File URL is required',
+    required: true,
   },
   thumbnailUrl: String,
   title: {
     type: String,
-    required: 'Title is required',
+    required: true,
   },
   description: String, //It seems like if you only want to specity the type, you don't need to create an object and just write it.
   category: {
     type: String,
-    required: 'Category is required',
+    required: true,
   },
   views: {
     type: Number,

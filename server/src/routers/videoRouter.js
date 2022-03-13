@@ -1,5 +1,5 @@
-import express from "express";
-import routes from "../routes";
+import express from 'express';
+import routes from '../routes';
 import {
   videoDetail,
   deleteVideo,
@@ -7,8 +7,9 @@ import {
   postVideoUpload,
   getEditVideo,
   postEditVideo,
-} from "../controllers/videoController";
-import { uploadVideo, onlyPrivate } from "../middlewares";
+} from '../controllers/videoController';
+import {uploadVideo, onlyPrivate} from '../middlewares';
+import {addComment} from '../controllers/commentController';
 
 const videoRouter = express.Router();
 
@@ -16,14 +17,18 @@ const videoRouter = express.Router();
 videoRouter.get(routes.upload, onlyPrivate, getVideoUpload);
 videoRouter.post(routes.upload, onlyPrivate, uploadVideo, postVideoUpload);
 
-//Video Detail
+// Video Detail
 videoRouter.get(routes.videoDetail(), videoDetail);
 
-//Edit Video
+// Edit Video
 videoRouter.get(routes.editVideo(), onlyPrivate, getEditVideo);
 videoRouter.post(routes.editVideo(), onlyPrivate, postEditVideo);
 
-//Delete Video
+// Delete Video
 videoRouter.get(routes.deleteVideo(), onlyPrivate, deleteVideo);
+
+// 여기서부터 내가함
+videoRouter.get(routes.videoComment, getVideoComments);
+videoRouter.post(routes.videoComment, addComment);
 
 export default videoRouter;

@@ -1,6 +1,6 @@
 import mongoose, {Types} from 'mongoose';
 
-export interface CommentType {
+export interface CommentType extends mongoose.Document {
   text: string;
   uploadTime: Date;
   creator: Types.ObjectId;
@@ -10,16 +10,12 @@ export interface CommentType {
 const CommentSchema = new mongoose.Schema<CommentType>({
   text: {
     type: String,
-    required: 'Text is required',
+    required: true,
   },
   uploadTime: {
     type: Date,
     default: Date.now,
-  }, // ,
-  // video : {
-  //     type : mongoose.Schema.Types.ObjectId,
-  //     ref : "Video"
-  // }
+  },
   creator: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',

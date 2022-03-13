@@ -1,3 +1,4 @@
+import {Request, Response} from 'express';
 import stringSimilarity from 'string-similarity';
 import routes from '../routes';
 import Video from '../models/Video';
@@ -330,111 +331,6 @@ export const postRegisterView = async (req, res) => {
     video.views += 1;
     video.save();
     res.status(200);
-  } catch (error) {
-    res.status(400);
-  } finally {
-    res.end();
-  }
-};
-
-export const postAddComment = async (req, res) => {
-  const {
-    params: {id},
-    body: {comment},
-    user,
-  } = req;
-  try {
-    const video = await Video.findById(id);
-    const newComment = await Comment.create({
-      text: comment,
-      creator: user.id,
-    });
-    video.comments.push(newComment.id);
-    user.comments.push(newComment.id);
-    video.save();
-    user.save();
-  } catch (error) {
-    res.status(400);
-  } finally {
-    res.end();
-  }
-};
-
-export const postEditComment = async (req, res) => {
-  const {
-    params: {id},
-    body: {comment},
-    user,
-  } = req;
-  try {
-    const video = await Video.findById(id);
-    const newComment = await Comment.create({
-      text: comment,
-      creator: user.id,
-      isEdited: true,
-    });
-    video.comments.push(newComment.id);
-    user.comments.push(newComment.id);
-    video.save();
-    user.save();
-  } catch (error) {
-    res.status(400);
-  } finally {
-    res.end();
-  }
-};
-
-export const postDeleteComment = async (req, res) => {
-  const {
-    params: {id},
-    body: {commentId},
-    user,
-  } = req;
-  await user.populate('comments');
-  try {
-    const video = await Video.findById(id);
-    if (!isNaN(commentId) && commentId < 0) {
-      // if the comment is just created, not by pug but by javascript create element function => so it doesnt have id
-      // in this case, user.comments.length + commentId means the index number of the comment to delete in user.comments array
-      const commentIdToDelete =
-        user.comments[user.comments.length + commentId]._id;
-      user.comments.splice(user.comments.length + commentId, 1);
-      await Comment.findByIdAndRemove(commentIdToDelete);
-      const videoIndex = video.comments.indexOf(commentIdToDelete);
-      if (videoIndex > -1) {
-        video.comments.splice(videoIndex, 1);
-      }
-    } else {
-      // when the comment is created before loading the page, and has its id in html
-      await Comment.findByIdAndRemove(commentId);
-      const filteredVideoComments = await video.comments.filter(
-        (comment) => comment._id != commentId,
-      );
-      video.comments = filteredVideoComments;
-      const userIndex = user.comments.indexOf(commentId);
-      if (userIndex > -1) {
-        user.comments.splice(userIndex, 1);
-      }
-    }
-    user.save();
-    video.save();
-  } catch (error) {
-    console.log(error);
-    res.status(400);
-  } finally {
-    res.end();
-  }
-};
-
-export const postBlockComment = async (req, res) => {
-  const {
-    body: {commentId},
-    user,
-  } = req;
-  try {
-    const currentUser = await User.findById(user.id);
-    currentUser.blockedComments.push(commentId);
-    currentUser.save();
   } catch (error) {
     res.status(400);
   } finally {
