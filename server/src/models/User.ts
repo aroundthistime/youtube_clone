@@ -1,13 +1,19 @@
-import mongoose, {Types} from 'mongoose';
+import mongoose, {
+  Document,
+  PassportLocalDocument,
+  PassportLocalModel,
+  PassportLocalSchema,
+  Types,
+} from 'mongoose';
 import passportLocalMongoose from 'passport-local-mongoose';
 import bcrypt from 'bcrypt';
 
-export interface UserType extends mongoose.Document {
+export interface UserType extends PassportLocalDocument {
   name: string;
   email: string;
   password: string;
-  avatarUrl: string;
   status: string;
+  avatarUrl: string;
   facebookId?: number;
   googleId?: Number;
   comments: Types.ObjectId[];
@@ -18,7 +24,7 @@ export interface UserType extends mongoose.Document {
   noInterest: Types.ObjectId[];
 }
 
-const UserSchema = new mongoose.Schema<UserType>({
+const UserSchema = new mongoose.Schema({
   name: String,
   email: String,
   avatarUrl: {
@@ -68,14 +74,16 @@ const UserSchema = new mongoose.Schema<UserType>({
       ref: 'Video',
     },
   ],
-});
+}) as PassportLocalSchema;
+
+export interface UserModel<T extends Document> extends PassportLocalModel<T> {}
 
 UserSchema.plugin(passportLocalMongoose, {usernameField: 'email'});
 
-UserSchema.pre('save', async function () {
+UserSchema.pre<UserType>('save', async function () {
   this.password = await bcrypt.hash(this.password, process.env.SALT_ROUNDS);
 });
 
-const model = mongoose.model('User', UserSchema);
+const model: UserModel<UserType> = mongoose.model<UserType>('User', UserSchema);
 
 export default model;

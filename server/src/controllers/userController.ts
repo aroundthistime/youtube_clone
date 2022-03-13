@@ -1,11 +1,15 @@
-import {Request, Response, NextFunction} from 'express';
+// import {Request, Response, NextFunction} from 'express';
+import * as express from 'express';
 import {Types} from 'mongoose';
 import passport from 'passport';
 import bcrypt from 'bcrypt';
 import routes from '../routes';
 import User, {UserType} from '../models/User';
 import {failedResponse} from '../@types/responseType';
-import {OptionalPick} from '../@types/optionalPick';
+
+type Request = express.Request;
+type Response = express.Response;
+type NextFunction = express.NextFunction;
 
 export const getJoin = (req, res) => {
   res.render('join', {pageTitle: 'Join', joinFail: false});
@@ -145,7 +149,7 @@ export const users = (req, res) => res.render('users', {pageTitle: 'Users'});
 
 export const mymProfile = async (req: Request, res: Response) => {
   try {
-    const user = await User.findById(req.user._id);
+    const user = await User.findById(req.user.id);
     res.status(200).json({
       result: true,
       user,

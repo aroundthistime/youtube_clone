@@ -190,22 +190,33 @@ export const deleteHistory = async (req: Request, res: Response) => {
   }
 };
 
-export const getWatchLater = async (req, res) => {
-  // this one as well, not going to filter video if the user already added the video to watch Later
-  const videos = [];
-  for (let i = 0; i < req.user.watchLater.length; i++) {
-    const video = await Video.findById(req.user.watchLater[i]).populate(
-      'creator',
-    );
-    videos.push(video);
+export const getWatchLater = async (
+  req: Request<{page: number}>,
+  res: Response,
+) => {
+  try {
+    const {page} = req.body;
+    // const user = ``
+  } catch {
+    res.status(400).json({
+      result: false,
+    });
   }
-  videos.reverse();
-  const category = 'Watch Later';
-  res.render('category', {
-    pageTitle: category,
-    category,
-    videos,
-  });
+  // this one as well, not going to filter video if the user already added the video to watch Later
+  // const videos = [];
+  // for (let i = 0; i < req.user.watchLater.length; i++) {
+  //   const video = await Video.findById(req.user.watchLater[i]).populate(
+  //     'creator',
+  //   );
+  //   videos.push(video);
+  // }
+  // videos.reverse();
+  // const category = 'Watch Later';
+  // res.render('category', {
+  //   pageTitle: category,
+  //   category,
+  //   videos,
+  // });
 };
 
 export const getVideoUpload = (req, res) =>

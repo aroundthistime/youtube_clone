@@ -14,7 +14,6 @@ import {localsMiddleware} from './middlewares';
 import userRouter from './routers/userRouter';
 import videoRouter from './routers/videoRouter';
 import globalRouter from './routers/globalRouter';
-import apiRouter from './routers/apiRouter';
 import routes from './routes';
 import './passport';
 import authRouter from './routers/authRouter';

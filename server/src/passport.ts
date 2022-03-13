@@ -8,7 +8,7 @@ import {
   facebookLoginCallback,
 } from './controllers/userController';
 
-passport.use(User.createStrategy({passReqToCallback: true}));
+passport.use(User.createStrategy());
 
 const herokuSite = 'https://stormy-coast-59422.herokuapp.com';
 
@@ -18,7 +18,7 @@ passport.use(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: herokuSite + routes.googleCallback,
+      callbackURL: herokuSite + routes.googleLoginCallback,
     },
     googleLoginCallback,
   ),
@@ -29,7 +29,7 @@ passport.use(
     {
       clientID: process.env.FACEBOOK_CLIENT_ID,
       clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
-      callbackURL: herokuSite + routes.facebookCallback,
+      callbackURL: herokuSite + routes.facebookLoginCallback,
       profileFields: ['id', 'displayName', 'photos', 'email'],
       scope: ['public_profile', 'email'],
     },

@@ -21,6 +21,7 @@
   "ts-node": {
     "compilerOptions": {
       "module": "commonjs"
-    }
+    },
+    "files": true
   }
 }
