@@ -22,6 +22,7 @@ export interface UserType extends PassportLocalDocument {
   comments: PopulatedDoc<CommentType>[];
   blockedComments: PopulatedDoc<CommentType>[];
   videos: PopulatedDoc<VideoType>[];
+  liked: PopulatedDoc<VideoType>[];
   history: PopulatedDoc<VideoType>[];
   watchLater: PopulatedDoc<VideoType>[];
   noInterest: PopulatedDoc<VideoType>[];
@@ -54,6 +55,12 @@ const UserSchema = new mongoose.Schema({
     },
   ],
   videos: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Video',
+    },
+  ],
+  liked: [
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Video',

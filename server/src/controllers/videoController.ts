@@ -26,11 +26,11 @@ import {
 
 const VIDEO_FETCH_UNIT = 20; //한 번에 fetch하는 video의 수
 
-export const getVideoFromStringId = async(id : string) : Promise<VideoType> => {
+export const getVideoFromStringId = async (id: string): Promise<VideoType> => {
   const objectId = getObjectIdFromString(id);
   const video = await Video.findById(objectId);
   return video;
-}
+};
 
 type GetVideosQuery = {
   sortMethod: VideoSortMethodType;
@@ -159,7 +159,7 @@ export const getVideo = async (
     video.populate({
       path: 'creator',
       model: 'User',
-    })
+    });
     // const video = await Video.findById(id).populate({
     //   path: 'creator',
     //   model: 'User',
@@ -217,16 +217,16 @@ export const editVideo = async (
     video.title = title;
     video.description = description;
     video.save();
-     returnSuccessResponse(res);
+    returnSuccessResponse(res);
   } catch {
     returnErrorResponse(res);
   }
 };
 
-export const deleteVideo = async(req : Request, res : Response) => {
+export const deleteVideo = async (req: Request, res: Response) => {
   try {
     const {
-      params : {id}
+      params: {id},
     } = req;
     const video = await getVideoFromStringId(id);
     // const videoId = getObjectIdFromString(id);
@@ -235,12 +235,18 @@ export const deleteVideo = async(req : Request, res : Response) => {
       throw Error;
     }
     Video.findByIdAndDelete(video._id);
+    returnSuccessResponse(res);
+  } catch {
+    returnErrorResponse(res);
   }
-}
+};
 
-const userHasRightsForTheVideo = (user : UserType, video : VideoType) :boolean => {
-  return user && user.id === video.creator._id
-}
+const userHasRightsForTheVideo = (
+  user: UserType,
+  video: VideoType,
+): boolean => {
+  return user && user.id === video.creator._id;
+};
 // const compare_by_view = (a, b) => a.views * -1 - b.views * -1;
 
 // const compare_by_oldest = (a, b) =>
