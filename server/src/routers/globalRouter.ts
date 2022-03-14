@@ -44,8 +44,7 @@ const globalRouter = express.Router();
 // globalRouter.get(routes.watchLater, onlyPrivate, getWatchLater);
 // globalRouter.get(routes.category(), getCategory);
 
-globalRouter.get(routes.authFail, handleAuthFail);
-
+//
 // social-logins
 // globalRouter.get(routes.google, googleLogin);
 // globalRouter.get(
