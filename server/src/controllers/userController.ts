@@ -9,6 +9,13 @@ import {
   returnErrorResponse,
   returnSuccessResponse,
 } from '../utils/responseHandler';
+import {getObjectIdFromString} from '../utils/mongooseUtils';
+
+const getUserFromStringId = async (id: string): Promise<UserType> => {
+  const objectId = getObjectIdFromString(id);
+  const user = await User.findById(objectId);
+  return user;
+};
 
 type JoinRequiredFieldsType = {
   name: string;
@@ -145,7 +152,7 @@ export const logout = (req: Request, res: Response) => {
 
 export const mymProfile = async (req: Request, res: Response) => {
   try {
-    const user = await User.findById(req.user.id);
+    const user = await User.findById(req.user._id);
     res.status(200).json({
       result: true,
       user,
@@ -160,7 +167,7 @@ export const userDetail = async (req: Request, res: Response) => {
     const {
       params: {id},
     } = req;
-    const user = await User.findById(id);
+    const user = await getUserFromStringId(id);
     res.status(200).json({
       result: true,
       user,
@@ -207,7 +214,7 @@ type EditUserRequiredFieldsType = Pick<
 export const editUser = async (req: Request, res: Response) => {
   const {name, status, avatarUrl}: EditUserRequiredFieldsType = req.body;
   try {
-    await User.findByIdAndUpdate(req.user.id, {
+    await User.findByIdAndUpdate(req.user._id, {
       name,
       status,
       avatarUrl: avatarUrl ? avatarUrl : req.user.avatarUrl,
@@ -229,7 +236,7 @@ export const changeUserPassword = async (req: Request, res: Response) => {
     if (!canChange) {
       throw Error;
     }
-    await User.findByIdAndUpdate(req.user.id, {
+    await User.findByIdAndUpdate(req.user._id, {
       password: newPassword,
     });
     returnSuccessResponse(res);

@@ -1,8 +1,8 @@
 import express from 'express';
 import routes from '../routes';
-import {uploadVideo, onlyPrivate} from '../middlewares';
+import {multerUploadVideo, onlyPrivate} from '../middlewares';
 import {addComment, getVideoComments} from '../controllers/commentController';
-import {getVideos} from '../controllers/videoController';
+import {getVideo, getVideos, uploadVideo} from '../controllers/videoController';
 
 const videoRouter = express.Router();
 
@@ -22,7 +22,9 @@ const videoRouter = express.Router();
 
 // 여기서부터 내가함
 videoRouter.get(routes.video, getVideos);
-videoRouter.post(routes.video, uploadVideo);
+videoRouter.post(routes.video, multerUploadVideo, uploadVideo);
+videoRouter.get(routes.videoDetail, getVideo);
+videoRouter.patch(routes.videoDetail, editVideo);
 videoRouter.get(routes.videoComment, getVideoComments);
 videoRouter.post(routes.videoComment, addComment);
 

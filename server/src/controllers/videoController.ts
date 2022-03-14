@@ -26,6 +26,12 @@ import {
 
 const VIDEO_FETCH_UNIT = 20; //한 번에 fetch하는 video의 수
 
+export const getVideoFromStringId = async(id : string) : Promise<VideoType> => {
+  const objectId = getObjectIdFromString(id);
+  const video = await Video.findById(objectId);
+  return video;
+}
+
 type GetVideosQuery = {
   sortMethod: VideoSortMethodType;
   page: number;
@@ -103,41 +109,138 @@ export const getUserVideos = async (
   }
 };
 
-const checkVideoUnblocked = (video, user) => {
-  if (
-    !user.noInterest.includes(video.id) &&
-    !user.blockedUsers.includes(video.creator.id)
-  ) {
-    return true;
-  }
-  return false;
+type UploadVideoBody = {
+  title: string;
+  description;
 };
 
-const checkVideoNotAlreadyWatched = (video, user) => {
-  if (!user.history.includes(video.id)) {
-    return true;
-  }
-  return false;
-};
-
-export const home = async (req, res) => {
+export const uploadVideo = async (req: Request<{}, {}>, res: Response) => {
   try {
-    let videos = await Video.find({}).populate('creator').sort({_id: -1});
-    if (req.user) {
-      // when logged in, filter nointerest and blocked channel videos
-      videos = videos.filter(
-        (video) =>
-          checkVideoUnblocked(video, req.user) &&
-          checkVideoNotAlreadyWatched(video, req.user),
-      );
-    }
-    res.render('home', {pageTitle: 'Home', videos});
-  } catch (error) {
-    console.log(error);
-    res.render('home', {pageTitle: 'Home', videos: []});
+    const {
+      body: {title, description, category},
+    } = req;
+    const {videoFile, thumbnailImage} = req.files as {
+      [fieldname: string]: Express.Multer.File[];
+    };
+    const fileUrl = videoFile[0].path;
+    const thumbnailUrl = thumbnailImage[0].path;
+    const newVideo = await Video.create({
+      fileUrl,
+      thumbnailUrl,
+      title,
+      description,
+      category,
+      creator: req.user.id,
+    });
+    req.user.videos.push(newVideo.id);
+    req.user.save();
+    res.status(200).json({
+      result: true,
+      videoId: newVideo.id,
+    });
+  } catch {
+    returnErrorResponse(res);
   }
 };
 
+type getVideoDetailParams = {
+  id: string;
+};
+
+export const getVideo = async (
+  req: Request<getVideoDetailParams>,
+  res: Response,
+) => {
+  const {
+    params: {id},
+  } = req;
+  try {
+    const video = await getVideoFromStringId(id);
+    video.populate({
+      path: 'creator',
+      model: 'User',
+    })
+    // const video = await Video.findById(id).populate({
+    //   path: 'creator',
+    //   model: 'User',
+    // });
+    if (req.user) {
+      addVideoToUserHistory(req.user, video);
+      increaseVideoView(video);
+    }
+    res.status(200).json({
+      result: true,
+      video,
+    });
+  } catch (error) {
+    returnErrorResponse(res);
+  }
+};
+
+const addVideoToUserHistory = (user: UserType, video: VideoType) => {
+  const index = user.history.indexOf(video._id);
+  if (index > -1) {
+    user.history.splice(index, 1);
+  }
+  user.history.push(video);
+  user.save();
+};
+
+const increaseVideoView = (video: VideoType) => {
+  video.views += 1;
+  video.save();
+};
+
+type EditVideoParams = {
+  id: string;
+};
+
+type EditVideoBody = {
+  title: string;
+  description: string;
+};
+
+export const editVideo = async (
+  req: Request<EditVideoParams, {}, EditVideoBody>,
+  res: Response,
+) => {
+  try {
+    const {
+      params: {id},
+      body: {title, description},
+    } = req;
+    const video = await getVideoFromStringId(id);
+    // const video = await Video.findById(getObjectIdFromString(id));
+    if (!userHasRightsForTheVideo(req.user, video)) {
+      throw Error;
+    }
+    video.title = title;
+    video.description = description;
+    video.save();
+     returnSuccessResponse(res);
+  } catch {
+    returnErrorResponse(res);
+  }
+};
+
+export const deleteVideo = async(req : Request, res : Response) => {
+  try {
+    const {
+      params : {id}
+    } = req;
+    const video = await getVideoFromStringId(id);
+    // const videoId = getObjectIdFromString(id);
+    // const video = await Video.findById(getObjectIdFromString(id));
+    if (!userHasRightsForTheVideo(req.user, video)) {
+      throw Error;
+    }
+    Video.findByIdAndDelete(video._id);
+  }
+}
+
+const userHasRightsForTheVideo = (user : UserType, video : VideoType) :boolean => {
+  return user && user.id === video.creator._id
+}
 // const compare_by_view = (a, b) => a.views * -1 - b.views * -1;
 
 // const compare_by_oldest = (a, b) =>
@@ -254,7 +357,7 @@ export const deleteHistory = async (req: Request, res: Response) => {
     const {
       params: {id},
     } = req;
-    const user = await User.findById(req.user.id);
+    const user = await User.findById(req.user._id);
     await deleteVideoFromList(user.history, id);
     // const filteredHistory = user.history.filter((videoId) => videoId !== id);
     // user.history = filteredHistory;
@@ -382,41 +485,6 @@ export const deleteNoInterest = async (req: Request, res: Response) => {
     returnErrorResponse(res);
   }
 };
-
-// export const getVideoUpload = (req, res) =>
-//   res.render('uploadVideo', {pageTitle: 'Upload'});
-
-// export const postVideoUpload = async (req, res) => {
-//   console.log(req.files);
-//   const fileUrl = req.files.videoFile[0].path;
-//   const {
-//     body: {title, description, category},
-//   } = req;
-//   // upload and save video, after it finishes uploading, redirect user to the videodetail page of the video
-//   let newVideo;
-//   if (req.files.thumbnailImage) {
-//     const thumbnailUrl = req.files.thumbnailImage[0].path;
-//     newVideo = await Video.create({
-//       fileUrl,
-//       thumbnailUrl,
-//       title,
-//       description,
-//       category,
-//       creator: req.user.id,
-//     });
-//   } else {
-//     newVideo = await Video.create({
-//       fileUrl,
-//       title,
-//       description,
-//       category,
-//       creator: req.user.id,
-//     });
-//   }
-//   req.user.videos.push(newVideo.id);
-//   req.user.save();
-//   res.redirect(routes.videoDetail(newVideo.id));
-// };
 
 // export const videoDetail = async (req, res) => {
 //   const {

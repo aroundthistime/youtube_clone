@@ -1,14 +1,26 @@
 import {Request, Response} from 'express';
-import User from '../models/User';
+import User, {UserType} from '../models/User';
 import Video from '../models/Video';
 import Comment, {CommentType} from '../models/Comment';
 import {
   returnErrorResponse,
   returnSuccessResponse,
 } from '../utils/responseHandler';
-import {getCommentSortOptions} from '../utils/mongooseUtils';
+import {
+  getCommentSortOptions,
+  getObjectIdFromString,
+} from '../utils/mongooseUtils';
 import {CommentSortMethodType} from '../@types/sortMethod';
 import {PopulateWithPaginationOptions} from '../@types/mongooseTypes';
+import {getVideoFromStringId} from './videoController';
+
+export const getCommentFromStringId = async (
+  id: string,
+): Promise<CommentType> => {
+  const objectId = getObjectIdFromString(id);
+  const comment = await Comment.findById(objectId);
+  return comment;
+};
 
 const COMMENT_FETCH_UNIT = 20;
 
@@ -27,7 +39,16 @@ export const getVideoComments = async (
       params: {id: videoId},
       query: {page, sortMethod},
     } = req;
-    const video = await Video.findById(videoId).populate({
+    // const video = await Video.findById(videoId).populate({
+    //   path: 'comments',
+    //   options: getCommentWithPaginationPopulateOptions(page, sortMethod),
+    //   populate: {
+    //     path: 'creator',
+    //     model: 'User',
+    //   },
+    // });
+    const video = await getVideoFromStringId(videoId);
+    await video.populate({
       path: 'comments',
       options: getCommentWithPaginationPopulateOptions(page, sortMethod),
       populate: {
@@ -35,7 +56,13 @@ export const getVideoComments = async (
         model: 'User',
       },
     });
-    returnCommentsWithPaginationSuccessResponse(res, video.comments);
+    let comments: CommentType[];
+    if (req.user) {
+      comments = filterBlockedComments(video.comments, req.user);
+    } else {
+      comments = video.comments;
+    }
+    returnCommentsWithPaginationSuccessResponse(res, comments);
     return {
       result: true,
       comments: video.comments,
@@ -57,6 +84,15 @@ const getCommentWithPaginationPopulateOptions = (
   };
 };
 
+const filterBlockedComments = (
+  comments: CommentType[],
+  user: UserType,
+): CommentType[] => {
+  return comments.filter(
+    (comment) => !user.blockedComments.includes(comment.id),
+  );
+};
+
 const returnCommentsWithPaginationSuccessResponse = (
   res: Response,
   comments: CommentType[],
@@ -74,7 +110,8 @@ export const addComment = async (req: Request, res: Response) => {
     user,
   } = req;
   try {
-    const video = await Video.findById(videoId);
+    const video = await getVideoFromStringId(videoId);
+    // const video = await Video.findById(videoId);
     const newComment = await Comment.create({
       text,
       creator: user._id,
@@ -95,11 +132,12 @@ export const editComment = async (req: Request, res: Response) => {
     user,
   } = req;
   try {
-    const comment = await Comment.findById(id);
+    const comment = await getCommentFromStringId(id);
+    // const comment = await Comment.findById(id);
     if (comment.creator.id !== user.id) {
       throw Error("User doesn't have rights for the comment");
     }
-    await Comment.findByIdAndUpdate(id, {
+    await Comment.findByIdAndUpdate(comment._id, {
       text,
       isEdited: true,
     });
@@ -115,14 +153,12 @@ export const deleteComment = async (req: Request, res: Response) => {
       body: {id},
       user,
     } = req;
-    const commentToDelete = await Comment.findById(id);
-    if (!commentToDelete) {
-      throw Error("Comment doesn't exist");
-    }
+    const commentToDelete = await getCommentFromStringId(id);
+    // const commentToDelete = await Comment.findById(id);
     if (commentToDelete.creator.id !== id) {
       throw Error("User doesn't have rights for the comment");
     }
-    await Comment.findByIdAndDelete(id);
+    await Comment.findByIdAndDelete(commentToDelete._id);
     returnSuccessResponse(res);
   } catch (error) {
     returnErrorResponse(res);
@@ -134,7 +170,7 @@ export const blockComment = async (req: Request, res: Response) => {
     body: {commentId},
   } = req;
   try {
-    const user = await User.findById(req.user.id);
+    const user = await User.findById(req.user._id);
     user.blockedComments.push(commentId);
     await user.save();
     returnSuccessResponse(res);

@@ -48,8 +48,8 @@ export const onlyPrivate = (req, res, next) => {
 };
 
 // export const uploadVideo = multerVideo.single("videoFile");
-export const uploadVideo = multerVideo.fields([
+export const multerUploadVideo = multerVideo.fields([
   {name: 'videoFile'},
   {name: 'thumbnailImage'},
 ]);
-export const uploadAvatar = multerAvater.single('avatar');
+export const multerUploadAvatar = multerAvater.single('avatar');
