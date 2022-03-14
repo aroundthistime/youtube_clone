@@ -1,11 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import axios from 'axios';
 import './index.css';
 import {Provider} from 'react-redux';
 import {PersistGate} from 'redux-persist/integration/react';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import useConfigureStore from './useConfigureStore';
+
+axios.defaults.baseURL = process.env.REACT_APP_BASE_URL;
 
 const {store, persistor} = useConfigureStore();
 

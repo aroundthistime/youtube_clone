@@ -29,7 +29,7 @@ const routes = {
   history: HISTORY,
   watchLater: WATCH_LATER,
   likedVideos: LIKED_VIDEOS,
-  user: USERS,
+  users: USERS,
   myProfile: MY_PROFILE,
   editProfile: EDIT_PROFILE,
   userDetail: (id?: string) => {
@@ -38,7 +38,7 @@ const routes = {
     }
     return USER_DETAIL;
   },
-  video: VIDEOS,
+  videos: VIDEOS,
   uploadVideo: UPLOAD_VIDEO,
   videoDetail: (id?: string) => {
     if (id) {

@@ -17,7 +17,7 @@ export const UseSearchForm = (): ReturnType => {
     event.preventDefault();
     if (canSubmit()) {
       navigate({
-        pathname: routes.search,
+        pathname: routes.videos,
         search: `?searchingBy=${value}`,
       });
     }

@@ -57,7 +57,7 @@ Header.AuthButton = ({user}: AuthButtonProps) => {
 };
 
 Header.UploadButton = () => (
-  <Link to={routes.upload} className="header__button">
+  <Link to={routes.uploadVideo} className="header__button">
     <Header.Icon icon={faVideo} />
   </Link>
 );
