@@ -26,8 +26,11 @@ export const getCommentSortOptions = (
 };
 
 export const getVideoSortOptions = (
-  sortMethod: VideoSortMethodType,
+  sortMethod?: VideoSortMethodType,
 ): SortOptionType<VideoType> => {
+  if (sortMethod === undefined) {
+    return {};
+  }
   if (sortMethod === 'Newest') {
     return {
       uploadTime: -1,

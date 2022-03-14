@@ -22,6 +22,7 @@ const videoRouter = express.Router();
 
 // 여기서부터 내가함
 videoRouter.get(routes.video, getVideos);
+videoRouter.post(routes.video, uploadVideo);
 videoRouter.get(routes.videoComment, getVideoComments);
 videoRouter.post(routes.videoComment, addComment);
 

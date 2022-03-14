@@ -19,8 +19,10 @@ import {getReversedPaginationFetchIndexRange} from '../utils/arrayHandler';
 import {SortOptionType, VideoSortMethodType} from '../@types/sortMethod';
 import {CategoryType} from '../@types/categoryType';
 import {AtLeastOne} from '../@types/UtilityTypes';
-import {PopulateWithPaginationOptions} from '../@types/mongooseTypes';
-// import { reset } from "nodemon"; // not sure why this thing came out
+import {
+  MongooseFindQuery,
+  PopulateWithPaginationOptions,
+} from '../@types/mongooseTypes';
 
 const VIDEO_FETCH_UNIT = 20; //한 번에 fetch하는 video의 수
 
@@ -37,9 +39,42 @@ export const getVideos = async (
 ) => {
   try {
     const {keyword, sortMethod, category, page} = req.query;
+    const videoFindQuery = getVideoFindQuery(keyword, category);
+    let videos = await Video.find(videoFindQuery)
+      .sort(getVideoSortOptions(sortMethod))
+      .skip((page - 1) * VIDEO_FETCH_UNIT)
+      .limit(VIDEO_FETCH_UNIT);
+    if (req.user) {
+      videos = filterNoInterestVideos(videos, req.user);
+    }
+    returnVideosWithPaginationSuccessResponse(res, videos);
   } catch {
     returnErrorResponse(res);
   }
+};
+
+const getVideoFindQuery = (
+  keyword: string | undefined,
+  category: string | undefined,
+): MongooseFindQuery<VideoType> => {
+  const videoFindQuery: MongooseFindQuery<VideoType> = {};
+  if (keyword) {
+    videoFindQuery.title = {
+      $regex: keyword,
+      $options: 'i',
+    };
+  }
+  if (category) {
+    videoFindQuery.category = category;
+  }
+  return videoFindQuery;
+};
+
+const filterNoInterestVideos = (
+  videos: VideoType[],
+  user: UserType,
+): VideoType[] => {
+  return videos.filter((video) => !user.noInterest.includes(video.id));
 };
 
 type GetUserVideosParams = {
@@ -59,17 +94,11 @@ export const getUserVideos = async (
       params: {id: userId},
       query: {sortMethod, page},
     } = req;
-    console.log(userId);
-    const user = await User.findById(getObjectIdFromString(userId)).populate({
-      path: 'videos',
-      model: 'Video',
-      options: getVideoWithPaginationPopulateOptions(page, sortMethod),
-    });
-    const b = user.videos;
-    console.log(user.videos);
-    // returnVideosWithPaginationSuccessResponse(res, user.videos);
-  } catch (error) {
-    console.log(error);
+    const user = await User.findById(getObjectIdFromString(userId)).populate(
+      getBriefVideoPopulateParameter('videos', page, sortMethod),
+    );
+    returnVideosWithPaginationSuccessResponse(res, user.videos);
+  } catch {
     returnErrorResponse(res);
   }
 };
@@ -202,7 +231,7 @@ export const getHistory = async (
   try {
     const {page} = req.query;
     const user = await User.findById(req.user._id).populate(
-      getFeedVideoPopulateParameter('history', page),
+      getBriefVideoPopulateParameter('history', page),
     );
     returnVideosWithPaginationSuccessResponse(res, user.history);
   } catch {
@@ -243,7 +272,7 @@ export const getWatchLater = async (
   try {
     const {page} = req.query;
     const user = await User.findById(req.user._id).populate(
-      getFeedVideoPopulateParameter('watchLater', page),
+      getBriefVideoPopulateParameter('watchLater', page),
     );
     returnVideosWithPaginationSuccessResponse(res, user.watchLater);
   } catch {
@@ -318,7 +347,7 @@ export const getNoInterest = async (
   try {
     const {page} = req.query;
     const user = await User.findById(req.user._id).populate(
-      getFeedVideoPopulateParameter('noInterest', page),
+      getBriefVideoPopulateParameter('noInterest', page),
     );
     returnVideosWithPaginationSuccessResponse(res, user.watchLater);
   } catch {
@@ -561,14 +590,18 @@ const getVideoWithPaginationPopulateOptions = (
   return {
     limit: VIDEO_FETCH_UNIT,
     skip: page * VIDEO_FETCH_UNIT,
-    sort: sortMethod ? getVideoSortOptions(sortMethod) : {},
+    sort: getVideoSortOptions(sortMethod),
   };
 };
 
-const getFeedVideoPopulateParameter = (path: string, page: number) => {
+const getBriefVideoPopulateParameter = (
+  path: string,
+  page: number,
+  sortMethod?: VideoSortMethodType,
+) => {
   return {
     path,
-    options: getVideoWithPaginationPopulateOptions(page),
+    options: getVideoWithPaginationPopulateOptions(page, sortMethod),
     populate: {
       path: 'creator',
       model: 'User',

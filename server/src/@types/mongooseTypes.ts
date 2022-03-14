@@ -1,3 +1,4 @@
+import {type} from 'os';
 import {SortOptionType} from './sortMethod';
 
 export interface PopulateWithPaginationOptions<T> {
@@ -5,3 +6,7 @@ export interface PopulateWithPaginationOptions<T> {
   skip: number;
   sort: SortOptionType<T>;
 }
+
+export type MongooseFindQuery<T> = Partial<{
+  [k in keyof T]: any;
+}>;
