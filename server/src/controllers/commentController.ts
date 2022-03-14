@@ -1,13 +1,14 @@
 import {Request, Response} from 'express';
 import User from '../models/User';
 import Video from '../models/Video';
-import Comment from '../models/Comment';
+import Comment, {CommentType} from '../models/Comment';
 import {
   returnErrorResponse,
   returnSuccessResponse,
 } from '../utils/responseHandler';
 import {getCommentSortOptions} from '../utils/mongooseUtils';
 import {CommentSortMethodType} from '../@types/sortMethod';
+import {PopulateWithPaginationOptions} from '../@types/mongooseTypes';
 
 const COMMENT_FETCH_UNIT = 20;
 
@@ -28,16 +29,13 @@ export const getVideoComments = async (
     } = req;
     const video = await Video.findById(videoId).populate({
       path: 'comments',
-      options: {
-        limit: COMMENT_FETCH_UNIT,
-        skip: page * COMMENT_FETCH_UNIT,
-        sort: getCommentSortOptions(sortMethod),
-      },
+      options: getCommentWithPaginationPopulateOptions(page, sortMethod),
       populate: {
         path: 'creator',
         model: 'User',
       },
     });
+    returnCommentsWithPaginationSuccessResponse(res, video.comments);
     return {
       result: true,
       comments: video.comments,
@@ -46,6 +44,28 @@ export const getVideoComments = async (
   } catch {
     returnErrorResponse(res);
   }
+};
+
+const getCommentWithPaginationPopulateOptions = (
+  page: number,
+  sortMethod?: CommentSortMethodType,
+): PopulateWithPaginationOptions<CommentType> => {
+  return {
+    limit: COMMENT_FETCH_UNIT,
+    skip: page * COMMENT_FETCH_UNIT,
+    sort: sortMethod ? getCommentSortOptions(sortMethod) : {},
+  };
+};
+
+const returnCommentsWithPaginationSuccessResponse = (
+  res: Response,
+  comments: CommentType[],
+) => {
+  res.status(200).json({
+    result: true,
+    comments,
+    hasNextPage: comments.length > 0,
+  });
 };
 
 export const addComment = async (req: Request, res: Response) => {

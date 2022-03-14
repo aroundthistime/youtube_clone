@@ -4,9 +4,12 @@ import mongoose, {
   PassportLocalModel,
   PassportLocalSchema,
   Types,
+  PopulatedDoc,
 } from 'mongoose';
 import passportLocalMongoose from 'passport-local-mongoose';
 import bcrypt from 'bcrypt';
+import {CommentType} from './Comment';
+import {VideoType} from './Video';
 
 export interface UserType extends PassportLocalDocument {
   name: string;
@@ -16,12 +19,12 @@ export interface UserType extends PassportLocalDocument {
   avatarUrl: string;
   facebookId?: number;
   googleId?: Number;
-  comments: Types.ObjectId[];
-  blockedComments: Types.ObjectId[];
-  videos: Types.ObjectId[];
-  history: Types.ObjectId[];
-  watchLater: Types.ObjectId[];
-  noInterest: Types.ObjectId[];
+  comments: PopulatedDoc<CommentType>[];
+  blockedComments: PopulatedDoc<CommentType>[];
+  videos: PopulatedDoc<VideoType>[];
+  history: PopulatedDoc<VideoType>[];
+  watchLater: PopulatedDoc<VideoType>[];
+  noInterest: PopulatedDoc<VideoType>[];
 }
 
 const UserSchema = new mongoose.Schema({

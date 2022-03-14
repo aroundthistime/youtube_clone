@@ -1,9 +1,10 @@
-import mongoose, {Types} from 'mongoose';
+import mongoose, {PopulatedDoc} from 'mongoose';
+import {UserType} from './User';
 
 export interface CommentType extends mongoose.Document {
   text: string;
   uploadTime: Date;
-  creator: Types.ObjectId;
+  creator: PopulatedDoc<UserType>;
   isEdited: boolean;
 }
 

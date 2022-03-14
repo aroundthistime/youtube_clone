@@ -1,4 +1,6 @@
-import mongoose, {Types} from 'mongoose';
+import mongoose, {Types, PopulatedDoc} from 'mongoose';
+import {UserType} from './User';
+import {CommentType} from './Comment';
 
 export interface VideoType extends mongoose.Document {
   fileUrl: string;
@@ -8,8 +10,8 @@ export interface VideoType extends mongoose.Document {
   category: string;
   views: number;
   uploadTime: Date;
-  comments: Types.ObjectId[];
-  creator: Types.ObjectId;
+  comments: PopulatedDoc<CommentType>[];
+  creator: PopulatedDoc<UserType>;
 }
 
 const VideoSchema = new mongoose.Schema<VideoType>({

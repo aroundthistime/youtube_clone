@@ -19,6 +19,7 @@ import {getReversedPaginationFetchIndexRange} from '../utils/arrayHandler';
 import {SortOptionType, VideoSortMethodType} from '../@types/sortMethod';
 import {CategoryType} from '../@types/categoryType';
 import {AtLeastOne} from '../@types/UtilityTypes';
+import {PopulateWithPaginationOptions} from '../@types/mongooseTypes';
 // import { reset } from "nodemon"; // not sure why this thing came out
 
 const VIDEO_FETCH_UNIT = 20; //한 번에 fetch하는 video의 수
@@ -58,7 +59,8 @@ export const getUserVideos = async (
       params: {id: userId},
       query: {sortMethod, page},
     } = req;
-    const user = await User.findById(userId).populate({
+    console.log(userId);
+    const user = await User.findById(getObjectIdFromString(userId)).populate({
       path: 'videos',
       model: 'Video',
       options: getVideoWithPaginationPopulateOptions(page, sortMethod),
@@ -66,7 +68,8 @@ export const getUserVideos = async (
     const b = user.videos;
     console.log(user.videos);
     // returnVideosWithPaginationSuccessResponse(res, user.videos);
-  } catch {
+  } catch (error) {
+    console.log(error);
     returnErrorResponse(res);
   }
 };
@@ -592,16 +595,10 @@ const returnErrorResponse = (res: Response) => {
   });
 };
 
-type VideoWithPaginationOptionsType = {
-  limit: number;
-  skip: number;
-  sort: SortOptionType<VideoType>;
-};
-
 const getVideoWithPaginationPopulateOptions = (
   page: number,
   sortMethod?: VideoSortMethodType,
-): VideoWithPaginationOptionsType => {
+): PopulateWithPaginationOptions<VideoType> => {
   return {
     limit: VIDEO_FETCH_UNIT,
     skip: page * VIDEO_FETCH_UNIT,
