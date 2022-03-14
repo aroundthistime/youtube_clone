@@ -201,25 +201,10 @@ export const getHistory = async (
 ) => {
   try {
     const {page} = req.query;
-    const historyVideos = await getVideosWithPaginationStartingFromLast(
-      page,
-      req.user.history,
+    const user = await User.findById(req.user._id).populate(
+      getFeedVideoPopulateParameter('history', page),
     );
-    // const currentUser = await User.findById(req.user._id);
-    // currentUser.populate({
-    //   path: 'history',
-    //   model: 'Video',
-    //   populate: {
-    //     path: 'creator',
-    //     model: 'User',
-    //   },
-    //   options: {
-    //     skip: (page - 1) * VIDEO_FETCH_UNIT,
-    //     limit: VIDEO_FETCH_UNIT,
-    //   },
-    // });
-    // const videos = [...currentUser.history].reverse();
-    returnVideosWithPaginationSuccessResponse(res, historyVideos);
+    returnVideosWithPaginationSuccessResponse(res, user.history);
   } catch {
     returnErrorResponse(res);
   }
@@ -257,11 +242,10 @@ export const getWatchLater = async (
 ) => {
   try {
     const {page} = req.query;
-    const watchLaterVideos = await getVideosWithPaginationStartingFromLast(
-      page,
-      req.user.watchLater,
+    const user = await User.findById(req.user._id).populate(
+      getFeedVideoPopulateParameter('watchLater', page),
     );
-    returnVideosWithPaginationSuccessResponse(res, watchLaterVideos);
+    returnVideosWithPaginationSuccessResponse(res, user.watchLater);
   } catch {
     returnErrorResponse(res);
   }
@@ -333,11 +317,10 @@ export const getNoInterest = async (
 ) => {
   try {
     const {page} = req.query;
-    const watchLaterVideos = await getVideosWithPaginationStartingFromLast(
-      page,
-      req.user.noInterest,
+    const user = await User.findById(req.user._id).populate(
+      getFeedVideoPopulateParameter('noInterest', page),
     );
-    returnVideosWithPaginationSuccessResponse(res, watchLaterVideos);
+    returnVideosWithPaginationSuccessResponse(res, user.watchLater);
   } catch {
     returnErrorResponse(res);
   }
@@ -560,24 +543,6 @@ const deleteVideoFromList = async (
   }
 };
 
-const getVideosWithPaginationStartingFromLast = async (
-  page: number,
-  videoIds: Types.ObjectId[],
-): Promise<VideoType[]> => {
-  const [startIndex, endIndex] = getReversedPaginationFetchIndexRange(
-    videoIds,
-    VIDEO_FETCH_UNIT,
-    page,
-  );
-  const videos: VideoType[] = [];
-  for (let i = startIndex; i >= endIndex; i--) {
-    const videoId = videoIds[i];
-    const video = await Video.findById(videoId).populate('creator');
-    videos.push(video);
-  }
-  return videos;
-};
-
 const returnVideosWithPaginationSuccessResponse = (
   res: Response,
   videos: VideoType[],
@@ -586,12 +551,6 @@ const returnVideosWithPaginationSuccessResponse = (
     result: true,
     videos,
     hasNextPage: videos.length > 0,
-  });
-};
-
-const returnErrorResponse = (res: Response) => {
-  res.status(400).json({
-    result: false,
   });
 };
 
@@ -604,4 +563,21 @@ const getVideoWithPaginationPopulateOptions = (
     skip: page * VIDEO_FETCH_UNIT,
     sort: sortMethod ? getVideoSortOptions(sortMethod) : {},
   };
+};
+
+const getFeedVideoPopulateParameter = (path: string, page: number) => {
+  return {
+    path,
+    options: getVideoWithPaginationPopulateOptions(page),
+    populate: {
+      path: 'creator',
+      model: 'User',
+    },
+  };
+};
+
+const returnErrorResponse = (res: Response) => {
+  res.status(400).json({
+    result: false,
+  });
 };
