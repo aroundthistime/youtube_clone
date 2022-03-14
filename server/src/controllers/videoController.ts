@@ -164,13 +164,18 @@ export const getVideo = async (
     //   path: 'creator',
     //   model: 'User',
     // });
+    let isLiked: boolean = false;
     if (req.user) {
       addVideoToUserHistory(req.user, video);
       increaseVideoView(video);
+      isLiked = videoIsLiked(req.user, video);
     }
     res.status(200).json({
       result: true,
-      video,
+      video: {
+        ...video,
+        isLiked,
+      },
     });
   } catch (error) {
     returnErrorResponse(res);
@@ -189,6 +194,10 @@ const addVideoToUserHistory = (user: UserType, video: VideoType) => {
 const increaseVideoView = (video: VideoType) => {
   video.views += 1;
   video.save();
+};
+
+const videoIsLiked = (user: UserType, video: VideoType): boolean => {
+  return user.liked.includes(video._id);
 };
 
 type EditVideoParams = {
@@ -247,90 +256,40 @@ const userHasRightsForTheVideo = (
 ): boolean => {
   return user && user.id === video.creator._id;
 };
-// const compare_by_view = (a, b) => a.views * -1 - b.views * -1;
 
-// const compare_by_oldest = (a, b) =>
-//   new Date(a.uploadTime) - new Date(b.uploadTime);
+export const likeVideo = async (req: Request<{id: string}>, res: Response) => {
+  try {
+    const {
+      params: {id},
+      user,
+    } = req;
+    await addVideoToList(user.liked, id);
+    user.save();
+    returnSuccessResponse(res);
+  } catch {
+    returnErrorResponse(res);
+  }
+};
 
-// const compare_by_newest = (a, b) =>
-//   new Date(b.uploadTime) - new Date(a.uploadTime);
-
-// export const search = async (req, res) => {
-//   const {
-//     query: {term: searchingBy, sort},
-//   } = req; // = const searchingBy = query.term
-//   let videos = [];
-//   try {
-//     // checks exact same words only ignoring upper or lower cases.
-//     videos = await Video.find({
-//       title: {$regex: searchingBy, $options: 'i'},
-//     }).populate('creator');
-//   } catch (error) {
-//     console.log(error);
-//   }
-//   try {
-//     // check words with similarities
-//     const allVideos = await Video.find({});
-//     allVideos.forEach((video) => {
-//       if (
-//         stringSimilarity.compareTwoStrings(video.title, searchingBy) >= 0.3 &&
-//         !videos.find((v) => v.id === video.id)
-//       ) {
-//         videos.push(video);
-//       }
-//     });
-//   } catch (error) {
-//     console.log(error);
-//   }
-//   if (req.user) {
-//     // when logged in, filter nointerest and blocked channel videos
-//     videos = videos.filter((video) => checkVideoUnblocked(video, req.user));
-//   }
-//   if (sort == 1) {
-//     // sort by most popular - most views come first
-//     videos.sort(compare_by_view);
-//   } else if (sort == 2) {
-//     // sort by date(oldest)
-//     videos.sort(compare_by_oldest);
-//   } else if (sort == 3) {
-//     // sort by date(newest)
-//     videos.sort(compare_by_newest);
-//   } // else == relevance, don't have to do anything
-//   res.render('search', {pageTitle: 'Search', searchingBy, videos}); // if the value is same as the key, you can just send the name of the key only (then it will automatically think that the key has a value which is a variable of a same name of the key)
-// };
-
-// export const getCategory = async (req, res) => {
-//   const {
-//     params: {category},
-//     query: {sort},
-//   } = req;
-//   let videos;
-//   try {
-//     if (sort == 1) {
-//       // sort by most popular - most views come first
-//       videos = await Video.find({category})
-//         .populate('creator')
-//         .sort({views: -1});
-//     } else if (sort == 2) {
-//       // sort by date(oldest)
-//       videos = await Video.find({category}).populate('creator');
-//     } else {
-//       // sort by date(newest) - default
-//       videos = await Video.find({category}).populate('creator').sort({_id: -1});
-//     }
-//     if (req.user) {
-//       // when logged in, filter nointerest and blocked channel videos
-//       videos = videos.filter((video) => checkVideoUnblocked(video, req.user));
-//     }
-//     res.render('category', {pageTitle: category, category, videos});
-//   } catch (error) {
-//     console.log(error);
-//     res.redirect(routes.home);
-//   }
-// };
+export const unlikedVideo = async (
+  req: Request<{id: string}>,
+  res: Response,
+) => {
+  try {
+    const {
+      params: {id},
+      user,
+    } = req;
+    await deleteVideoFromList(user.liked, id);
+    user.save();
+    returnSuccessResponse(res);
+  } catch {
+    returnErrorResponse(res);
+  }
+};
 
 type GetHistoryQuery = {
-  page: number;
+  page: string;
 };
 
 export const getHistory = async (
@@ -338,7 +297,7 @@ export const getHistory = async (
   res: Response,
 ) => {
   try {
-    const {page} = req.query;
+    const page = parseInt(req.query.page);
     const user = await User.findById(req.user._id).populate(
       getBriefVideoPopulateParameter('history', page),
     );
@@ -365,8 +324,6 @@ export const deleteHistory = async (req: Request, res: Response) => {
     } = req;
     const user = await User.findById(req.user._id);
     await deleteVideoFromList(user.history, id);
-    // const filteredHistory = user.history.filter((videoId) => videoId !== id);
-    // user.history = filteredHistory;
     await user.save();
     returnSuccessResponse(res);
   } catch {
@@ -375,11 +332,11 @@ export const deleteHistory = async (req: Request, res: Response) => {
 };
 
 export const getWatchLater = async (
-  req: Request<{}, {}, {}, {page: number}>,
+  req: Request<{}, {}, {}, {page: string}>,
   res: Response,
 ) => {
   try {
-    const {page} = req.query;
+    const page = parseInt(req.query.page);
     const user = await User.findById(req.user._id).populate(
       getBriefVideoPopulateParameter('watchLater', page),
     );
@@ -387,21 +344,6 @@ export const getWatchLater = async (
   } catch {
     returnErrorResponse(res);
   }
-  // this one as well, not going to filter video if the user already added the video to watch Later
-  // const videos = [];
-  // for (let i = 0; i < req.user.watchLater.length; i++) {
-  //   const video = await Video.findById(req.user.watchLater[i]).populate(
-  //     'creator',
-  //   );
-  //   videos.push(video);
-  // }
-  // videos.reverse();
-  // const category = 'Watch Later';
-  // res.render('category', {
-  //   pageTitle: category,
-  //   category,
-  //   videos,
-  // });
 };
 
 export const clearWatchLater = async (req: Request, res: Response) => {
@@ -450,11 +392,11 @@ export const deleteWatchLater = async (req: Request, res: Response) => {
 };
 
 export const getNoInterest = async (
-  req: Request<{}, {}, {}, {page: number}>,
+  req: Request<{}, {}, {}, {page: string}>,
   res: Response,
 ) => {
   try {
-    const {page} = req.query;
+    const page = parseInt(req.query.page);
     const user = await User.findById(req.user._id).populate(
       getBriefVideoPopulateParameter('noInterest', page),
     );

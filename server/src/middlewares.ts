@@ -1,5 +1,7 @@
 import multer from 'multer';
+import {Request, Response, NextFunction} from 'express';
 import routes from './routes';
+import {returnErrorResponse} from './utils/responseHandler';
 // import multerS3 from "multer-s3";
 // import aws from "aws-sdk";
 
@@ -22,32 +24,27 @@ import routes from './routes';
 const multerVideo = multer({dest: 'uploads/videos/'});
 const multerAvater = multer({dest: 'uploads/avatars/'});
 
-export const localsMiddleware = (req, res, next) => {
-  res.locals.siteName = 'Yutube';
-  res.locals.routes = routes;
-  res.locals.loggedUser = req.user || null;
-  next();
-};
-
-export const onlyPublic = (req, res, next) => {
+export const onlyPublic = (req: Request, res: Response, next) => {
   // allow some pages (ex.join) only when not loged in
   if (req.user) {
-    res.redirect(routes.home);
+    returnErrorResponse(res);
   } else {
     next();
   }
 };
 
-export const onlyPrivate = (req, res, next) => {
-  // allow some pages (ex.change Password) only when loged in
+export const onlyPrivate = (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   if (!req.user) {
-    res.redirect(routes.home);
+    returnErrorResponse(res);
   } else {
     next();
   }
 };
 
-// export const uploadVideo = multerVideo.single("videoFile");
 export const multerUploadVideo = multerVideo.fields([
   {name: 'videoFile'},
   {name: 'thumbnailImage'},

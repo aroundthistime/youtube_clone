@@ -2,24 +2,11 @@ import express from 'express';
 import passport from 'passport';
 import routes from '../routes';
 import {onlyPublic, onlyPrivate} from '../middlewares';
+import {getCategories} from '../controllers/categoryController';
 
 const globalRouter = express.Router();
 
-// globalRouter.get(routes.home, home);
-// globalRouter.get(routes.join, onlyPublic, getJoin);
-// globalRouter.post(routes.join, onlyPublic, postJoin, postLogin);
-// globalRouter.get(routes.joinFail, onlyPublic, getJoinFail);
-// globalRouter.get(routes.login, onlyPublic, getLogin);
-// globalRouter.post(routes.login, onlyPublic, postLogin);
-// globalRouter.get(routes.loginFail, onlyPublic, getLoginFail);
-// globalRouter.get(routes.logout, onlyPrivate, logout);
-// globalRouter.get(routes.myProfile, onlyPrivate, myProfile);
-// globalRouter.get(routes.search, search);
-// globalRouter.get(routes.history, onlyPrivate, getHistory);
-// globalRouter.get(routes.clearHistory, onlyPrivate, clearHistory);
-// globalRouter.get(routes.watchLater, onlyPrivate, getWatchLater);
-// globalRouter.get(routes.category(), getCategory);
-
+globalRouter.get(routes.category, getCategories);
 //
 // social-logins
 // globalRouter.get(routes.google, googleLogin);

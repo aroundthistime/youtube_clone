@@ -10,7 +10,6 @@ import mongoose from 'mongoose';
 import session from 'express-session';
 import path from 'path';
 import MongoStore from 'connect-mongo';
-import {localsMiddleware} from './middlewares';
 import userRouter from './routers/userRouter';
 import videoRouter from './routers/videoRouter';
 import globalRouter from './routers/globalRouter';
@@ -46,7 +45,6 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use(localsMiddleware);
 app.use(routes.home, globalRouter);
 app.use(routes.auth, authRouter);
 app.use(routes.auth + routes.login, loginRouter);

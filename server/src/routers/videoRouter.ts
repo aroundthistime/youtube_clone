@@ -2,30 +2,26 @@ import express from 'express';
 import routes from '../routes';
 import {multerUploadVideo, onlyPrivate} from '../middlewares';
 import {addComment, getVideoComments} from '../controllers/commentController';
-import {getVideo, getVideos, uploadVideo} from '../controllers/videoController';
+import {
+  deleteVideo,
+  editVideo,
+  getVideo,
+  getVideos,
+  likeVideo,
+  unlikedVideo,
+  uploadVideo,
+} from '../controllers/videoController';
 
 const videoRouter = express.Router();
 
-// // Upload Video
-// videoRouter.get(routes.upload, onlyPrivate, getVideoUpload);
-// videoRouter.post(routes.upload, onlyPrivate, uploadVideo, postVideoUpload);
-
-// // Video Detail
-// videoRouter.get(routes.videoDetail(), videoDetail);
-
-// // Edit Video
-// videoRouter.get(routes.editVideo(), onlyPrivate, getEditVideo);
-// videoRouter.post(routes.editVideo(), onlyPrivate, postEditVideo);
-
-// // Delete Video
-// videoRouter.get(routes.deleteVideo(), onlyPrivate, deleteVideo);
-
-// 여기서부터 내가함
 videoRouter.get(routes.video, getVideos);
-videoRouter.post(routes.video, multerUploadVideo, uploadVideo);
+videoRouter.post(routes.video, onlyPrivate, multerUploadVideo, uploadVideo);
 videoRouter.get(routes.videoDetail, getVideo);
-videoRouter.patch(routes.videoDetail, editVideo);
+videoRouter.patch(routes.videoDetail, onlyPrivate, editVideo);
+videoRouter.delete(routes.videoDetail, onlyPrivate, deleteVideo);
+videoRouter.post(routes.videoLike, onlyPrivate, likeVideo);
+videoRouter.delete(routes.videoLike, onlyPrivate, unlikedVideo);
 videoRouter.get(routes.videoComment, getVideoComments);
-videoRouter.post(routes.videoComment, addComment);
+videoRouter.post(routes.videoComment, onlyPrivate, addComment);
 
 export default videoRouter;
