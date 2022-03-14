@@ -6,24 +6,43 @@ import {
   returnErrorResponse,
   returnSuccessResponse,
 } from '../utils/responseHandler';
+import {getCommentSortOptions} from '../utils/mongooseUtils';
+import {CommentSortMethodType} from '../@types/sortMethod';
 
 const COMMENT_FETCH_UNIT = 20;
 
-export const getVideoComments = async (req: Request, res: Response) => {
+type GetVideoCommentsParams = {id: string};
+type GetVideoCommentsQuery = {
+  page: number;
+  sortMethod: CommentSortMethodType;
+};
+
+export const getVideoComments = async (
+  req: Request<GetVideoCommentsParams, {}, {}, GetVideoCommentsQuery>,
+  res: Response,
+) => {
   try {
     const {
-      params: {videoId, page, sortMethod},
+      params: {id: videoId},
+      query: {page, sortMethod},
     } = req;
-    const video = await (
-      await Video.findById(videoId)
-    ).populate({
+    const video = await Video.findById(videoId).populate({
       path: 'comments',
       options: {
         limit: COMMENT_FETCH_UNIT,
-        skip: page,
-        sort: {},
+        skip: page * COMMENT_FETCH_UNIT,
+        sort: getCommentSortOptions(sortMethod),
+      },
+      populate: {
+        path: 'creator',
+        model: 'User',
       },
     });
+    return {
+      result: true,
+      comments: video.comments,
+      hasNextPage: video.comments.length > 0,
+    };
   } catch {
     returnErrorResponse(res);
   }

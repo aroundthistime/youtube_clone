@@ -1,30 +1,6 @@
 import express from 'express';
 import passport from 'passport';
 import routes from '../routes';
-import {
-  home,
-  search,
-  getCategory,
-  getHistory,
-  getWatchLater,
-  clearHistory,
-} from '../controllers/videoController';
-import {
-  // logout,
-  // postJoin,
-  // getJoin,
-  // getLogin,
-  // postLogin,
-  // googleLogin,
-  // postGoogleLogin,
-  // myProfile,
-  // facebookLogin,
-  // postFacebookLogin,
-  // getLoginFail,
-  // getJoinFail,
-  handleAuthFail,
-  handleLoginSuccess,
-} from '../controllers/userController';
 import {onlyPublic, onlyPrivate} from '../middlewares';
 
 const globalRouter = express.Router();

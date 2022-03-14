@@ -6,10 +6,11 @@
 /feed/history
 
 /user/:id
+/user/:id/video - get
 /user/me (if no user you must redirect to login page)
 /user/me/edit
 
-/video?keyword=keyword&&sortedBy=sortedBy&&category=category
+/video?keyword=keyword&&sortedBy=sortedBy&&category=category&&user=user
 /video/upload
 
 /video/:id
@@ -27,11 +28,12 @@
 /video ? keyword, sortedBy, category all optional (get)
 /video - post (upload video) *
 
-/video/:id - get (video + user)
+/video/:id - get (video + user) -> view increase 해야됨
 /video/:id (edit) - put **
 /video/:id (delete) - delete **
 /video/:id/like - post *
 /video/:id/like - delete *
+
 /video/:id/comment?page=page - get (get comments of video)
 /video/:id/comment - post (add comment) *
 /video/:id/comment/:id - put (edit comment) **
@@ -58,7 +60,6 @@
 /feed/watch-later/:id - delete
 /feed/no-interest/ - get
 /feed/no-interest/:id - post
-/feed/no-interest - delete
 /feed/no-interest/:id - delete
 
 /comment/:id/block - post (block comment)

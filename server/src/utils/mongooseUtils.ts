@@ -11,7 +11,7 @@ export const getObjectIdFromString = (str: string) => {
   return mongoose.Types.ObjectId(str);
 };
 
-export const getCommentSortOptionsFromSortMethod = (
+export const getCommentSortOptions = (
   sortMethod: CommentSortMethodType,
 ): SortOptionType<CommentType> => {
   if (sortMethod === 'Newest') {
@@ -25,7 +25,7 @@ export const getCommentSortOptionsFromSortMethod = (
   }
 };
 
-export const getVideoSortOptionsFromSortMethod = (
+export const getVideoSortOptions = (
   sortMethod: VideoSortMethodType,
 ): SortOptionType<VideoType> => {
   if (sortMethod === 'Newest') {

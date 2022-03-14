@@ -24,6 +24,7 @@ const routes = {
   // user
   user: '/user',
   userDetail: '/:id',
+  userVideo: '/:id/video',
   userPassword: '/password',
 
   // video
