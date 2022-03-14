@@ -4,15 +4,14 @@ import {
   editUser,
   userDetail,
   join,
-  postLogin,
   handleLoginSuccess,
-  handleAuthFail,
   changeUserPassword,
+  login,
 } from '../controllers/userController';
 
 const userRouter = express.Router();
 
-userRouter.post(routes.user, join, postLogin);
+userRouter.post(routes.user, join, login);
 userRouter.get(routes.loginSuccess, handleLoginSuccess);
 userRouter.get(routes.userDetail, userDetail);
 userRouter.patch(routes.userDetail, editUser);

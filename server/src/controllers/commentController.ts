@@ -2,6 +2,10 @@ import {Request, Response} from 'express';
 import User from '../models/User';
 import Video from '../models/Video';
 import Comment from '../models/Comment';
+import {
+  returnErrorResponse,
+  returnSuccessResponse,
+} from '../utils/responseHandler';
 
 export const addComment = async (req: Request, res: Response) => {
   const {
@@ -18,13 +22,9 @@ export const addComment = async (req: Request, res: Response) => {
     user.comments.push(newComment.id);
     await video.save();
     await user.save();
-    res.status(200).json({
-      result: true,
-    });
+    returnSuccessResponse(res);
   } catch (error) {
-    res.status(400).json({
-      result: false,
-    });
+    returnErrorResponse(res);
   }
 };
 
@@ -35,20 +35,16 @@ export const editComment = async (req: Request, res: Response) => {
   } = req;
   try {
     const comment = await Comment.findById(id);
-    if (comment.creator._id !== user.id) {
+    if (comment.creator.id !== user.id) {
       throw Error("User doesn't have rights for the comment");
     }
     await Comment.findByIdAndUpdate(id, {
       text,
       isEdited: true,
     });
-    res.status(200).json({
-      result: true,
-    });
+    returnSuccessResponse(res);
   } catch (error) {
-    res.status(400).json({
-      result: false,
-    });
+    returnErrorResponse(res);
   }
 };
 
@@ -62,35 +58,26 @@ export const deleteComment = async (req: Request, res: Response) => {
     if (!commentToDelete) {
       throw Error("Comment doesn't exist");
     }
-    if (commentToDelete.creator._id !== id) {
+    if (commentToDelete.creator.id !== id) {
       throw Error("User doesn't have rights for the comment");
     }
     await Comment.findByIdAndDelete(id);
-    res.status(200).json({
-      result: true,
-    });
+    returnSuccessResponse(res);
   } catch (error) {
-    res.status(400).json({
-      result: false,
-    });
+    returnErrorResponse(res);
   }
 };
 
 export const blockComment = async (req: Request, res: Response) => {
   const {
     body: {commentId},
-    user,
   } = req;
   try {
-    const currentUser = await User.findById(user.id);
-    currentUser.blockedComments.push(commentId);
-    await currentUser.save();
-    res.status(200).json({
-      result: true,
-    });
+    const user = await User.findById(req.user.id);
+    user.blockedComments.push(commentId);
+    await user.save();
+    returnSuccessResponse(res);
   } catch (error) {
-    res.status(400).json({
-      result: false,
-    });
+    returnErrorResponse(res);
   }
 };

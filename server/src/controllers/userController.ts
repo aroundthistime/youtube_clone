@@ -1,19 +1,14 @@
-// import {Request, Response, NextFunction} from 'express';
-import * as express from 'express';
+import {Request, Response, NextFunction} from 'express';
 import {Types} from 'mongoose';
 import passport from 'passport';
 import bcrypt from 'bcrypt';
 import routes from '../routes';
 import User, {UserType} from '../models/User';
 import {failedResponse} from '../@types/responseType';
-
-type Request = express.Request;
-type Response = express.Response;
-type NextFunction = express.NextFunction;
-
-export const getJoin = (req, res) => {
-  res.render('join', {pageTitle: 'Join', joinFail: false});
-};
+import {
+  returnErrorResponse,
+  returnSuccessResponse,
+} from '../utils/responseHandler';
 
 type JoinRequiredFieldsType = {
   name: string;
@@ -31,17 +26,15 @@ export const join = async (req: Request, res: Response, next: NextFunction) => {
     });
     next();
   } catch (error) {
-    res.json(failedResponse);
+    returnErrorResponse(res);
   }
 };
 
 export const handleAuthFail = (req: Request, res: Response) => {
-  res.status(400).json({
-    result: false,
-  });
+  returnErrorResponse(res);
 };
 
-export const postLogin = passport.authenticate('local', {
+export const login = passport.authenticate('local', {
   failureRedirect: routes.authFail,
   successRedirect: routes.loginSuccess,
 });
@@ -83,7 +76,7 @@ export const googleLoginCallback = async (_, __, profile, callback) => {
 };
 
 export const postGoogleLogin = (req, res) => {
-  res.redirect(routes.home);
+  returnSuccessResponse(res);
 };
 
 export const facebookLogin = passport.authenticate('facebook', {
@@ -114,14 +107,17 @@ export const facebookLoginCallback = async (_, __, profile, callback) => {
   }
 };
 
-export const postFacebookLogin = (req, res) => res.redirect(routes.home);
+export const postFacebookLogin = (req: Request, res: Response) =>
+  returnSuccessResponse(res);
 
-export const logout = (req, res) => {
-  req.logout();
-  res.redirect(routes.home);
+export const logout = (req: Request, res: Response) => {
+  try {
+    req.logout();
+    returnSuccessResponse(res);
+  } catch {
+    returnErrorResponse(res);
+  }
 };
-export const users = (req, res) => res.render('users', {pageTitle: 'Users'});
-
 // export const myProfile = async (req, res) => {
 //   const {
 //     query: {sort},
@@ -155,9 +151,7 @@ export const mymProfile = async (req: Request, res: Response) => {
       user,
     });
   } catch {
-    res.status(400).json({
-      result: false,
-    });
+    returnErrorResponse(res);
   }
 };
 
@@ -167,12 +161,12 @@ export const userDetail = async (req: Request, res: Response) => {
       params: {id},
     } = req;
     const user = await User.findById(id);
-    return {
+    res.status(200).json({
       result: true,
       user,
-    };
+    });
   } catch {
-    return {result: false};
+    returnErrorResponse(res);
   }
 };
 
@@ -218,13 +212,9 @@ export const editUser = async (req: Request, res: Response) => {
       status,
       avatarUrl: avatarUrl ? avatarUrl : req.user.avatarUrl,
     });
-    res.json({
-      result: true,
-    });
+    returnSuccessResponse(res);
   } catch (error) {
-    res.json({
-      result: false,
-    });
+    returnErrorResponse(res);
   }
 };
 
@@ -242,13 +232,9 @@ export const changeUserPassword = async (req: Request, res: Response) => {
     await User.findByIdAndUpdate(req.user.id, {
       password: newPassword,
     });
-    res.json({
-      result: true,
-    });
+    returnSuccessResponse(res);
   } catch {
-    res.json({
-      result: false,
-    });
+    returnErrorResponse(res);
   }
 };
 

@@ -1,9 +1,17 @@
 import {Request, Response} from 'express';
 import stringSimilarity from 'string-similarity';
+import {HydratedDocument, Types} from 'mongoose';
 import routes from '../routes';
-import Video from '../models/Video';
+import Video, {VideoType} from '../models/Video';
 import Comment from '../models/Comment';
-import User from '../models/User';
+import User, {UserType} from '../models/User';
+import {
+  DefaultResponseType,
+  VideosFetchSuccessWithPaginationResponse,
+} from '../@types/responseType';
+import mongoose from 'mongoose';
+import {getObjectIdFromString} from '../utils/mongooseUtils';
+import {returnSuccessResponse} from '../utils/responseHandler';
 // import { reset } from "nodemon"; // not sure why this thing came out
 
 const VIDEO_FETCH_UNIT = 20; //한 번에 fetch하는 video의 수
@@ -131,29 +139,27 @@ export const getHistory = async (
 ) => {
   try {
     const {page} = req.params;
-    const currentUser = await User.findById(req.user._id);
-    await currentUser.populate({
-      path: 'history',
-      model: 'Video',
-      populate: {
-        path: 'creator',
-        model: 'User',
-        options: {
-          skip: (page - 1) * VIDEO_FETCH_UNIT,
-          limit: VIDEO_FETCH_UNIT,
-        },
-      },
-    });
-    const videos = [...currentUser.history].reverse();
-    res.status(200).json({
-      result: true,
-      hasNextPage: videos.length > 0,
-      videos,
-    });
+    const historyVideos = await getVideosWithPaginationStartingFromLast(
+      page,
+      req.user.history,
+    );
+    // const currentUser = await User.findById(req.user._id);
+    // currentUser.populate({
+    //   path: 'history',
+    //   model: 'Video',
+    //   populate: {
+    //     path: 'creator',
+    //     model: 'User',
+    //   },
+    //   options: {
+    //     skip: (page - 1) * VIDEO_FETCH_UNIT,
+    //     limit: VIDEO_FETCH_UNIT,
+    //   },
+    // });
+    // const videos = [...currentUser.history].reverse();
+    returnVideosWithPaginationSuccessResponse(res, historyVideos);
   } catch {
-    res.status(400).json({
-      result: false,
-    });
+    returnErrorResponse(res);
   }
 };
 
@@ -161,13 +167,9 @@ export const clearHistory = async (req: Request, res: Response) => {
   try {
     req.user.history = [];
     req.user.save();
-    res.status(200).json({
-      result: true,
-    });
+    returnSuccessResponse(res);
   } catch {
-    res.status(400).json({
-      result: false,
-    });
+    returnErrorResponse(res);
   }
 };
 
@@ -177,16 +179,13 @@ export const deleteHistory = async (req: Request, res: Response) => {
       body: {id},
     } = req;
     const user = await User.findById(req.user.id);
-    const filteredHistory = user.history.filter((videoId) => videoId !== id);
-    user.history = filteredHistory;
+    await deleteVideoFromList(user.history, id);
+    // const filteredHistory = user.history.filter((videoId) => videoId !== id);
+    // user.history = filteredHistory;
     await user.save();
-    res.status(200).json({
-      result: true,
-    });
+    returnSuccessResponse(res);
   } catch {
-    res.status(400).json({
-      result: false,
-    });
+    returnErrorResponse(res);
   }
 };
 
@@ -196,11 +195,13 @@ export const getWatchLater = async (
 ) => {
   try {
     const {page} = req.body;
-    // const user = ``
+    const watchLaterVideos = await getVideosWithPaginationStartingFromLast(
+      page,
+      req.user.watchLater,
+    );
+    returnVideosWithPaginationSuccessResponse(res, watchLaterVideos);
   } catch {
-    res.status(400).json({
-      result: false,
-    });
+    returnErrorResponse(res);
   }
   // this one as well, not going to filter video if the user already added the video to watch Later
   // const videos = [];
@@ -217,6 +218,88 @@ export const getWatchLater = async (
   //   category,
   //   videos,
   // });
+};
+
+export const clearWatchLater = async (req: Request, res: Response) => {
+  try {
+    req.user.watchLater = [];
+    req.user.save();
+    returnSuccessResponse(res);
+  } catch {
+    returnErrorResponse(res);
+  }
+};
+
+export const addWatchLater = async (req: Request, res: Response) => {
+  const {
+    params: {id},
+    user,
+  } = req;
+  try {
+    await addVideoToList(user.watchLater, id);
+    user.save();
+    returnSuccessResponse(res);
+  } catch {
+    returnErrorResponse(res);
+  }
+};
+
+export const deleteWatchLater = async (req: Request, res: Response) => {
+  const {
+    params: {id},
+    user,
+  } = req;
+  try {
+    await deleteVideoFromList(user.watchLater, id);
+    user.save();
+    returnSuccessResponse(res);
+  } catch (error) {
+    returnErrorResponse(res);
+  }
+};
+
+export const getNoInterest = async (
+  req: Request<{page: number}>,
+  res: Response,
+) => {
+  try {
+    const {page} = req.body;
+    const watchLaterVideos = await getVideosWithPaginationStartingFromLast(
+      page,
+      req.user.noInterest,
+    );
+    returnVideosWithPaginationSuccessResponse(res, watchLaterVideos);
+  } catch {
+    returnErrorResponse(res);
+  }
+};
+
+export const addNoInterest = async (req: Request, res: Response) => {
+  const {
+    params: {id},
+    user,
+  } = req;
+  try {
+    await addVideoToList(user.noInterest, id);
+    user.save();
+    returnSuccessResponse(res);
+  } catch {
+    returnErrorResponse(res);
+  }
+};
+
+export const deleteNoInterest = async (req: Request, res: Response) => {
+  const {
+    params: {id},
+    user,
+  } = req;
+  try {
+    await deleteVideoFromList(user.noInterest, id);
+    user.save();
+    returnSuccessResponse(res);
+  } catch (error) {
+    returnErrorResponse(res);
+  }
 };
 
 export const getVideoUpload = (req, res) =>
@@ -514,4 +597,58 @@ export const postRemoveHistory = async (req, res) => {
   } finally {
     res.end();
   }
+};
+
+const addVideoToList = async (
+  videos: Types.ObjectId[],
+  videoIdStr: string,
+): Promise<void> => {
+  const videoId = getObjectIdFromString(videoIdStr);
+  const videoIndex = videos.indexOf(videoId);
+  if (videoIndex === -1) {
+    videos.push(videoId);
+  }
+};
+
+const deleteVideoFromList = async (
+  videos: Types.ObjectId[],
+  videoIdStr: string,
+): Promise<void> => {
+  const videoId = getObjectIdFromString(videoIdStr);
+  const videoIndex = videos.indexOf(videoId);
+  if (videoIndex > -1) {
+    videos.splice(videoIndex, 1);
+  }
+};
+
+const getVideosWithPaginationStartingFromLast = async (
+  page: number,
+  videoIds: Types.ObjectId[],
+): Promise<VideoType[]> => {
+  const startIndex = videoIds.length - 1 - VIDEO_FETCH_UNIT * (page - 1);
+  const endIndex = Math.max(0, videoIds.length - VIDEO_FETCH_UNIT * page);
+  const videos: VideoType[] = [];
+  for (let i = startIndex; i >= endIndex; i--) {
+    const videoId = videoIds[i];
+    const video = await Video.findById(videoId).populate('creator');
+    videos.push(video);
+  }
+  return videos;
+};
+
+const returnVideosWithPaginationSuccessResponse = (
+  res: Response,
+  videos: VideoType[],
+) => {
+  res.status(200).json({
+    result: true,
+    videos,
+    hasNextPage: videos.length > 0,
+  });
+};
+
+const returnErrorResponse = (res: Response) => {
+  res.status(400).json({
+    result: false,
+  });
 };
