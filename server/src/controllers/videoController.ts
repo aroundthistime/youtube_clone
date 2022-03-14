@@ -12,6 +12,7 @@ import {
 import mongoose from 'mongoose';
 import {getObjectIdFromString} from '../utils/mongooseUtils';
 import {returnSuccessResponse} from '../utils/responseHandler';
+import {getReversedPaginationFetchIndexRange} from '../utils/arrayHandler';
 // import { reset } from "nodemon"; // not sure why this thing came out
 
 const VIDEO_FETCH_UNIT = 20; //한 번에 fetch하는 video의 수
@@ -625,8 +626,11 @@ const getVideosWithPaginationStartingFromLast = async (
   page: number,
   videoIds: Types.ObjectId[],
 ): Promise<VideoType[]> => {
-  const startIndex = videoIds.length - 1 - VIDEO_FETCH_UNIT * (page - 1);
-  const endIndex = Math.max(0, videoIds.length - VIDEO_FETCH_UNIT * page);
+  const [startIndex, endIndex] = getReversedPaginationFetchIndexRange(
+    videoIds,
+    VIDEO_FETCH_UNIT,
+    page,
+  );
   const videos: VideoType[] = [];
   for (let i = startIndex; i >= endIndex; i--) {
     const videoId = videoIds[i];

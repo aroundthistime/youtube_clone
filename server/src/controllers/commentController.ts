@@ -7,6 +7,28 @@ import {
   returnSuccessResponse,
 } from '../utils/responseHandler';
 
+const COMMENT_FETCH_UNIT = 20;
+
+export const getVideoComments = async (req: Request, res: Response) => {
+  try {
+    const {
+      params: {videoId, page, sortMethod},
+    } = req;
+    const video = await (
+      await Video.findById(videoId)
+    ).populate({
+      path: 'comments',
+      options: {
+        limit: COMMENT_FETCH_UNIT,
+        skip: page,
+        sort: {},
+      },
+    });
+  } catch {
+    returnErrorResponse(res);
+  }
+};
+
 export const addComment = async (req: Request, res: Response) => {
   const {
     body: {text, videoId},
