@@ -2,14 +2,18 @@ import React, {PropsWithChildren} from 'react';
 import {Link} from 'react-router-dom';
 import {NavTabType} from '../../../@types/NavTabType';
 import routes from '../../../routes';
+import ErrorBoundary from '../../wrapper/ErrorBoundary/ErrorBoundary';
 import Categories from '../Categories/Categories';
+import ErrorMessage from '../ErrorMessage/ErrorMessage';
 import './Nav.scss';
 
 const Nav = () => (
   <nav>
-    <Nav.Section>
-      <Categories />
-    </Nav.Section>
+    <ErrorBoundary fallback={<ErrorMessage />}>
+      <Nav.Section>
+        <Categories />
+      </Nav.Section>
+    </ErrorBoundary>
   </nav>
 );
 
