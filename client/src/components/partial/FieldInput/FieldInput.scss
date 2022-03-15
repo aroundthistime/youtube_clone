@@ -1,0 +1,10 @@
+@import '../../../styles/variables/variables';
+
+.field-input {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  .field-input__field-name {
+    margin-bottom: row-gap('x-small');
+  }
+}

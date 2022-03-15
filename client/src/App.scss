@@ -24,6 +24,7 @@ nav {
 main {
   grid-area: main;
   background-color: $bg-color;
+  @extend %default-padding;
 }
 
 @include mobile {

@@ -1,0 +1,41 @@
+@import '../../../styles/variables/variables';
+
+.form-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  .form__title {
+    @include font-size('x-large');
+    margin-bottom: row-gap('x-large');
+  }
+  form {
+    display: flex;
+    flex-direction: column;
+    & > * {
+      margin-bottom: row-gap();
+    }
+    input {
+      &:not(:last-child) {
+        margin-bottom: row-gap();
+      }
+      &:focus {
+        border-color: red;
+      }
+    }
+    .form__alert-message {
+      color: red;
+      font-weight: bold;
+    }
+    button {
+      color: white;
+      border: light-gray-border();
+      border-radius: $border-radius;
+      padding: padding-vertical('small') padding-horizontal();
+      margin-top: row-gap();
+      @include shadow();
+      &.form__submit-button {
+        background-color: red;
+      }
+    }
+  }
+}

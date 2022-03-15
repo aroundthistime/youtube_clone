@@ -24,22 +24,6 @@ header.header {
       vertical-align: middle;
     }
   }
-  .search-form {
-    width: 100%;
-    background-color: white;
-    display: flex;
-    align-items: center;
-    .search-form__input {
-      width: 100%;
-      background: transparent;
-      border: none;
-      padding: padding-vertical('small') padding-horizontal('small');
-    }
-    .search-form__submit-btn {
-      padding: padding-vertical('small') padding-horizontal();
-      @include font-size();
-    }
-  }
   .header__right {
     display: flex;
     align-items: center;
@@ -74,9 +58,6 @@ header.header {
     padding: padding-vertical() padding-horizontal();
     .header__logo {
       grid-area: logo;
-    }
-    .search-form {
-      grid-area: search;
     }
     .header__right {
       grid-area: right;

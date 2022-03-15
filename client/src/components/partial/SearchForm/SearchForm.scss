@@ -1,0 +1,22 @@
+@import '../../../styles/variables/variables';
+
+.search-form {
+  width: 100%;
+  background-color: white;
+  display: flex;
+  align-items: center;
+  .search-form__input {
+    background: transparent;
+    border: none;
+  }
+  .search-form__submit-btn {
+    padding: padding-vertical('small') padding-horizontal();
+    @include font-size();
+  }
+}
+
+@include mobileAndTablet {
+  .search-form {
+    grid-area: search;
+  }
+}
