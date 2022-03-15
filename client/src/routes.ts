@@ -2,6 +2,7 @@
 const HOME = '/';
 const JOIN = '/join';
 const LOGIN = '/login';
+const SEARCH = '/search';
 
 // feed
 const FEED = '/feed';
@@ -25,6 +26,7 @@ const routes = {
   home: HOME,
   join: JOIN,
   login: LOGIN,
+  search: SEARCH,
   feed: FEED,
   history: HISTORY,
   watchLater: WATCH_LATER,

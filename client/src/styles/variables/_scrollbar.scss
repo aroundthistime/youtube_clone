@@ -1,0 +1,31 @@
+@import './colors';
+
+$scrollbar-width: 10px;
+
+@mixin scrollbar() {
+  overflow: auto;
+  &:hover {
+    box-sizing: content-box;
+  }
+  &::-webkit-scrollbar {
+    width: $scrollbar-width;
+  }
+  &::-webkit-scrollbar-track {
+    background-color: $light-gray-hover;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: $light-gray;
+    border-radius: $scrollbar-width / 2;
+    &:active {
+      background-color: $light-gray-active;
+    }
+  }
+}
+
+@mixin hide-scrollbar() {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}

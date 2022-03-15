@@ -17,6 +17,7 @@ function App() {
             <Nav />
           </ErrorBoundary>
         </Suspense>
+        <main />
         <Routes />
       </Router>
     </div>

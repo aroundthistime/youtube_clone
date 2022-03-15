@@ -1,10 +1,10 @@
 import axios from 'axios';
 import {useQuery} from 'react-query';
-import {NavTabType} from '../@types/NavTabType';
+import {NavTabContentType} from '../@types/NavTabType';
 import {DefaultResponseData} from '../@types/ResponseData';
 
 export interface CategoriesResponseData extends DefaultResponseData {
-  categories: NavTabType[];
+  categories: NavTabContentType[];
 }
 
 const getCategories = async (): Promise<CategoriesResponseData> => {

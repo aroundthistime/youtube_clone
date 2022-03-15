@@ -25,3 +25,10 @@ main {
   grid-area: main;
   background-color: $bg-color;
 }
+
+@include mobile {
+  .app {
+    display: flex;
+    flex-direction: column;
+  }
+}
