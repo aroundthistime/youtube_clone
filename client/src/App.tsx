@@ -16,9 +16,10 @@ function App() {
         <Router>
           <Header />
           <Nav />
-          {/* <Route path={routes.join} element={<JoinPage />} /> */}
-          {/* <Route path="*" element={<EmptyPage />} /> */}
-          <Routes />
+          <Routes>
+            <Route path={routes.join} element={<JoinPage />} />
+            <Route path="*" element={<EmptyPage />} />
+          </Routes>
         </Router>
       </div>
     </Suspense>
