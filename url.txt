@@ -31,6 +31,7 @@
 /video/:id - get (video + user) -> view increase 해야됨
 /video/:id (edit) - put **
 /video/:id (delete) - delete **
+
 /video/:id/like - post *
 /video/:id/like - delete *
 
@@ -39,7 +40,6 @@
 /video/:id/comment/:id - put (edit comment) **
 /video/:id/comment/:id - delete (delete comment) **
 
-/video/liked-videos - get
 /video/watch-later - get (get watch later videos) *
 /video/:id/watch-later - post (record) *
 /video/:id/watch-later - delete (목록에서 삭제) *

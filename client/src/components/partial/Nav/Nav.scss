@@ -1,8 +1,41 @@
 @import '../../../styles/variables/variables';
 
 nav {
-  @extend %default-padding;
-  background-color: white;
-  i {
+  // overflow: hidden;
+  // &:hover {
+  //   overflow-y: auto;
+  // }
+  @include scroll-bar();
+  // padding-right: 10px;
+  // overflow: auto;
+  // &::-webkit-scrollbar {
+  //   width: 10px;
+  // }
+  // &::-webkit-scrollbar-track {
+  //   background-color: $light-gray;
+  // }
+  // &::-webkit-scrollbar-thumb {
+  //   background-color: rgb(185, 185, 185);
+  //   border-radius: 5px;
+  //   &:active {
+  //     background-color: rgb(150, 148, 148);
+  //   }
+  // }
+  .nav__tabs {
+    @extend %default-padding;
+    .tabs__tab {
+      display: flex;
+      align-items: center;
+      padding: padding-vertical('small') 0;
+      .tab__left {
+        display: flex;
+        justify-content: center;
+        width: 2.5rem;
+        margin-right: column-gap();
+        .tab__icon {
+          @include font-size('semi-large');
+        }
+      }
+    }
   }
 }

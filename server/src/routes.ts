@@ -1,7 +1,7 @@
 const routes = {
   // global
   home: '/',
-  category: '/gategory',
+  category: '/category',
 
   // auth
   auth: '/auth',

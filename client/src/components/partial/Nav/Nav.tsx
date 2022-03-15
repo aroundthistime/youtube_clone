@@ -1,40 +1,51 @@
-import React, {PropsWithChildren} from 'react';
+import React from 'react';
+import {Link} from 'react-router-dom';
+import {useCategoriesQuery} from '../../../@queries/useCategoriesQuery';
 import {NavTabType} from '../../../@types/NavTabType';
+import routes from '../../../routes';
+import ErrorBoundary from '../../wrapper/ErrorBoundary/ErrorBoundary';
 import './Nav.scss';
 
-const Nav = () => (
-  <nav>
-    <i className="fa-solid fa-house-chimney" />
-  </nav>
-);
-
-type SectionProps = PropsWithChildren<{}>;
-
-Nav.Section = ({children}: SectionProps) => (
-  <section className="nav__section">{children}</section>
-);
-
-type TabsProps = {
-  tabs: NavTabType[];
+const Nav = () => {
+  const {data} = useCategoriesQuery();
+  return (
+    <nav>
+      <ul className="nav__tabs">
+        {data?.categories.map((category: NavTabType) => (
+          <Nav.CategoryTab tab={category} />
+        ))}
+      </ul>
+    </nav>
+  );
 };
-
-Nav.Tabs = ({tabs}: TabsProps) => (
-  <ul className="nav__tabs">
-    {tabs.map(tab => (
-      <Nav.Tab tab={tab} key={tab.text} />
-    ))}
-  </ul>
-);
 
 type TabProps = {
   tab: NavTabType;
 };
 
-Nav.Tab = ({tab}: TabProps) => (
-  <li className="tabs__tab">
-    <i className={`tab__icon ${tab.iconClassName}`} />
-    <p className="tab__text">{tab.text}</p>
+Nav.LoggedInTab = ({tab}: TabProps) => {
+  <Link to={routes.feed + tab.name}>
+    <Nav.TabContent tab={tab} />
+  </Link>;
+};
+
+Nav.CategoryTab = ({tab}: TabProps) => {
+  return (
+    <Link to={`${routes.videos}?category=${tab.name}`}>
+      <Nav.TabContent tab={tab} />
+    </Link>
+  );
+};
+
+Nav.TabContent = ({tab}: TabProps) => (
+  <li className="tabs__tab no-drag">
+    <div className="tab__left">
+      <i className={`tab__icon ${tab.iconClassName}`} />
+    </div>
+    <div className="tab__right">
+      <p className="tab__text">{tab.name}</p>
+    </div>
   </li>
 );
 
-export default Nav;
+export default React.memo(Nav);

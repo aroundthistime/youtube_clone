@@ -1,12 +1,19 @@
-import {CategoryType} from './CategoryType';
-
 export type NavTabType = {
-  text: IconClassNameType;
+  name: string;
   iconClassName: string;
 };
 
-type IconClassNameType = 'Home' | LoggedInTabType | CategoryType;
-
-type LoggedInTabType = typeof LOGGED_IN_TABS[number];
-
-export const LOGGED_IN_TABS = ['Liked Videos', 'History', 'Watch Later'];
+export const LOGGED_IN_TABS: NavTabType[] = [
+  {
+    name: 'Liked Videos',
+    iconClassName: 'fa-solid fa-thumbs-up',
+  },
+  {
+    name: 'History',
+    iconClassName: 'fa-solid fa-clock-rotate-left',
+  },
+  {
+    name: 'Watch Later',
+    iconClassName: 'fa-regular fa-clock',
+  },
+];

@@ -4,6 +4,8 @@
     font-size: 0.8rem;
   } @else if $size == 'default' {
     font-size: 1rem;
+  } @else if $size == 'semi-large' {
+    font-size: 1.3rem;
   } @else if $size == 'large' {
     font-size: 1.7rem;
   } @else {
