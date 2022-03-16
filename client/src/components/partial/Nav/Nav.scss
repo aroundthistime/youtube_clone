@@ -56,6 +56,8 @@ nav {
 
 @include mobile {
   nav {
+    position: sticky;
+    width: 100%;
     display: flex;
     @include hide-scrollbar('x');
     border-bottom: light-gray-border();

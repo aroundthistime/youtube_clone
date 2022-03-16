@@ -25,11 +25,16 @@ main {
   grid-area: main;
   background-color: $bg-color;
   @extend %default-padding;
+  @include scrollbar('xy');
+  & > * {
+    margin: auto;
+  }
 }
 
 @include mobile {
   .app {
     display: flex;
     flex-direction: column;
+    height: auto;
   }
 }
