@@ -55,67 +55,67 @@ export const handleLoginSuccess = (req: Request, res: Response) => {
   }
 };
 
-export const googleLogin = passport.authenticate('google', {
-  scope: ['profile', 'email'],
-});
+// export const googleLogin = passport.authenticate('google', {
+//   scope: ['profile', 'email'],
+// });
 
-export const googleLoginCallback = async (_, __, profile, callback) => {
-  const {
-    _json: {sub: id, picture: avatar_url, name, email},
-  } = profile;
-  try {
-    const user = await User.findOne({email});
-    if (user) {
-      user.googleId = id;
-      user.save();
-      return callback(null, user);
-    }
-    const newUser = await User.create({
-      email,
-      name,
-      googleId: id,
-      avatarUrl: avatar_url,
-    });
-    return callback(null, newUser);
-  } catch (error) {
-    return callback(error);
-  }
-};
+// export const googleLoginCallback = async (_, __, profile, callback) => {
+//   const {
+//     _json: {sub: id, picture: avatar_url, name, email},
+//   } = profile;
+//   try {
+//     const user = await User.findOne({email});
+//     if (user) {
+//       user.googleId = id;
+//       user.save();
+//       return callback(null, user);
+//     }
+//     const newUser = await User.create({
+//       email,
+//       name,
+//       googleId: id,
+//       avatarUrl: avatar_url,
+//     });
+//     return callback(null, newUser);
+//   } catch (error) {
+//     return callback(error);
+//   }
+// };
 
-export const postGoogleLogin = (req, res) => {
-  returnSuccessResponse(res);
-};
+// export const postGoogleLogin = (req, res) => {
+//   returnSuccessResponse(res);
+// };
 
-export const facebookLogin = passport.authenticate('facebook', {
-  scope: ['email'],
-});
+// export const facebookLogin = passport.authenticate('facebook', {
+//   scope: ['email'],
+// });
 
-export const facebookLoginCallback = async (_, __, profile, callback) => {
-  const {
-    _json: {id, name, email},
-  } = profile;
-  const avatarUrl = `https://graph.facebook.com/${id}/picture/type=large`;
-  try {
-    const user = await User.findOne({email});
-    if (user) {
-      user.facebookId = id;
-      user.save();
-      return callback(null, user);
-    }
-    const newUser = await User.create({
-      email,
-      name,
-      facebookId: id,
-      avatarUrl, // can I check whether the image is default image of facebook profile?
-    });
-    return callback(null, newUser);
-  } catch (error) {
-    return callback(error);
-  }
-};
+// export const facebookLoginCallback = async (_, __, profile, callback) => {
+//   const {
+//     _json: {id, name, email},
+//   } = profile;
+//   const avatarUrl = `https://graph.facebook.com/${id}/picture/type=large`;
+//   try {
+//     const user = await User.findOne({email});
+//     if (user) {
+//       user.facebookId = id;
+//       user.save();
+//       return callback(null, user);
+//     }
+//     const newUser = await User.create({
+//       email,
+//       name,
+//       facebookId: id,
+//       avatarUrl, // can I check whether the image is default image of facebook profile?
+//     });
+//     return callback(null, newUser);
+//   } catch (error) {
+//     return callback(error);
+//   }
+// };
 
-export const postFacebookLogin = (req: Request, res: Response) =>
-  returnSuccessResponse(res);
+// export const postFacebookLogin = (req: Request, res: Response) =>
+//   returnSuccessResponse(res);
 
 export const logout = (req: Request, res: Response) => {
   try {

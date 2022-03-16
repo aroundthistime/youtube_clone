@@ -4,7 +4,6 @@ import {
   editUser,
   userDetail,
   join,
-  handleLoginSuccess,
   changeUserPassword,
   login,
 } from '../controllers/userController';
@@ -13,11 +12,24 @@ import {onlyPrivate} from '../middlewares';
 
 const userRouter = express.Router();
 
-userRouter.post(routes.user, join, login);
-userRouter.get(routes.loginSuccess, handleLoginSuccess);
+userRouter.post('/', join, login);
+userRouter.patch('/', onlyPrivate, editUser);
 userRouter.get(routes.userDetail, userDetail);
-userRouter.patch(routes.userDetail, onlyPrivate, editUser);
 userRouter.get(routes.userVideo, getUserVideos);
 userRouter.patch(routes.userPassword, onlyPrivate, changeUserPassword);
+
+// social-logins
+// globalRouter.get(routes.google, googleLogin);
+// globalRouter.get(
+//   routes.googleCallback,
+//   passport.authenticate('google', {failureRedirect: routes.login}),
+//   postGoogleLogin,
+// );
+// globalRouter.get(routes.facebook, facebookLogin);
+// globalRouter.get(
+//   routes.facebookCallback,
+//   passport.authenticate('facebook', {failureRedirect: routes.login}),
+//   handleLoginSuccess,
+// );
 
 export default userRouter;

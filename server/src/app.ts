@@ -16,7 +16,6 @@ import globalRouter from './routers/globalRouter';
 import routes from './routes';
 import './passport';
 import authRouter from './routers/authRouter';
-import loginRouter from './routers/loginRouter';
 import feedRouter from './routers/feedRouter';
 import commentRouter from './routers/commentRouter';
 
@@ -47,7 +46,6 @@ app.use(passport.session());
 
 app.use(routes.home, globalRouter);
 app.use(routes.auth, authRouter);
-app.use(routes.auth + routes.login, loginRouter);
 app.use(routes.user, userRouter);
 app.use(routes.video, videoRouter);
 app.use(routes.comment, commentRouter);

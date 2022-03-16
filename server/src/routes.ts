@@ -6,20 +6,19 @@ const routes = {
   // auth
   auth: '/auth',
   authFail: '/fail',
-  logout: '/logout',
-
-  //login
   login: '/login',
-  loginSuccess: '/success',
-  loginFail: '/fail',
-  googleLogin: '/google',
-  get googleLoginCallback() {
-    return `${this.googleLogin}/callback`;
+  get loginSuccess() {
+    return `${this.login}/success`;
   },
-  facebookLogin: '/facebook',
-  get facebookLoginCallback() {
-    return `${this.facebookLogin}/callback`;
-  },
+  logout: '/logout',
+  // googleLogin: '/google',
+  // get googleLoginCallback() {
+  //   return `${this.googleLogin}/callback`;
+  // },
+  // facebookLogin: '/facebook',
+  // get facebookLoginCallback() {
+  //   return `${this.facebookLogin}/callback`;
+  // },
 
   // user
   user: '/user',

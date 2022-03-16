@@ -14,8 +14,8 @@ import {
 
 const videoRouter = express.Router();
 
-videoRouter.get(routes.video, getVideos);
-videoRouter.post(routes.video, onlyPrivate, multerUploadVideo, uploadVideo);
+videoRouter.get('/', getVideos);
+videoRouter.post('/', onlyPrivate, multerUploadVideo, uploadVideo);
 videoRouter.get(routes.videoDetail, getVideo);
 videoRouter.patch(routes.videoDetail, onlyPrivate, editVideo);
 videoRouter.delete(routes.videoDetail, onlyPrivate, deleteVideo);
