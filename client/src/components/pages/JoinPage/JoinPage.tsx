@@ -15,7 +15,7 @@ const JoinPage = () => {
           <JoinPage.Input {...emailInput} type="email" />
           <JoinPage.Input {...password1Input} type="password" />
           <JoinPage.Input {...password2Input} type="password" />
-          <PageForm.AlertMessage text="아 이렇게 하시면 안되는데 ;;" />
+          <PageForm.AlertMessage text="아 이렇게 하시면 안되는asdfasddf데 ;;" />
           <PageForm.SubmitButton text="가입하기" />
         </form>
       </PageForm>
