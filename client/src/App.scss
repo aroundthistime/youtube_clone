@@ -35,6 +35,6 @@ main {
   .app {
     display: flex;
     flex-direction: column;
-    height: auto;
+    overflow-y: hidden;
   }
 }
