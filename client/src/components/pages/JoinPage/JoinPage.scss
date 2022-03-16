@@ -2,11 +2,14 @@ main.join {
   display: flex;
   justify-content: center;
   align-items: center;
-  // .join-wrapper {
-  //   .join-form {
-  //     input {
-  //       width: 20rem;
-  //     }
-  //   }
-  // }
+  .join-wrapper {
+    .join-form {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      // input {
+      //   width: 20rem;
+      // }
+    }
+  }
 }

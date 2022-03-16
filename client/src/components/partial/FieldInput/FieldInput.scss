@@ -6,8 +6,8 @@
   align-items: flex-start;
   .field-input__field-name {
     margin-bottom: row-gap('x-small');
-    input {
-      width: 20rem;
-    }
+  }
+  input {
+    width: $page-form-item-width;
   }
 }

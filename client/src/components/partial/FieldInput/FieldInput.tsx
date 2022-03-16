@@ -1,6 +1,15 @@
 import React, {PropsWithChildren} from 'react';
 import './FieldInput.scss';
 
+export interface FieldInputPropsType
+  extends Pick<
+    React.HTMLProps<HTMLInputElement>,
+    'value' | 'onChange' | 'required' | 'type' | 'placeholder'
+  > {
+  fieldName: string;
+  className?: string;
+}
+
 type DefaultProps = {
   className?: string;
 };

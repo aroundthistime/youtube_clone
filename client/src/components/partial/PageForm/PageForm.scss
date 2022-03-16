@@ -4,6 +4,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding: padding-vertical('large') 0;
   .form__title {
     @include font-size('x-large');
     margin-bottom: row-gap('x-large');
@@ -23,18 +24,32 @@
       }
     }
     .form__alert-message {
+      height: 2rem;
+      margin: 0;
       color: red;
       font-weight: bold;
     }
     button {
-      color: white;
-      border: light-gray-border();
-      border-radius: $border-radius;
+      width: $page-form-item-width;
       padding: padding-vertical('small') padding-horizontal();
       margin-top: row-gap();
+      border: light-gray-border();
+      border-radius: $border-radius;
+      color: white;
       @include shadow();
       &.form__submit-button {
         background-color: red;
+      }
+    }
+  }
+}
+
+@include mobile {
+  .form-wrapper {
+    form {
+      .form__alert-message {
+        @include font-size('small');
+        height: 2.5rem;
       }
     }
   }
