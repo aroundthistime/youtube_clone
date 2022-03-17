@@ -13,7 +13,13 @@ import useConfigureStore from './useConfigureStore';
 
 const {store, persistor} = useConfigureStore();
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      suspense: true,
+    },
+  },
+});
 
 ReactDOM.render(
   <React.StrictMode>

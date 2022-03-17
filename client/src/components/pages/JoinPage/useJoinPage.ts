@@ -1,7 +1,10 @@
 /* eslint-disable import/prefer-default-export */
 
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
+import {useNavigate} from 'react-router-dom';
 import {useInput} from '../../../@hooks/useInput';
+import {useJoinMutation} from '../../../@queries/useJoinMutation';
+import routes from '../../../routes';
 import {FieldInputPropsType} from '../../partial/FieldInput/FieldInput';
 
 type ReturnType = {
@@ -11,6 +14,7 @@ type ReturnType = {
   password2InputProps: FieldInputPropsType;
   alertMessage: string;
   onSubmit: React.FormEventHandler<HTMLFormElement>;
+  isLoading: boolean;
 };
 
 type CanSubmitReturnType = {
@@ -20,6 +24,8 @@ type CanSubmitReturnType = {
 
 export const useJoinPage = (): ReturnType => {
   const [alertMessage, setAlertMessage] = useState<string>('');
+  const {mutateAsync, isLoading, data} = useJoinMutation();
+  const navigate = useNavigate();
   const nameInput = useInput('');
   const emailInput = useInput('');
   const password1Input = useInput('');
@@ -28,11 +34,21 @@ export const useJoinPage = (): ReturnType => {
   const PASSWORD_LEAST_LENGTH = 6;
   const PASSWORD_MAX_LENGTH = 20;
 
+  useEffect(() => {
+    checkJoinResult();
+  }, [data]);
+
+  const checkJoinResult = () => {
+    if (data) {
+      navigate(routes.home);
+    }
+  };
+
   const onSubmit: React.FormEventHandler<HTMLFormElement> = event => {
     event.preventDefault();
     const checkResult = canSubmit();
     if (checkResult.result) {
-      const a = 1;
+      tryJoin();
     } else {
       setAlertMessage(checkResult.errorMessage);
     }
@@ -58,13 +74,23 @@ export const useJoinPage = (): ReturnType => {
     };
   };
 
-  // const tryJoin = async() => {
-  //   try {
+  const tryJoin = async () => {
+    try {
+      setAlertMessage('');
+      const joinRequirements = extractJoinRequirements();
+      await mutateAsync(joinRequirements);
+    } catch (error) {
+      setAlertMessage('이미 가입된 계정입니다');
+    }
+  };
 
-  //   } catch {
-
-  //   }
-  // }
+  const extractJoinRequirements = () => {
+    return {
+      name: nameInput.value,
+      email: emailInput.value,
+      password: password1Input.value,
+    };
+  };
 
   return {
     nameInputProps: {
@@ -80,12 +106,15 @@ export const useJoinPage = (): ReturnType => {
       ...password1Input,
       fieldName: '비밀번호',
       placeholder: `${PASSWORD_LEAST_LENGTH}자 이상 ${PASSWORD_MAX_LENGTH}자 이하`,
+      type: 'password',
     },
     password2InputProps: {
       ...password2Input,
       fieldName: '비밀번호 확인',
+      type: 'password',
     },
     alertMessage,
     onSubmit,
+    isLoading,
   };
 };

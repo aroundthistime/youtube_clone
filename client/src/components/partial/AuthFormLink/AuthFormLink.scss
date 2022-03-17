@@ -1,0 +1,7 @@
+@import '../../../styles/variables/variables';
+
+.auth-form__link {
+  margin-top: row-gap('small');
+  text-decoration: underline;
+  color: rgba(0, 0, 0, 0.7);
+}

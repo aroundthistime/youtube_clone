@@ -1,3 +1,4 @@
+import {Method} from 'axios';
 import {VideoSortMethodType} from './@types/SortMethodType';
 
 const apiUrls = {
@@ -36,6 +37,15 @@ const apiUrls = {
   videoComment: (id: string): string => {
     return `/video/${id}/comment`;
   },
+  videoHistory: (id: string): string => {
+    return `/video/${id}/history`;
+  },
+  videoWatchLater: (id: string): string => {
+    return `/video/${id}/watch-later`;
+  },
+  videoNoInterest: (id: string): string => {
+    return `/video/${id}/no-interest`;
+  },
 
   // comment
   comment: '/comment',
@@ -54,26 +64,14 @@ const apiUrls = {
   get history() {
     return `${this.feed}/history`;
   },
-  historyDetail: (id: string): string => {
-    return `/feed/history/${id}`;
-  },
   get watchLater() {
     return `${this.feed}/watch-later`;
-  },
-  watchLaterDetail: (id: string): string => {
-    return `/feed/watch-later/${id}`;
-  },
-  get noInterest() {
-    return `${this.feed}/no-interest`;
-  },
-  noInterestDetail: (id: string): string => {
-    return `/feed/no-interest/${id}`;
   },
 };
 
 type ApiRouteType = {
   url: string | ((id: string) => string);
-  method: 'get' | 'post' | 'patch' | 'put' | 'delete';
+  method: Method;
 };
 
 const apiRoutes: Record<string, ApiRouteType> = {
@@ -121,7 +119,82 @@ const apiRoutes: Record<string, ApiRouteType> = {
     url: (id: string) => apiUrls.videoDetail(id),
     method: 'get',
   },
-  getVideoComments: {},
+  editVideo: {
+    url: (id: string) => apiUrls.videoDetail(id),
+    method: 'patch',
+  },
+  deleteVideo: {
+    url: (id: string) => apiUrls.videoDetail(id),
+    method: 'delete',
+  },
+  likeVideo: {
+    url: (id: string) => apiUrls.videoLike(id),
+    method: 'post',
+  },
+  unlikeVideo: {
+    url: (id: string) => apiUrls.videoLike(id),
+    method: 'delete',
+  },
+  getVideoComments: {
+    url: (id: string) => apiUrls.videoComment(id),
+    method: 'get',
+  },
+  addComment: {
+    url: (videoId: string) => apiUrls.videoComment(videoId),
+    method: 'post',
+  },
+  editComment: {
+    url: (id: string) => apiUrls.commentDetail(id),
+    method: 'patch',
+  },
+  deleteComment: {
+    url: (id: string) => apiUrls.commentDetail(id),
+    method: 'delete',
+  },
+  blockComment: {
+    url: (id: string) => apiUrls.blockComment(id),
+    method: 'post',
+  },
+  deleteHistory: {
+    url: (id: string) => apiUrls.videoHistory(id),
+    method: 'delete',
+  },
+  addWatchLater: {
+    url: (id: string) => apiUrls.videoWatchLater(id),
+    method: 'post',
+  },
+  deleteWatchLater: {
+    url: (id: string) => apiUrls.videoWatchLater(id),
+    method: 'delete',
+  },
+  addNoInterest: {
+    url: (id: string) => apiUrls.videoNoInterest(id),
+    method: 'post',
+  },
+  deleteNoInterest: {
+    url: (id: string) => apiUrls.videoNoInterest(id),
+    method: 'delete',
+  },
+  getCategories: {
+    url: apiUrls.category,
+    method: 'get',
+  },
+  getHistories: {
+    url: apiUrls.history,
+    method: 'get',
+  },
+  clearHistories: {
+    url: apiUrls.history,
+    method: 'delete',
+  },
+  getWatchLaters: {
+    url: apiUrls.watchLater,
+    method: 'get',
+  },
+  clearWatchLaters: {
+    url: apiUrls.watchLater,
+    method: 'delete',
+  },
 };
 
 export default apiRoutes;

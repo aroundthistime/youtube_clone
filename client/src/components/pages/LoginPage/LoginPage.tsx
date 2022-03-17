@@ -6,42 +6,38 @@ import FieldInput, {
 } from '../../partial/FieldInput/FieldInput';
 import Loader from '../../partial/Loader/Loader';
 import PageForm from '../../partial/PageForm/PageForm';
-import './JoinPage.scss';
-import {useJoinPage} from './useJoinPage';
+import './LoginPage.scss';
+import {useLoginPage} from './useLoginPage';
 
-const JoinPage = () => {
+const LoginPage = () => {
   const {
-    nameInputProps,
     emailInputProps,
-    password1InputProps,
-    password2InputProps,
+    passwordInputProps,
     alertMessage,
     onSubmit,
     isLoading,
-  } = useJoinPage();
+  } = useLoginPage();
   return (
-    <main className="join">
+    <main className="login">
       {isLoading ? (
         <Loader />
       ) : (
-        <PageForm className="join-wrapper">
-          <PageForm.Title text="회원가입" />
+        <PageForm className="login-wrapper">
+          <PageForm.Title text="로그인" />
           <PageForm.Form className="join-form" onSubmit={onSubmit}>
-            <JoinPage.Input {...nameInputProps} />
-            <JoinPage.Input {...emailInputProps} />
-            <JoinPage.Input {...password1InputProps} />
-            <JoinPage.Input {...password2InputProps} />
+            <LoginPage.Input {...emailInputProps} />
+            <LoginPage.Input {...passwordInputProps} />
             <PageForm.AlertMessage text={alertMessage} />
-            <PageForm.SubmitButton text="가입하기" />
+            <PageForm.SubmitButton text="로그인하기" />
           </PageForm.Form>
-          <AuthFormLink path={routes.login} text="이미 계정이 있으신가요?" />
+          <AuthFormLink path={routes.join} text="계정이 없으신가요?" />
         </PageForm>
       )}
     </main>
   );
 };
 
-JoinPage.Input = React.memo(
+LoginPage.Input = React.memo(
   ({
     value,
     onChange,
@@ -51,10 +47,10 @@ JoinPage.Input = React.memo(
     className = '',
     placeholder = '',
   }: FieldInputPropsType) => (
-    <FieldInput className={`join-form__input-container ${className}`}>
+    <FieldInput className={`login-form__input-container ${className}`}>
       <FieldInput.FieldName fieldName={fieldName} />
       <input
-        className="join-form__input"
+        className="login-form__input"
         value={value}
         onChange={onChange}
         type={type}
@@ -65,4 +61,4 @@ JoinPage.Input = React.memo(
   ),
 );
 
-export default JoinPage;
+export default LoginPage;

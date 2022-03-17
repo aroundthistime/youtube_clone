@@ -17,6 +17,19 @@ PageForm.Title = ({text, className = ''}: SubComponentProps) => (
   <h4 className={`form__title ${className}`}>{text}</h4>
 );
 
+PageForm.Form = ({
+  className = '',
+  onSubmit,
+  children,
+}: PropsWithChildren<{
+  onSubmit: React.FormEventHandler<HTMLFormElement>;
+  className?: string;
+}>) => (
+  <form className={className} onSubmit={onSubmit}>
+    {children}
+  </form>
+);
+
 PageForm.AlertMessage = ({text, className = ''}: SubComponentProps) => (
   <h6 className={`form__alert-message ${className}`}>{text}</h6>
 );
