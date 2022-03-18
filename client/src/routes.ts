@@ -5,19 +5,20 @@ const LOGIN = '/login';
 const SEARCH = '/search';
 
 // feed
-const FEED = '/feed';
+const FEED = '/feed/*';
 const HISTORY = '/history';
 const WATCH_LATER = '/watch-later';
 const LIKED_VIDEOS = '/liked-videos';
 
 // user
-const USERS = '/user';
+const USERS = '/user/*';
 const MY_PROFILE = '/me';
 const USER_DETAIL = '/:id';
 const EDIT_PROFILE = '/edit';
+const CHANGE_PASSWORD = '/change-password';
 
 // video
-const VIDEOS = '/video';
+const VIDEOS = '/video/*';
 const UPLOAD_VIDEO = '/upload';
 const VIDEO_DETAIL = '/:id';
 const EDIT_VIDEO = '/:id/edit';
@@ -34,6 +35,7 @@ const routes = {
   users: USERS,
   myProfile: MY_PROFILE,
   editProfile: EDIT_PROFILE,
+  changePasword: CHANGE_PASSWORD,
   userDetail: (id?: string) => {
     if (id) {
       return `/users/${id}`;
