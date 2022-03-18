@@ -1,9 +1,11 @@
 /* eslint-disable import/prefer-default-export */
 
 import {useEffect, useState} from 'react';
+import {useDispatch} from 'react-redux';
 import {useNavigate} from 'react-router-dom';
 import {useInput} from '../../../@hooks/useInput';
-import {useJoinMutation} from '../../../@queries/useJoinMutation';
+import {setUser} from '../../../@modules/userSlice';
+import {useJoinMutation} from '../../../@queries/useAuthMutation';
 import routes from '../../../routes';
 import {FieldInputPropsType} from '../../partial/FieldInput/FieldInput';
 
@@ -26,6 +28,7 @@ export const useJoinPage = (): ReturnType => {
   const [alertMessage, setAlertMessage] = useState<string>('');
   const {mutateAsync, isLoading, data} = useJoinMutation();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const nameInput = useInput('');
   const emailInput = useInput('');
   const password1Input = useInput('');
@@ -39,7 +42,8 @@ export const useJoinPage = (): ReturnType => {
   }, [data]);
 
   const checkJoinResult = () => {
-    if (data) {
+    if (data?.result) {
+      dispatch(setUser(data.user));
       navigate(routes.home);
     }
   };

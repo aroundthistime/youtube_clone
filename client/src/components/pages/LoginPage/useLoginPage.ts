@@ -1,8 +1,10 @@
 /* eslint-disable import/prefer-default-export */
 import {useEffect, useState} from 'react';
+import {useDispatch} from 'react-redux';
 import {useNavigate} from 'react-router-dom';
 import {useInput} from '../../../@hooks/useInput';
-import {useLoginMutation} from '../../../@queries/useLoginMutation';
+import {setUser} from '../../../@modules/userSlice';
+import {useLoginMutation} from '../../../@queries/useAuthMutation';
 import routes from '../../../routes';
 import {FieldInputPropsType} from '../../partial/FieldInput/FieldInput';
 
@@ -17,6 +19,7 @@ type ReturnType = {
 export const useLoginPage = (): ReturnType => {
   const [alertMessage, setAlertMessage] = useState<string>('');
   const {mutateAsync, isLoading, data} = useLoginMutation();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const emailInput = useInput('');
   const passwordInput = useInput('');
@@ -26,7 +29,8 @@ export const useLoginPage = (): ReturnType => {
   }, [data]);
 
   const checkLoginResult = () => {
-    if (data) {
+    if (data?.result) {
+      dispatch(setUser(data.user));
       navigate(routes.home);
     }
   };
