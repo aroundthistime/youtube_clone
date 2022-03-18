@@ -27,9 +27,9 @@ function App() {
             <Route path={routes.join} element={<JoinPage />} />
             <Route path={routes.login} element={<LoginPage />} />
             <Route path={routes.search} element={<SearchPage />} />
-            <Route path={routes.feed} element={<FeedRoutes />} />
-            <Route path={routes.users} element={<UserRoutes />} />
-            <Route path={routes.videos} element={<VideoRoutes />} />
+            <Route path={`${routes.feed}/*`} element={<FeedRoutes />} />
+            <Route path={`${routes.users}/*`} element={<UserRoutes />} />
+            <Route path={`${routes.videos}/*`} element={<VideoRoutes />} />
             <Route path="*" element={<EmptyPage />} />
           </Routes>
         </Router>

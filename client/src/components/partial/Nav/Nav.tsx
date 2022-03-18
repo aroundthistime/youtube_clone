@@ -1,21 +1,28 @@
 import React, {PropsWithChildren} from 'react';
+import {useSelector} from 'react-redux';
 import {Link} from 'react-router-dom';
+import {RootState} from '../../../@modules/root';
 import {NavTabType} from '../../../@types/NavTabType';
 import routes from '../../../routes';
+import FeedTabs from '../../pages/FeedTabs/FeedTabs';
 import ErrorBoundary from '../../wrapper/ErrorBoundary/ErrorBoundary';
 import Categories from '../Categories/Categories';
 import ErrorMessage from '../ErrorMessage/ErrorMessage';
 import './Nav.scss';
 
-const Nav = () => (
-  <nav>
-    <ErrorBoundary fallback={<ErrorMessage />}>
-      <Nav.Section>
-        <Categories />
-      </Nav.Section>
-    </ErrorBoundary>
-  </nav>
-);
+const Nav = () => {
+  const user = useSelector((state: RootState) => state.user);
+  return (
+    <nav>
+      <ErrorBoundary fallback={<ErrorMessage />}>
+        <Nav.Section>
+          {user && <FeedTabs />}
+          <Categories />
+        </Nav.Section>
+      </ErrorBoundary>
+    </nav>
+  );
+};
 
 type SectionProps = PropsWithChildren<{}>;
 
@@ -26,18 +33,6 @@ Nav.Section = ({children}: SectionProps) => (
 type TabProps = {
   tab: NavTabType;
 };
-
-Nav.LoggedInTab = ({tab}: TabProps) => {
-  <Link to={routes.feed + tab.name}>
-    <Nav.TabContent tab={tab} />
-  </Link>;
-};
-
-Nav.CategoryTab = ({tab}: TabProps) => (
-  <Link to={`${routes.videos}?category=${tab.name}`}>
-    <Nav.TabContent tab={tab} />
-  </Link>
-);
 
 Nav.TabContent = ({tab}: TabProps) => (
   <li
