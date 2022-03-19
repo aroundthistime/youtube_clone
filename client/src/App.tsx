@@ -3,6 +3,7 @@ import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
 
 import './App.scss';
 import BlurBackground from './components/atom/BlurBackground/BlurBackground';
+import CategoryPage from './components/pages/CategoryPage/CategoryPage';
 import EmptyPage from './components/pages/EmptyPage/EmptyPage';
 import HomePage from './components/pages/HomePage/HomePage';
 import JoinPage from './components/pages/JoinPage/JoinPage';
@@ -28,6 +29,7 @@ function App() {
             <Route path={routes.join} element={<JoinPage />} />
             <Route path={routes.login} element={<LoginPage />} />
             <Route path={routes.search} element={<SearchPage />} />
+            <Route path={routes.category()} element={<CategoryPage />} />
             <Route path={`${routes.feed}/*`} element={<FeedRoutes />} />
             <Route path={`${routes.users}/*`} element={<UserRoutes />} />
             <Route path={`${routes.videos}/*`} element={<VideoRoutes />} />

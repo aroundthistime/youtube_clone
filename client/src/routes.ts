@@ -2,6 +2,7 @@
 const HOME = '/';
 const JOIN = '/join';
 const LOGIN = '/login';
+const CATEGORY = '/category/:category';
 const SEARCH = '/search';
 
 // feed
@@ -27,6 +28,12 @@ const routes = {
   home: HOME,
   join: JOIN,
   login: LOGIN,
+  category: (category?: string) => {
+    if (category) {
+      return `/category/${category}`;
+    }
+    return CATEGORY;
+  },
   search: SEARCH,
   feed: FEED,
   history: HISTORY,

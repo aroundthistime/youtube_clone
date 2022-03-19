@@ -21,7 +21,7 @@ type CategoryProps = {
 };
 
 Categories.Category = ({category}: CategoryProps) => (
-  <Link to={`${routes.videos}?category=${category.name}`}>
+  <Link to={routes.category(category.name)}>
     <Nav.TabContent tab={category} />
   </Link>
 );

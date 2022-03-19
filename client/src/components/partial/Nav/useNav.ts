@@ -50,8 +50,7 @@ export const useNav = (): ReturnType => {
 
   const isNavShowingPage = useMemo(() => {
     const isHomePage = location.pathname === routes.home;
-    const isCategoryPage =
-      location.pathname === routes.videos && Boolean(urlQuery.get('category'));
+    const isCategoryPage = location.pathname.split('/')[1] === 'category';
     const isFeedPage = [
       routes.history,
       routes.likedVideos,
