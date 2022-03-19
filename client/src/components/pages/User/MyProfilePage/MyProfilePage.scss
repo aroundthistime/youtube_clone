@@ -1,0 +1,28 @@
+@import '../../../../styles/variables/variables';
+@import '../../../../styles/popup.scss';
+
+.my-profile {
+  position: relative;
+  .my-profile__config-button {
+    position: absolute;
+    top: padding-vertical();
+    right: padding-horizontal();
+    width: 2.5rem;
+    aspect-ratio: 1 / 1;
+    border: light-gray-border();
+    border-radius: 1.25rem;
+    background-color: white;
+    .config-button__icon {
+      @include font-size();
+      font-size: 1.5rem;
+    }
+  }
+  .my-profile__actions-popup {
+    width: 18rem;
+    position: absolute;
+    &.popup--visible {
+      display: flex;
+      flex-direction: column;
+    }
+  }
+}

@@ -5,6 +5,9 @@ nav {
   @include scrollbar('y');
   background-color: white;
   z-index: $z-index-top;
+  &.nav--desktop-hidden {
+    display: none;
+  }
   .nav__section {
     &:not(:last-child) {
       border-bottom: light-gray-border();
