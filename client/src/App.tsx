@@ -2,6 +2,7 @@ import React, {Suspense} from 'react';
 import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
 
 import './App.scss';
+import BlurBackground from './components/atom/BlurBackground/BlurBackground';
 import EmptyPage from './components/pages/EmptyPage/EmptyPage';
 import HomePage from './components/pages/HomePage/HomePage';
 import JoinPage from './components/pages/JoinPage/JoinPage';
@@ -32,6 +33,7 @@ function App() {
             <Route path={`${routes.videos}/*`} element={<VideoRoutes />} />
             <Route path="*" element={<EmptyPage />} />
           </Routes>
+          <BlurBackground />
         </Router>
       </div>
     </Suspense>

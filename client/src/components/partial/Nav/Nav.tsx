@@ -1,22 +1,23 @@
 import React, {PropsWithChildren} from 'react';
-import {useSelector} from 'react-redux';
-import {Link} from 'react-router-dom';
-import {RootState} from '../../../@modules/root';
 import {NavTabType} from '../../../@types/NavTabType';
-import routes from '../../../routes';
 import FeedTabs from '../../pages/FeedTabs/FeedTabs';
 import ErrorBoundary from '../../wrapper/ErrorBoundary/ErrorBoundary';
 import Categories from '../Categories/Categories';
 import ErrorMessage from '../ErrorMessage/ErrorMessage';
 import './Nav.scss';
+import {useNav} from './useNav';
 
 const Nav = () => {
-  const user = useSelector((state: RootState) => state.user);
+  const {user, ref} = useNav();
   return (
-    <nav>
+    <nav ref={ref}>
       <ErrorBoundary fallback={<ErrorMessage />}>
+        {user && (
+          <Nav.Section>
+            <FeedTabs />
+          </Nav.Section>
+        )}
         <Nav.Section>
-          {user && <FeedTabs />}
           <Categories />
         </Nav.Section>
       </ErrorBoundary>

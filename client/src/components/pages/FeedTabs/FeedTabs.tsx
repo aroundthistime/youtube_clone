@@ -6,7 +6,7 @@ import {FeedTabType, useFeedTabs} from './useFeedTabs';
 const FeedTabs = () => {
   const {feedTabs} = useFeedTabs();
   return (
-    <ul className="nav__tabs feeds">
+    <ul className="nav__tabs feed-tabs">
       {feedTabs.map(feedTab => (
         <FeedTabs.FeedTab {...feedTab} key={feedTab.name} />
       ))}
@@ -15,7 +15,7 @@ const FeedTabs = () => {
 };
 
 FeedTabs.FeedTab = ({name, iconClassName, path, isSelected}: FeedTabType) => (
-  <Link to={path}>
+  <Link to={path} className="feed-link">
     <Nav.TabContent
       tab={{
         name,

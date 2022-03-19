@@ -34,7 +34,7 @@ header.header {
       &:not(:last-child) {
         margin-right: column-gap();
       }
-      &.header__search-button {
+      &.header__nav-toggle-button {
         display: none;
       }
       .header__icon {
@@ -65,7 +65,7 @@ header.header {
     .header__right {
       grid-area: right;
       .header__button {
-        &.header__search-button {
+        &.header__nav-toggle-button {
           display: block;
         }
       }

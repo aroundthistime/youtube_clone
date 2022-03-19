@@ -32,3 +32,9 @@ $desktop: 1020px;
     @content;
   }
 }
+
+@include mobile {
+  .mobile-hidden {
+    display: none !important;
+  }
+}

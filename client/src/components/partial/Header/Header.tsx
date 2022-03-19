@@ -1,15 +1,15 @@
 import {IconProp} from '@fortawesome/fontawesome-svg-core';
-import {faSearch, faVideo} from '@fortawesome/free-solid-svg-icons';
+import {faBars, faVideo} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import React from 'react';
+import React, {useCallback} from 'react';
 import {useSelector} from 'react-redux';
 import {Link} from 'react-router-dom';
 import {RootState} from '../../../@modules/root';
 import {UserState} from '../../../@modules/userSlice';
-import {UserType} from '../../../@types/UserType';
 import LogoImage from '../../../assets/images/logo.png';
 import routes from '../../../routes';
 import ProfileImage from '../../atom/ProfileImage/ProfileImage';
+import {showMobileNav} from '../Nav/useNav';
 import SearchForm from '../SearchForm/SearchForm';
 import './Header.scss';
 
@@ -38,6 +38,7 @@ Header.Right = () => {
     <div className="header__right no-drag">
       {user && <Header.UploadButton />}
       <Header.AuthButton user={user} />
+      <Header.MobileNavToggleButton />
     </div>
   );
 };
@@ -61,6 +62,25 @@ Header.UploadButton = () => (
     <Header.Icon icon={faVideo} />
   </Link>
 );
+
+Header.MobileNavToggleButton = () => {
+  const onClick = useCallback(
+    (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+      event.stopPropagation();
+      const nav = document.querySelector('nav');
+      showMobileNav(nav);
+    },
+    [],
+  );
+  return (
+    <button
+      className="header__button header__nav-toggle-button"
+      onClick={onClick}
+      type="button">
+      <Header.Icon icon={faBars} />
+    </button>
+  );
+};
 
 type HeaderIconProps = {
   icon: IconProp;
