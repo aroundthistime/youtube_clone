@@ -1,0 +1,26 @@
+@import '../../../styles/variables/variables';
+
+.user-profile--detail {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  row-gap: row-gap();
+  padding: padding-vertical('large') 0;
+  .profile-image {
+    width: 12rem;
+    border-radius: 6rem;
+  }
+  .user-profile__name {
+    @include font-size('large');
+  }
+}
+
+@include mobileAndTablet {
+  .user-profile--detail {
+    padding: padding-vertical() 0;
+    .profile-image {
+      width: 8rem;
+    }
+  }
+}

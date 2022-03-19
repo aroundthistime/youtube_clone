@@ -10,7 +10,7 @@ type Props = {
 const ProfileImage = ({src = DefaultProfileImage, className = ''}: Props) => {
   return (
     <img
-      className={`profile-image ${className}`}
+      className={`profile-image no-drag ${className}`}
       src={src}
       alt="프로필 이미지"
     />

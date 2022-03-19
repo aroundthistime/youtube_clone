@@ -1,8 +1,15 @@
 import React from 'react';
+import DetailUserProfile from '../../../partial/DetailUserProfile/DetailUserProfile';
 import './UserDetailPage.scss';
+import {useUserDetailPage} from './useUserDetailPage';
 
 const UserDetailPage = () => {
-  return <main className="user-profile">유저 페이지</main>;
+  const {user} = useUserDetailPage();
+  return (
+    <main className="user-profile">
+      <DetailUserProfile user={user} />
+    </main>
+  );
 };
 
 export default UserDetailPage;

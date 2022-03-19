@@ -64,6 +64,13 @@ header.header {
     }
     .header__right {
       grid-area: right;
+    }
+  }
+}
+
+@include mobile {
+  header.header {
+    .header__right {
       .header__button {
         &.header__nav-toggle-button {
           display: block;

@@ -50,7 +50,7 @@ type AuthButtonProps = {
 Header.AuthButton = ({user}: AuthButtonProps) => {
   return (
     <Link
-      to={user ? routes.myProfile : routes.login}
+      to={user ? routes.users + routes.myProfile : routes.login}
       className="header__button">
       <ProfileImage className="header__icon" src={user?.avatarUrl} />
     </Link>
