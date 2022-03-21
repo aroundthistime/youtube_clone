@@ -13,7 +13,7 @@ import SearchForm from '../SearchForm/SearchForm';
 import './Header.scss';
 
 type Props = {
-  showMobileNav: Function;
+  showMobileNav: React.MouseEventHandler<HTMLButtonElement>;
 };
 
 const Header = ({showMobileNav}: Props) => {
@@ -36,7 +36,7 @@ Header.Logo = () => {
 };
 
 type HeaderRightProps = {
-  showMobileNav: Function;
+  showMobileNav: React.MouseEventHandler<HTMLButtonElement>;
 };
 
 Header.Right = ({showMobileNav}: HeaderRightProps) => {
@@ -71,23 +71,16 @@ Header.UploadButton = () => (
 );
 
 type MobileNavToggleButtonProps = {
-  showMobileNav: Function;
+  showMobileNav: React.MouseEventHandler<HTMLButtonElement>;
 };
 
 Header.MobileNavToggleButton = ({
   showMobileNav,
 }: MobileNavToggleButtonProps) => {
-  const onClick = useCallback(
-    (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-      event.stopPropagation();
-      showMobileNav();
-    },
-    [],
-  );
   return (
     <button
       className="header__button header__nav-toggle-button"
-      onClick={onClick}
+      onClick={showMobileNav}
       type="button">
       <Header.Icon icon={faBars} />
     </button>

@@ -7,12 +7,14 @@ import './MyProfilePage.scss';
 import {useMyProfilePage} from './useMyProfilePage';
 
 const MyProfilePage = () => {
-  const {user, popupRef, showPopup} = useMyProfilePage();
+  const {user, popupRef, showButtonsPopup} = useMyProfilePage();
   return (
     <main className="user-profile my-profile">
       <DetailUserProfile
         user={user}
-        myProfileButton={<MyProfilePage.ConfigButton showPopup={showPopup} />}
+        myProfileButton={
+          <MyProfilePage.ConfigButton onClick={showButtonsPopup} />
+        }
       />
       <PopupWithButtons ref={popupRef}>
         <PopupWithButtons.Button text="하잉" onClick={() => 1} />
@@ -24,23 +26,14 @@ const MyProfilePage = () => {
 };
 
 type ConfigButtonProps = {
-  showPopup: Function;
+  onClick: React.MouseEventHandler<HTMLButtonElement>;
 };
 
-MyProfilePage.ConfigButton = ({showPopup}: ConfigButtonProps) => {
-  const onClick: React.MouseEventHandler<HTMLButtonElement> = event => {
-    event.stopPropagation();
-    showPopup();
-  };
-  return (
-    <button
-      type="button"
-      className="my-profile__config-button"
-      onClick={onClick}>
-      <FontAwesomeIcon icon={faCog} className="config-button__icon" />
-    </button>
-  );
-};
+MyProfilePage.ConfigButton = ({onClick}: ConfigButtonProps) => (
+  <button type="button" className="my-profile__config-button" onClick={onClick}>
+    <FontAwesomeIcon icon={faCog} className="config-button__icon" />
+  </button>
+);
 
 // MyProfilePage.ActionsPopup = () => {
 //   return (

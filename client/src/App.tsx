@@ -21,7 +21,8 @@ import UserRoutes from './routes/UserRoutes';
 import VideoRoutes from './routes/VideoRoutes';
 
 function App() {
-  const {ref: navRef, showPopup: showMobileNav} = usePopup<HTMLElement>();
+  const {ref: navRef, showByButtonClick: showMobileNav} =
+    usePopup<HTMLElement>();
   return (
     <Suspense fallback={<Loader />}>
       <ErrorBoundary fallback={<ErrorMessage />}>

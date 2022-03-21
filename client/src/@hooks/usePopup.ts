@@ -10,6 +10,7 @@ const VISIBLE_POPUP_CLASSNAME = 'popup--visible';
 type ReturnType<T> = {
   ref: React.RefObject<T>;
   showPopup: Function;
+  showByButtonClick: React.MouseEventHandler<HTMLButtonElement>;
 };
 
 export const usePopup = <T extends {}>(): ReturnType<T> => {
@@ -33,6 +34,13 @@ export const usePopup = <T extends {}>(): ReturnType<T> => {
     }
   };
 
+  const showByButtonClick: React.MouseEventHandler<
+    HTMLButtonElement
+  > = event => {
+    event.stopPropagation();
+    showPopup();
+  };
+
   useEffect(() => {
     window.addEventListener('click', hidePopup);
     return () => {
@@ -43,5 +51,6 @@ export const usePopup = <T extends {}>(): ReturnType<T> => {
   return {
     ref,
     showPopup,
+    showByButtonClick,
   };
 };

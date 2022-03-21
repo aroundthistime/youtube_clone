@@ -6,12 +6,13 @@ import {UserType} from '../../../../@types/UserType';
 type ReturnType = {
   user: UserType;
   popupRef: React.RefObject<HTMLDivElement>;
-  showPopup: Function;
+  showButtonsPopup: React.MouseEventHandler<HTMLButtonElement>;
 };
 
 export const useMyProfilePage = (): ReturnType => {
   const {data} = useMyProfileQuery();
-  const {ref: popupRef, showPopup} = usePopup<HTMLDivElement>();
+  const {ref: popupRef, showByButtonClick: showButtonsPopup} =
+    usePopup<HTMLDivElement>();
   // const user = {
   //   name: '콘요',
   //   status: 'asdf',
@@ -28,7 +29,7 @@ export const useMyProfilePage = (): ReturnType => {
   return {
     user: data?.user,
     popupRef,
-    showPopup,
+    showButtonsPopup,
     // user,
   };
 };
