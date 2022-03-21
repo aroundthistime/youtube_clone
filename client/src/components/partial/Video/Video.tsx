@@ -24,15 +24,13 @@ type Props = {
 
 const Video = ({video, className = ''}: PropsWithChildren<Props>) => {
   const timeDiffFromUploadDate = useMemo(() => {
-    return getTimeDiffFromNowString(video.uploadTime);
+    return getTimeDiffFromNowString(new Date(video.uploadTime));
   }, [video.uploadTime]);
   const briefViews = useMemo(() => {
     getBiggestUnifFromNumber(video.views);
   }, [video.views]);
   return (
-    <Link
-      to={routes.videos + routes.videoDetail(video.id)}
-      className={`video ${className}`}>
+    <Link to={routes.videoDetail(video._id)} className={`video ${className}`}>
       <Video.Thumbnail
         thumbnailUrl={video.thumbnailUrl}
         videoTitle={video.title}
@@ -62,7 +60,7 @@ Video.Detail = ({children}: PropsWithChildren<{}>) => (
 
 Video.CreatorAvatarLink = ({creator}: VideoCreatorAvatarProps) => (
   <Link
-    to={routes.users + routes.userDetail(creator.id)}
+    to={routes.userDetail(creator.id)}
     className="video__creator-avatar-link">
     <img
       className="avatar-link__avatar"
@@ -87,7 +85,7 @@ Video.InfoText = ({children}: PropsWithChildren<{}>) => (
 Video.CreatorNameLink = ({
   creator,
 }: PropsWithChildren<VideoCreatorNameProps>) => (
-  <Link to={routes.users + routes.userDetail(creator.id)}>
+  <Link to={routes.userDetail(creator.id)}>
     <Video.InfoText>{creator.name}</Video.InfoText>
   </Link>
 );

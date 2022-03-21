@@ -41,6 +41,7 @@ module.exports = {
     'react/jsx-props-no-spreading': 'off',
     'no-unused-vars': 'off',
     'no-use-before-define': 'off',
+    'no-underscore-dangle': 'off',
   },
   settings: {
     'import/resolver': {node: {extensions: ['.js', '.jsx', '.ts', '.tsx']}},

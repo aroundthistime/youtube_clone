@@ -1,5 +1,5 @@
 export interface SuccessResponseData {
-  result: boolean;
+  result: true;
 }
 
 export type FailedResponseData = {

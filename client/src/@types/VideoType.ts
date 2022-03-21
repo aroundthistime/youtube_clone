@@ -2,7 +2,7 @@ import {CommentType} from './CommentType';
 import {UserType} from './UserType';
 
 export interface BriefVideoType {
-  id: string;
+  _id: string;
   thumbnailUrl: string;
   title: string;
   views: number;
