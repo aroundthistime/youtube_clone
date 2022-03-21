@@ -64,6 +64,8 @@ nav {
 
 @include mobile {
   nav {
+    display: flex !important;
+    flex-direction: column;
     position: fixed;
     top: 0;
     right: 0;
@@ -72,9 +74,7 @@ nav {
     transition: transform 500ms ease-in-out;
     border-bottom: light-gray-border();
     z-index: $z-index-top;
-    &.popup--visible {
-      display: flex;
-      flex-direction: column;
+    &[data-is-visible='true'] {
       transform: translateX(0);
     }
     .nav__section {
@@ -83,4 +83,9 @@ nav {
       }
     }
   }
+  // nav[data-is-visible='true'] {
+  //   display: flex;
+  //   flex-direction: column;
+  //   transform: translateX(0);
+  // }
 }

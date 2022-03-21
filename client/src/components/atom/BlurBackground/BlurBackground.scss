@@ -10,8 +10,6 @@
   display: none;
 }
 
-@include mobile {
-  .blur-background[data-is-visible='true'] {
-    display: block;
-  }
+.blur-background[data-is-visible='true'] {
+  display: block;
 }
