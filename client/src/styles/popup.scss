@@ -1,3 +1,5 @@
+@import './variables/variables';
+
 .popup {
   display: none;
   position: fixed;
@@ -10,5 +12,6 @@
   background-color: white;
   &[data-is-visible='true'] {
     display: block;
+    z-index: $z-index-top;
   }
 }

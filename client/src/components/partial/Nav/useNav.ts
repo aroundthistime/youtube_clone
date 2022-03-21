@@ -13,9 +13,6 @@ type ReturnType = {
   innerRef: React.RefObject<HTMLElement>;
 };
 
-// const VISIBLE_MOBILE_NAV_CLASSNAME = 'nav--mobile-visible';
-// const HIDDEN_MOBILE_NAV_CLASSNAME = 'nav--mobile-hidden';
-
 export const useNav = (
   forwardRef: React.ForwardedRef<HTMLElement>,
 ): ReturnType => {

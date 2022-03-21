@@ -17,12 +17,20 @@
       font-size: 1.5rem;
     }
   }
-  .my-profile__actions-popup {
+  .my-profile__config-popup {
     width: 18rem;
     position: absolute;
-    &.popup--visible {
+    padding: padding-vertical('small') 0;
+    @include scrollbar('y');
+    &[data-is-visible='true'] {
       display: flex;
       flex-direction: column;
+    }
+    .popup__button {
+      padding: padding-vertical('small') padding-horizontal();
+      &:not(:last-child) {
+        border-bottom: light-gray-border();
+      }
     }
   }
 }

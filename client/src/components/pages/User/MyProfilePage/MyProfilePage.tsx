@@ -7,7 +7,7 @@ import './MyProfilePage.scss';
 import {useMyProfilePage} from './useMyProfilePage';
 
 const MyProfilePage = () => {
-  const {user, popupRef, showButtonsPopup} = useMyProfilePage();
+  const {user, popupRef, showButtonsPopup, popupButtons} = useMyProfilePage();
   return (
     <main className="user-profile my-profile">
       <DetailUserProfile
@@ -16,8 +16,10 @@ const MyProfilePage = () => {
           <MyProfilePage.ConfigButton onClick={showButtonsPopup} />
         }
       />
-      <PopupWithButtons ref={popupRef}>
-        <PopupWithButtons.Button text="하잉" onClick={() => 1} />
+      <PopupWithButtons ref={popupRef} className="my-profile__config-popup">
+        {popupButtons.map(popupButton => (
+          <PopupWithButtons.Button {...popupButton} key={popupButton.text} />
+        ))}
       </PopupWithButtons>
 
       {/* <MyProfilePage.ActionsPopup /> */}

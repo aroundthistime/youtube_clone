@@ -6,10 +6,11 @@ type Props = {
   className?: string;
 };
 
-type PopupButtonProps = {
+export type PopupButtonProps = {
   text: string;
   onClick: React.MouseEventHandler<HTMLButtonElement>;
 };
+
 interface PopupWithButtonsType
   extends React.ForwardRefExoticComponent<
     Props & React.RefAttributes<HTMLDivElement>
@@ -20,7 +21,11 @@ interface PopupWithButtonsType
 const PopupWithButtons = React.forwardRef<HTMLDivElement, Props>(
   ({className = '', children}, ref) => {
     const {innerRef} = usePopupWithButtons(ref);
-    return <div ref={innerRef}>{children}</div>;
+    return (
+      <div ref={innerRef} className={`popup ${className}`}>
+        {children}
+      </div>
+    );
   },
 ) as PopupWithButtonsType;
 

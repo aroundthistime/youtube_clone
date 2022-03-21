@@ -1,35 +1,57 @@
 /* eslint-disable import/prefer-default-export */
+import {useCallback, useMemo} from 'react';
+import {useDispatch} from 'react-redux';
+import {useNavigate} from 'react-router-dom';
 import {usePopup} from '../../../../@hooks/usePopup';
+import {clearUser} from '../../../../@modules/userSlice';
+import {useLogoutQuery} from '../../../../@queries/useLogoutQuery';
 import {useMyProfileQuery} from '../../../../@queries/useMyProfileQuery';
 import {UserType} from '../../../../@types/UserType';
+import routes from '../../../../routes';
+import {PopupButtonProps} from '../../../partial/PopupWithButtons/PopupWithButtons';
 
 type ReturnType = {
   user: UserType;
   popupRef: React.RefObject<HTMLDivElement>;
   showButtonsPopup: React.MouseEventHandler<HTMLButtonElement>;
+  popupButtons: PopupButtonProps[];
 };
 
 export const useMyProfilePage = (): ReturnType => {
   const {data} = useMyProfileQuery();
+  const [executeLogoutQuery] = useLogoutQuery();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const {ref: popupRef, showByButtonClick: showButtonsPopup} =
     usePopup<HTMLDivElement>();
-  // const user = {
-  //   name: '콘요',
-  //   status: 'asdf',
-  //   id: '123516',
-  //   email: 'asetNaver.ocm',
-  //   avatarUrl:
-  //     'https://s3.ap-northeast-2.amazonaws.com/elasticbeanstalk-ap-northeast-2-176213403491/media/magazine_img/magazine_280/5-3-%EC%8D%B8%EB%84%A4%EC%9D%BC.jpg',
-  // };
-  // if (data?.user) {
-  //   console.log(data.user.id);
-  // }
-  console.log(data?.user);
-  // console.log(typeof data?.user?._id);
+
+  const onLogoutButtonClick = async () => {
+    await executeLogoutQuery();
+    dispatch(clearUser());
+    navigate(routes.home);
+  };
+
+  const popupButtons: PopupButtonProps[] = useMemo(() => {
+    return [
+      {
+        text: '프로필 수정',
+        onClick: () => navigate(routes.users + routes.editProfile),
+      },
+      {
+        text: '비밀번호 변경',
+        onClick: () => navigate(routes.users + routes.changePasword),
+      },
+      {
+        text: '로그아웃',
+        onClick: () => onLogoutButtonClick(),
+      },
+    ];
+  }, [navigate]);
+
   return {
     user: data?.user,
     popupRef,
     showButtonsPopup,
-    // user,
+    popupButtons,
   };
 };
