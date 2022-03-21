@@ -7,12 +7,12 @@ import './MyProfilePage.scss';
 import {useMyProfilePage} from './useMyProfilePage';
 
 const MyProfilePage = () => {
-  const {user} = useMyProfilePage();
+  const {user, popupRef, showPopup} = useMyProfilePage();
   return (
     <main className="user-profile my-profile">
       <DetailUserProfile
         user={user}
-        myProfileButton={<MyProfilePage.ConfigButton />}
+        myProfileButton={<MyProfilePage.ConfigButton showPopup={showPopup} />}
       />
       <PopupWithButtons
         buttons={[
@@ -21,38 +21,50 @@ const MyProfilePage = () => {
             onClick: event => 1,
           },
         ]}
-        className="popup--visible"
+        // className="popup--visible"
+        ref={popupRef}
       />
       {/* <MyProfilePage.ActionsPopup /> */}
     </main>
   );
 };
 
-MyProfilePage.ConfigButton = () => {
+type ConfigButtonProps = {
+  showPopup: Function;
+};
+
+MyProfilePage.ConfigButton = ({showPopup}: ConfigButtonProps) => {
+  const onClick = () => {
+    console.log(showPopup);
+    showPopup();
+  };
   return (
-    <button type="button" className="my-profile__config-button">
+    <button
+      type="button"
+      className="my-profile__config-button"
+      onClick={onClick}>
       <FontAwesomeIcon icon={faCog} className="config-button__icon" />
     </button>
   );
 };
 
-MyProfilePage.ActionsPopup = () => {
-  return (
-    <div className="my-profile__actions-popup popup popup--visible">
-      <MyProfilePage.ActionButton />
-      <MyProfilePage.ActionButton />
+// MyProfilePage.ActionsPopup = () => {
+//   return (
+//     <div className="my-profile__actions-popup popup popup--visible">
+//       <MyProfilePage.ActionButton />
+//       <MyProfilePage.ActionButton />
 
-      <MyProfilePage.ActionButton />
+//       <MyProfilePage.ActionButton />
 
-      <MyProfilePage.ActionButton />
+//       <MyProfilePage.ActionButton />
 
-      <MyProfilePage.ActionButton />
-    </div>
-  );
-};
+//       <MyProfilePage.ActionButton />
+//     </div>
+//   );
+// };
 
-MyProfilePage.ActionButton = () => {
-  return <button type="button">버튼</button>;
-};
+// MyProfilePage.ActionButton = () => {
+//   return <button type="button">버튼</button>;
+// };
 
 export default MyProfilePage;

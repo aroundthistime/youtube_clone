@@ -18,5 +18,5 @@ const getCategories = async (): Promise<CategoriesResponseData> => {
 };
 
 export const useCategoriesQuery = () => {
-  return useQuery('categories', getCategories, {suspense: true});
+  return useQuery('categories', getCategories);
 };

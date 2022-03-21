@@ -2,7 +2,7 @@ import React from 'react';
 import {Link} from 'react-router-dom';
 import {NavTabType} from '../../../@types/NavTabType';
 import routes from '../../../routes';
-import Nav from '../Nav/Nav';
+import Nav, {NavTabContent} from '../Nav/Nav';
 import {useCategories} from './useCategories';
 
 const Categories = () => {
@@ -22,7 +22,7 @@ type CategoryProps = {
 
 Categories.Category = ({category}: CategoryProps) => (
   <Link to={routes.category(category.name)}>
-    <Nav.TabContent tab={category} />
+    <NavTabContent tab={category} />
   </Link>
 );
 

@@ -9,16 +9,19 @@ import {UserState} from '../../../@modules/userSlice';
 import LogoImage from '../../../assets/images/logo.png';
 import routes from '../../../routes';
 import ProfileImage from '../../atom/ProfileImage/ProfileImage';
-import {showMobileNav} from '../Nav/useNav';
 import SearchForm from '../SearchForm/SearchForm';
 import './Header.scss';
 
-const Header = () => {
+type Props = {
+  showMobileNav: Function;
+};
+
+const Header = ({showMobileNav}: Props) => {
   return (
     <header className="header">
       <Header.Logo />
       <SearchForm />
-      <Header.Right />
+      <Header.Right showMobileNav={showMobileNav} />
     </header>
   );
 };
@@ -32,13 +35,17 @@ Header.Logo = () => {
   );
 };
 
-Header.Right = () => {
+type HeaderRightProps = {
+  showMobileNav: Function;
+};
+
+Header.Right = ({showMobileNav}: HeaderRightProps) => {
   const user = useSelector((state: RootState) => state.user);
   return (
     <div className="header__right no-drag">
       {user && <Header.UploadButton />}
       <Header.AuthButton user={user} />
-      <Header.MobileNavToggleButton />
+      <Header.MobileNavToggleButton showMobileNav={showMobileNav} />
     </div>
   );
 };
@@ -63,12 +70,17 @@ Header.UploadButton = () => (
   </Link>
 );
 
-Header.MobileNavToggleButton = () => {
+type MobileNavToggleButtonProps = {
+  showMobileNav: Function;
+};
+
+Header.MobileNavToggleButton = ({
+  showMobileNav,
+}: MobileNavToggleButtonProps) => {
   const onClick = useCallback(
     (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
       event.stopPropagation();
-      const nav = document.querySelector('nav');
-      showMobileNav(nav);
+      showMobileNav();
     },
     [],
   );

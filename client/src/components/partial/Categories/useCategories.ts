@@ -1,5 +1,5 @@
 /* eslint-disable import/prefer-default-export */
-import {useUrlQuery} from '../../../@hooks/useUrlQuery';
+import {useLocation} from 'react-router-dom';
 import {useCategoriesQuery} from '../../../@queries/useCategoriesQuery';
 import {NavTabType} from '../../../@types/NavTabType';
 
@@ -9,8 +9,10 @@ type ReturnType = {
 
 export const useCategories = (): ReturnType => {
   const {data} = useCategoriesQuery();
-  const urlQuery = useUrlQuery();
-  const currrentCategory = urlQuery.get('category');
+  const location = useLocation();
+  const currrentCategory = location.pathname
+    .split('/')[2]
+    ?.replaceAll('%20', ' ');
   const categories = data?.categories.map(category => {
     return {
       ...category,

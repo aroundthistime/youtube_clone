@@ -4,7 +4,7 @@ nav {
   padding: padding-vertical('small') 0;
   @include scrollbar('y');
   background-color: white;
-  z-index: $z-index-top;
+  z-index: calc($z-index-top - 1);
   &.nav--desktop-hidden {
     display: none;
   }
@@ -71,7 +71,8 @@ nav {
     transform: translateX(100%);
     transition: transform 500ms ease-in-out;
     border-bottom: light-gray-border();
-    &.nav--mobile-visible {
+    z-index: $z-index-top;
+    &.popup--visible {
       display: flex;
       flex-direction: column;
       transform: translateX(0);

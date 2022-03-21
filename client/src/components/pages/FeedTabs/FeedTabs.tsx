@@ -1,6 +1,6 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
-import Nav from '../../partial/Nav/Nav';
+import Nav, {NavTabContent} from '../../partial/Nav/Nav';
 import {FeedTabType, useFeedTabs} from './useFeedTabs';
 
 const FeedTabs = () => {
@@ -16,7 +16,7 @@ const FeedTabs = () => {
 
 FeedTabs.FeedTab = ({name, iconClassName, path, isSelected}: FeedTabType) => (
   <Link to={path} className="feed-link">
-    <Nav.TabContent
+    <NavTabContent
       tab={{
         name,
         iconClassName,

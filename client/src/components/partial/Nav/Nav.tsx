@@ -7,27 +7,27 @@ import ErrorMessage from '../ErrorMessage/ErrorMessage';
 import './Nav.scss';
 import {useNav} from './useNav';
 
-const Nav = () => {
-  const {user, ref} = useNav();
+const Nav = React.forwardRef<HTMLElement>((props, ref) => {
+  const {user, innerRef} = useNav(ref);
   return (
-    <nav ref={ref}>
+    <nav ref={innerRef}>
       <ErrorBoundary fallback={<ErrorMessage />}>
         {user && (
-          <Nav.Section>
+          <NavSection>
             <FeedTabs />
-          </Nav.Section>
+          </NavSection>
         )}
-        <Nav.Section>
+        <NavSection>
           <Categories />
-        </Nav.Section>
+        </NavSection>
       </ErrorBoundary>
     </nav>
   );
-};
+});
 
 type SectionProps = PropsWithChildren<{}>;
 
-Nav.Section = ({children}: SectionProps) => (
+const NavSection = ({children}: SectionProps) => (
   <section className="nav__section">{children}</section>
 );
 
@@ -35,7 +35,7 @@ type TabProps = {
   tab: NavTabType;
 };
 
-Nav.TabContent = ({tab}: TabProps) => (
+export const NavTabContent = ({tab}: TabProps) => (
   <li
     className={`tabs__tab no-drag ${
       tab.isSelected ? 'tabs__tab--selected' : ''

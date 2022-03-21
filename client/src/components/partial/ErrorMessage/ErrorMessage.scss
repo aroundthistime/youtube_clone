@@ -4,4 +4,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  // &.error-message--fullscreen {
+  //   width: 100vw;
+  // }
+}
+
+.nav--desktop-hidden + .error-message--fullscreen {
+  width: 100vw;
 }
