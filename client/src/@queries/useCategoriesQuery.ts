@@ -1,10 +1,10 @@
 import axios from 'axios';
 import {useQuery} from 'react-query';
 import {NavTabContentType} from '../@types/NavTabType';
-import {DefaultResponseData} from '../@types/ResponseData';
+import {SuccessResponseData} from '../@types/ResponseData';
 import apiRoutes from '../apiRoutes';
 
-export interface CategoriesResponseData extends DefaultResponseData {
+export interface CategoriesResponseData extends SuccessResponseData {
   categories: NavTabContentType[];
 }
 

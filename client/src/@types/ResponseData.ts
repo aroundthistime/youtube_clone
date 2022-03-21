@@ -1,4 +1,4 @@
-export interface DefaultResponseData {
+export interface SuccessResponseData {
   result: boolean;
 }
 

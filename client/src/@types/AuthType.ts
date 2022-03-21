@@ -1,4 +1,4 @@
-import {DefaultResponseData, FailedResponseData} from './ResponseData';
+import {FailedResponseData, SuccessResponseData} from './ResponseData';
 import {UserType} from './UserType';
 
 export interface LoginRequirementsType {
@@ -10,7 +10,7 @@ export interface JoinRequirementsType extends LoginRequirementsType {
   name: string;
 }
 
-interface AuthMutationSuccessResponseType extends DefaultResponseData {
+interface AuthMutationSuccessResponseType extends SuccessResponseData {
   user: UserType;
 }
 
