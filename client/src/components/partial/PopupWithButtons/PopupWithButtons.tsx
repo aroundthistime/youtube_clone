@@ -1,4 +1,5 @@
 import React from 'react';
+import {usePopupWithButtons} from './usePopupWithButtons';
 
 type Props = {
   children?: React.ReactNode;
@@ -17,14 +18,10 @@ interface PopupWithButtonsType
 }
 
 const PopupWithButtons = React.forwardRef<HTMLDivElement, Props>(
-  ({className = '', children}, ref) => (
-    <div className={`opup buttons-popup ${className}`} ref={ref}>
-      {children}
-      {/* {buttons.map(button => (
-        <PopupWithButtons.Button {...button} key={button.text} />
-      ))} */}
-    </div>
-  ),
+  ({className = '', children}, ref) => {
+    const {innerRef} = usePopupWithButtons(ref);
+    return <div ref={innerRef}>{children}</div>;
+  },
 ) as PopupWithButtonsType;
 
 PopupWithButtons.Button = ({text, onClick}: PopupButtonProps) => (
@@ -33,4 +30,4 @@ PopupWithButtons.Button = ({text, onClick}: PopupButtonProps) => (
   </button>
 );
 
-export default React.memo(PopupWithButtons);
+export default PopupWithButtons;

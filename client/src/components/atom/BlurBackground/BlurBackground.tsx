@@ -1,18 +1,26 @@
 import React from 'react';
 import './BlurBackground.scss';
 
-const BLURBACKGROUND_CLASSNAME = 'blur-background';
+const getBlurBackgroundElement = () => {
+  return document.getElementById('blur-background');
+};
 
 export const showBlurBackground = () => {
-  const blurBackground = document.querySelector(`.${BLURBACKGROUND_CLASSNAME}`);
-  blurBackground?.classList.add(`${BLURBACKGROUND_CLASSNAME}--visible`);
+  const blurBackground = getBlurBackgroundElement();
+  if (blurBackground) {
+    blurBackground.dataset.isVisible = 'true';
+  }
 };
 
 export const hideBlurBackground = () => {
-  const blurBackground = document.querySelector(`.${BLURBACKGROUND_CLASSNAME}`);
-  blurBackground?.classList.remove(`${BLURBACKGROUND_CLASSNAME}--visible`);
+  const blurBackground = getBlurBackgroundElement();
+  if (blurBackground) {
+    blurBackground.dataset.isVisible = 'false';
+  }
 };
 
-const BlurBackground = () => <div className="blur-background" />;
+const BlurBackground = () => (
+  <div className="blur-background" id="blur-background" />
+);
 
-export default BlurBackground;
+export default React.memo(BlurBackground);

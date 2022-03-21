@@ -11,7 +11,7 @@
 }
 
 @include mobile {
-  .blur-background.blur-background--visible {
+  .blur-background[data-is-visible='true'] {
     display: block;
   }
 }

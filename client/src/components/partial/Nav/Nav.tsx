@@ -7,7 +7,7 @@ import ErrorMessage from '../ErrorMessage/ErrorMessage';
 import './Nav.scss';
 import {useNav} from './useNav';
 
-const Nav = React.forwardRef<HTMLElement>((props, ref) => {
+const Nav = React.forwardRef<HTMLElement>((_, ref) => {
   const {user, innerRef} = useNav(ref);
   return (
     <nav ref={innerRef}>

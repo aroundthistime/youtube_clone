@@ -14,16 +14,10 @@ const MyProfilePage = () => {
         user={user}
         myProfileButton={<MyProfilePage.ConfigButton showPopup={showPopup} />}
       />
-      <PopupWithButtons
-        buttons={[
-          {
-            text: '1',
-            onClick: event => 1,
-          },
-        ]}
-        // className="popup--visible"
-        ref={popupRef}
-      />
+      <PopupWithButtons ref={popupRef}>
+        <PopupWithButtons.Button text="하잉" onClick={() => 1} />
+      </PopupWithButtons>
+
       {/* <MyProfilePage.ActionsPopup /> */}
     </main>
   );
@@ -34,8 +28,8 @@ type ConfigButtonProps = {
 };
 
 MyProfilePage.ConfigButton = ({showPopup}: ConfigButtonProps) => {
-  const onClick = () => {
-    console.log(showPopup);
+  const onClick: React.MouseEventHandler<HTMLButtonElement> = event => {
+    event.stopPropagation();
     showPopup();
   };
   return (
