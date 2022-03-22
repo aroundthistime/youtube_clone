@@ -2,20 +2,11 @@ import React, {PropsWithChildren, useMemo} from 'react';
 import {Link} from 'react-router-dom';
 import {UserType} from '../../../@types/UserType';
 import {BriefVideoType} from '../../../@types/VideoType';
+import ProfileImage from '../../atom/ProfileImage/ProfileImage';
 import routes from '../../../routes';
 import {getTimeDiffFromNowString} from '../../../utils/dateHandler';
-import {getBiggestUnifFromNumber} from '../../../utils/mathHandler';
+import {getBiggestUnitFromNumber} from '../../../utils/mathHandler';
 import './Video.scss';
-
-// interface VideoSubComponents {
-//   Thumbnail: React.FC<VideoThumbnailProps>;
-//   Detail: React.FC<{}>;
-//   CreatorAvatarLink: React.FC<VideoCreatorAvatarProps>;
-//   CreatorNameLink: React.FC<VideoCreatorNameProps>;
-//   Title: React.FC<{}>;
-//   Infos: React.FC<{}>;
-//   InfoText: React.FC<{}>;
-// }
 
 type Props = {
   video: BriefVideoType;
@@ -27,7 +18,7 @@ const Video = ({video, className = ''}: PropsWithChildren<Props>) => {
     return getTimeDiffFromNowString(new Date(video.uploadTime));
   }, [video.uploadTime]);
   const briefViews = useMemo(() => {
-    getBiggestUnifFromNumber(video.views);
+    return getBiggestUnitFromNumber(video.views);
   }, [video.views]);
   return (
     <Link to={routes.videoDetail(video._id)} className={`video ${className}`}>
@@ -36,13 +27,15 @@ const Video = ({video, className = ''}: PropsWithChildren<Props>) => {
         videoTitle={video.title}
       />
       <Video.Detail>
-        <Video.CreatorAvatarLink creator={video.creator} />
+        <Video.CreatorProfileLink creator={video.creator} />
         <Video.Infos>
-          <Video.InfoText>{video.title}</Video.InfoText>
+          <Video.InfoText className="video__title">
+            {video.title}
+          </Video.InfoText>
           <Video.CreatorNameLink creator={video.creator} />
           <Video.InfoText>
-            <span className="video__views">조회수 {briefViews}회</span>
-            <span className="video__date">{timeDiffFromUploadDate}</span>
+            <span>조회수 {briefViews}회</span>
+            <span>{timeDiffFromUploadDate}</span>
           </Video.InfoText>
         </Video.Infos>
       </Video.Detail>
@@ -55,17 +48,16 @@ Video.Thumbnail = ({thumbnailUrl, videoTitle}: VideoThumbnailProps) => (
 );
 
 Video.Detail = ({children}: PropsWithChildren<{}>) => (
-  <div className="video__info">{children}</div>
+  <div className="video__detail">{children}</div>
 );
 
-Video.CreatorAvatarLink = ({creator}: VideoCreatorAvatarProps) => (
+Video.CreatorProfileLink = ({creator}: VideoCreatorAvatarProps) => (
   <Link
-    to={routes.userDetail(creator.id)}
-    className="video__creator-avatar-link">
-    <img
-      className="avatar-link__avatar"
+    to={routes.userDetail(creator._id)}
+    className="video__creator-profile-link">
+    <ProfileImage
       src={creator.avatarUrl}
-      alt={creator.name}
+      className="creator-link__profile-image"
     />
   </Link>
 );
@@ -74,19 +66,20 @@ Video.Infos = ({children}: PropsWithChildren<{}>) => (
   <div className="video__infos">{children}</div>
 );
 
-Video.Title = ({children}: PropsWithChildren<{}>) => (
-  <p className="video__title">{children}</p>
-);
-
-Video.InfoText = ({children}: PropsWithChildren<{}>) => (
-  <p className="video__info-text">{children}</p>
+Video.InfoText = ({
+  children,
+  className = '',
+}: PropsWithChildren<{className?: string}>) => (
+  <p className={`video__info-text ${className}`}>{children}</p>
 );
 
 Video.CreatorNameLink = ({
   creator,
 }: PropsWithChildren<VideoCreatorNameProps>) => (
-  <Link to={routes.userDetail(creator.id)}>
-    <Video.InfoText>{creator.name}</Video.InfoText>
+  <Link to={routes.userDetail(creator._id)}>
+    <Video.InfoText className="creator-link__name-text">
+      {creator.name}
+    </Video.InfoText>
   </Link>
 );
 

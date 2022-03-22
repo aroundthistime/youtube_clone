@@ -1,4 +1,3 @@
-import {CommentType} from './CommentType';
 import {UserType} from './UserType';
 
 export interface BriefVideoType {

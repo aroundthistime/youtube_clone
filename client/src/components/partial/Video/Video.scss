@@ -1,0 +1,42 @@
+@import '../../../styles/variables/variables';
+
+.videos__video {
+  width: 100%;
+  .video__thumbnail {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    margin-bottom: row-gap('small');
+  }
+  .video__detail {
+    display: flex;
+    .video__creator-profile-link {
+      margin-right: row-gap('small');
+      height: min-content;
+    }
+    .video__infos {
+      .video__info-text {
+        @include font-size('small');
+        opacity: 0.65;
+        &.video__title {
+          opacity: 1;
+          @include font-size();
+          @include n-lines(2);
+          word-break: break-all;
+          margin-bottom: row-gap('x-small');
+        }
+        &.creator-link__name-text {
+          font-weight: bold;
+          &:hover {
+            opacity: 0.95;
+          }
+        }
+        span {
+          &:not(:last-child)::after {
+            content: '·';
+            margin: 0 column-gap('x-small');
+          }
+        }
+      }
+    }
+  }
+}

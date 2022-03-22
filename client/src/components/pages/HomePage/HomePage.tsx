@@ -1,5 +1,5 @@
 import React from 'react';
-import Video from '../../partial/Video/Video';
+import Videos from '../../partial/Videos/Videos';
 import './HomePage.scss';
 import {useHomePage} from './useHomePage';
 
@@ -8,11 +8,7 @@ const HomePage = () => {
   return (
     <main className="home">
       {videos.length > 0 ? (
-        <div className="videos">
-          {videos.map(video => (
-            <Video video={video} key={video._id} />
-          ))}
-        </div>
+        <Videos className="home__videos" videos={videos} />
       ) : (
         <div>하잉</div>
       )}

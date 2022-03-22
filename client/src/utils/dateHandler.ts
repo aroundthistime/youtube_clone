@@ -22,27 +22,27 @@ const getTimeDiffBetweenDates = (date1: Date, date2: Date): number => {
 
 export const getBiggestUnitFromMilliseconds = (milliseconds: number) => {
   if (milliseconds >= YEARS_TO_MILLISECONDS) {
-    const years = +(milliseconds / YEARS_TO_MILLISECONDS);
+    const years = Math.floor(milliseconds / YEARS_TO_MILLISECONDS);
     return `${years}년 전`;
   }
   if (milliseconds >= MONTHS_TO_MILLISECONDS) {
-    const months = +(milliseconds / MONTHS_TO_MILLISECONDS);
+    const months = Math.floor(milliseconds / MONTHS_TO_MILLISECONDS);
     return `${months}달 전`;
   }
   if (milliseconds >= DAYS_TO_MILLISECONDS) {
-    const days = +(milliseconds / DAYS_TO_MILLISECONDS);
+    const days = Math.floor(milliseconds / DAYS_TO_MILLISECONDS);
     return `${days}일 전`;
   }
   if (milliseconds >= HOURS_TO_MILLISECONDS) {
-    const hours = +(milliseconds / HOURS_TO_MILLISECONDS);
+    const hours = Math.floor(milliseconds / HOURS_TO_MILLISECONDS);
     return `${hours}시간 전`;
   }
   if (milliseconds >= MINUTES_TO_MILLISECONDS) {
-    const minutes = +(milliseconds / MINUTES_TO_MILLISECONDS);
+    const minutes = Math.floor(milliseconds / MINUTES_TO_MILLISECONDS);
     return `${minutes}분 전`;
   }
   if (milliseconds >= SECONDS_TO_MILLISECONDS) {
-    const seconds = +(milliseconds / SECONDS_TO_MILLISECONDS);
+    const seconds = Math.floor(milliseconds / SECONDS_TO_MILLISECONDS);
     return `${seconds}초 전`;
   }
   return '지금';

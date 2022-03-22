@@ -3,7 +3,7 @@ const 억 = 100000000;
 const 만 = 10000;
 const 천 = 1000;
 
-export const getBiggestUnifFromNumber = (number: number) => {
+export const getBiggestUnitFromNumber = (number: number) => {
   if (number >= 억) {
     return `${leaveNOrLessDecimalPlaces(number / 억)}억`;
   }
@@ -17,9 +17,8 @@ export const getBiggestUnifFromNumber = (number: number) => {
 };
 
 const leaveNOrLessDecimalPlaces = (number: number, N: number = 1): number => {
-  // eslint-disable-next-line eqeqeq
-  if (number != +number) {
+  if (number !== Math.round(number)) {
     return +number.toFixed(N);
   }
-  return +number;
+  return number;
 };

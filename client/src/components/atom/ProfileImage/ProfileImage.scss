@@ -1,3 +1,18 @@
+@import '../../../styles/variables/variables';
+
 .profile-image {
   aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  width: 3rem;
+  &.profile-image--large {
+    width: 12rem;
+  }
+}
+
+@include mobile {
+  .profile-image {
+    &.profile-image--large {
+      width: 8rem;
+    }
+  }
 }
