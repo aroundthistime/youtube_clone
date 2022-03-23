@@ -6,13 +6,15 @@ import {
   GetVideosReturnType,
 } from '../@types/QueryParamsType';
 import {VideoSortMethodType} from '../@types/SortMethodType';
+import {TimeStandardType} from '../@types/TimeStandardType';
 import apiRoutes from '../apiRoutes';
 import {getNextPageParam} from '../utils/fetchHandlers';
 
-interface Params extends DefaultInfiniteQueryParams {
+export interface VideosQueryParams extends DefaultInfiniteQueryParams {
   keyword?: string;
   category?: string;
   sortMethod?: VideoSortMethodType;
+  uploadTime?: TimeStandardType;
 }
 
 const getVideos = async ({
@@ -20,7 +22,8 @@ const getVideos = async ({
   category,
   sortMethod,
   pageParam = 1,
-}: Params): Promise<GetVideosReturnType> => {
+  uploadTime = '전체',
+}: VideosQueryParams): Promise<GetVideosReturnType> => {
   const route = apiRoutes.getVideos;
   const {data} = await axios({
     url: route.url as string,
@@ -30,6 +33,7 @@ const getVideos = async ({
       category,
       sortMethod,
       page: pageParam,
+      uploadTime: uploadTime === '전체' ? undefined : uploadTime,
     },
   });
   return {
@@ -38,7 +42,9 @@ const getVideos = async ({
   };
 };
 
-export const useVideosQuery = (queryParams: Params = {pageParam: 1}) => {
+export const useVideosQuery = (
+  queryParams: VideosQueryParams = {pageParam: 1},
+) => {
   return useInfiniteQuery(
     'videos',
     ({pageParam}) => getVideos({...queryParams, pageParam}),

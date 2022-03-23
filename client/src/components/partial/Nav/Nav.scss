@@ -17,6 +17,7 @@ nav {
         display: flex;
         align-items: center;
         padding: padding-vertical() padding-horizontal();
+        transition: background-color 0.2s ease-in-out;
         &:hover {
           background-color: $light-gray-hover;
         }

@@ -1,20 +1,33 @@
 import React, {Suspense} from 'react';
-import {BriefVideoType} from '../../../@types/VideoType';
+import {VideosQueryParams} from '../../../@queries/useVideosQuery';
+import EmptyContent from '../../atom/EmptyContent/EmptyContent';
 import Loader from '../../atom/Loader/Loader';
+import FetchMoreIndicator from '../FetchMoreIndicator/FetchMoreIndicator';
 import Video from '../Video/Video';
+import {useVideos} from './useVideos';
 import './Videos.scss';
 
 type Props = {
-  videos: BriefVideoType[];
+  queryParams?: VideosQueryParams;
   className?: string;
 };
 
-const Videos = ({videos, className = ''}: Props) => (
-  <ul className={`videos ${className}`}>
-    {videos.map(video => (
-      <Video className="videos__video" video={video} key={video._id} />
-    ))}
-  </ul>
-);
+const Videos = ({queryParams = {}, className = ''}: Props) => {
+  const {videos, isFetchingNextPage} = useVideos(queryParams);
+  return (
+    <Suspense fallback={<Loader />}>
+      {videos.length > 0 ? (
+        <ul className={`videos ${className}`}>
+          {videos.map(video => (
+            <Video className="videos__video" video={video} key={video._id} />
+          ))}
+        </ul>
+      ) : (
+        <EmptyContent message="동영상이 존재하지 않습니다" />
+      )}
+      {isFetchingNextPage && <FetchMoreIndicator />}
+    </Suspense>
+  );
+};
 
-export default Videos;
+export default React.memo(Videos);

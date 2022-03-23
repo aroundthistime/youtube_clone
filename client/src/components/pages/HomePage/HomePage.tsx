@@ -1,19 +1,15 @@
 import React from 'react';
 import FetchMoreIndicator from '../../partial/FetchMoreIndicator/FetchMoreIndicator';
 import Videos from '../../partial/Videos/Videos';
+import VideosFilterer from '../../partial/VideosFilterer/VideosFilterer';
 import './HomePage.scss';
 import {useHomePage} from './useHomePage';
 
 const HomePage = () => {
-  const {videos, isFetchingNextPage} = useHomePage();
+  // const {videos, isFetchingNextPage} = useHomePage();
   return (
     <main className="home">
-      {videos.length > 0 ? (
-        <Videos className="home__videos" videos={videos} />
-      ) : (
-        <div>하잉</div>
-      )}
-      {isFetchingNextPage && <FetchMoreIndicator />}
+      <Videos queryParams={{sortMethod: undefined, uploadTime: undefined}} />
     </main>
   );
 };
