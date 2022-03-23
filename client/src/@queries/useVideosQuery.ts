@@ -7,6 +7,7 @@ import {
 } from '../@types/QueryParamsType';
 import {VideoSortMethodType} from '../@types/SortMethodType';
 import apiRoutes from '../apiRoutes';
+import {getNextPageParam} from '../utils/fetchHandlers';
 
 interface Params extends DefaultInfiniteQueryParams {
   keyword?: string;
@@ -42,10 +43,7 @@ export const useVideosQuery = (queryParams: Params = {pageParam: 1}) => {
     'videos',
     ({pageParam}) => getVideos({...queryParams, pageParam}),
     {
-      getNextPageParam: lastPage =>
-        lastPage.result === true && lastPage.hasNextPage
-          ? lastPage.nextPage
-          : undefined,
+      getNextPageParam,
     },
   );
 };
