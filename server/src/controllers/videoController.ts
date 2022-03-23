@@ -23,6 +23,8 @@ import {
   MongooseFindQuery,
   PopulateWithPaginationOptions,
 } from '../@types/mongooseTypes';
+import {TimeStandardType} from '../@types/timeStandardType';
+import {getDateQueryStartRangeByTimeStandard} from '../utils/dateHandler';
 
 const VIDEO_FETCH_UNIT = 10; //한 번에 fetch하는 video의 수
 
@@ -37,6 +39,7 @@ type GetVideosQuery = {
   page: number;
   keyword?: string;
   category?: CategoryType;
+  uploadTimeStandard?: TimeStandardType;
 };
 
 export const getVideos = async (
@@ -44,8 +47,12 @@ export const getVideos = async (
   res: Response,
 ) => {
   try {
-    const {keyword, sortMethod, category, page} = req.query;
-    const videoFindQuery = getVideoFindQuery(keyword, category);
+    const {keyword, sortMethod, category, page, uploadTimeStandard} = req.query;
+    const videoFindQuery = getVideoFindQuery(
+      keyword,
+      category,
+      uploadTimeStandard,
+    );
     let videos = await Video.find(videoFindQuery)
       .sort(getVideoSortOptions(sortMethod))
       .skip((page - 1) * VIDEO_FETCH_UNIT)
@@ -63,6 +70,7 @@ export const getVideos = async (
 const getVideoFindQuery = (
   keyword: string | undefined,
   category: string | undefined,
+  uploadTimeStandard: TimeStandardType | undefined,
 ): MongooseFindQuery<VideoType> => {
   const videoFindQuery: MongooseFindQuery<VideoType> = {};
   if (keyword) {
@@ -73,6 +81,11 @@ const getVideoFindQuery = (
   }
   if (category) {
     videoFindQuery.category = category;
+  }
+  if (uploadTimeStandard) {
+    videoFindQuery.uploadTime = {
+      $gte: getDateQueryStartRangeByTimeStandard(uploadTimeStandard),
+    };
   }
   return videoFindQuery;
 };
@@ -102,6 +115,23 @@ export const getUserVideos = async (
       query: {sortMethod, page},
     } = req;
     const user = await User.findById(getObjectIdFromString(userId)).populate(
+      getBriefVideoPopulateParameter('videos', page, sortMethod),
+    );
+    returnVideosWithPaginationSuccessResponse(res, user.videos);
+  } catch {
+    returnErrorResponse(res);
+  }
+};
+
+export const getMyVideos = async (
+  req: Request<{}, {}, {}, GetUserVideosQuery>,
+  res: Response,
+) => {
+  try {
+    const {
+      query: {sortMethod, page},
+    } = req;
+    const user = await User.findById(req.user._id).populate(
       getBriefVideoPopulateParameter('videos', page, sortMethod),
     );
     returnVideosWithPaginationSuccessResponse(res, user.videos);

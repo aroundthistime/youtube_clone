@@ -25,9 +25,7 @@ const multerVideo = multer({dest: 'uploads/videos/'});
 const multerAvater = multer({dest: 'uploads/avatars/'});
 
 export const onlyPublic = (req: Request, res: Response, next) => {
-  // allow some pages (ex.join) only when not loged in
   if (req.user) {
-    console.log('너로그인 되어있잖아');
     returnErrorResponse(res);
   } else {
     next();
@@ -35,7 +33,7 @@ export const onlyPublic = (req: Request, res: Response, next) => {
 };
 
 export const onlyPrivate = (
-  req: Request,
+  req: Request<any, any, any, any>,
   res: Response,
   next: NextFunction,
 ) => {
