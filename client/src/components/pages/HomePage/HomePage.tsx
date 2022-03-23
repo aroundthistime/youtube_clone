@@ -1,10 +1,11 @@
 import React from 'react';
+import FetchMoreIndicator from '../../partial/FetchMoreIndicator/FetchMoreIndicator';
 import Videos from '../../partial/Videos/Videos';
 import './HomePage.scss';
 import {useHomePage} from './useHomePage';
 
 const HomePage = () => {
-  const {videos, fetchNextPage} = useHomePage();
+  const {videos, isFetchingNextPage} = useHomePage();
   return (
     <main className="home">
       {videos.length > 0 ? (
@@ -12,10 +13,7 @@ const HomePage = () => {
       ) : (
         <div>하잉</div>
       )}
-      기본화면
-      <button type="button" onClick={() => fetchNextPage()}>
-        하이용
-      </button>
+      {isFetchingNextPage && <FetchMoreIndicator />}
     </main>
   );
 };

@@ -24,7 +24,7 @@ import {
   PopulateWithPaginationOptions,
 } from '../@types/mongooseTypes';
 
-const VIDEO_FETCH_UNIT = 20; //한 번에 fetch하는 video의 수
+const VIDEO_FETCH_UNIT = 10; //한 번에 fetch하는 video의 수
 
 export const getVideoFromStringId = async (id: string): Promise<VideoType> => {
   const objectId = getObjectIdFromString(id);
@@ -49,7 +49,8 @@ export const getVideos = async (
     let videos = await Video.find(videoFindQuery)
       .sort(getVideoSortOptions(sortMethod))
       .skip((page - 1) * VIDEO_FETCH_UNIT)
-      .limit(VIDEO_FETCH_UNIT);
+      .limit(VIDEO_FETCH_UNIT)
+      .populate('creator');
     if (req.user) {
       videos = filterNoInterestVideos(videos, req.user);
     }
@@ -107,11 +108,6 @@ export const getUserVideos = async (
   } catch {
     returnErrorResponse(res);
   }
-};
-
-type UploadVideoBody = {
-  title: string;
-  description;
 };
 
 export const uploadVideo = async (req: Request<{}, {}>, res: Response) => {
@@ -174,6 +170,7 @@ export const getVideo = async (
       result: true,
       video: {
         ...video,
+        commentsCount: video.comments.length,
         isLiked,
       },
     });
@@ -400,7 +397,7 @@ export const getNoInterest = async (
     const user = await User.findById(req.user._id).populate(
       getBriefVideoPopulateParameter('noInterest', page),
     );
-    returnVideosWithPaginationSuccessResponse(res, user.watchLater);
+    returnVideosWithPaginationSuccessResponse(res, user.noInterest);
   } catch {
     returnErrorResponse(res);
   }

@@ -1,5 +1,6 @@
-import React from 'react';
+import React, {Suspense} from 'react';
 import {BriefVideoType} from '../../../@types/VideoType';
+import Loader from '../../atom/Loader/Loader';
 import Video from '../Video/Video';
 import './Videos.scss';
 

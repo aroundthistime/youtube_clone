@@ -1,20 +1,38 @@
-import React from 'react';
+import React, {Suspense} from 'react';
 import {Route, Routes} from 'react-router-dom';
-import EmptyPage from '../components/pages/EmptyPage/EmptyPage';
-import ChangePasswordPage from '../components/pages/User/ChangePasswordPage/ChangePasswordPage';
-import EditProfilePage from '../components/pages/User/EditProfilePage/EditProfilePage';
-import MyProfilePage from '../components/pages/User/MyProfilePage/MyProfilePage';
-import UserDetailPage from '../components/pages/User/UserDetailpage/UserDetailPage';
+import {MainErrorBoundary} from '../App';
+import Loader from '../components/atom/Loader/Loader';
 import routes from '../routes';
 
+const UserDetailPage = React.lazy(
+  () => import('../components/pages/User/UserDetailpage/UserDetailPage'),
+);
+const MyProfilePage = React.lazy(
+  () => import('../components/pages/User/MyProfilePage/MyProfilePage'),
+);
+const EditProfilePage = React.lazy(
+  () => import('../components/pages/User/EditProfilePage/EditProfilePage'),
+);
+const ChangePasswordPage = React.lazy(
+  () =>
+    import('../components/pages/User/ChangePasswordPage/ChangePasswordPage'),
+);
+const EmptyPage = React.lazy(
+  () => import('../components/pages/EmptyPage/EmptyPage'),
+);
+
 const UserRoutes = () => (
-  <Routes>
-    <Route path={routes.userDetail()} element={<UserDetailPage />} />
-    <Route path={routes.myProfile} element={<MyProfilePage />} />
-    <Route path={routes.editProfile} element={<EditProfilePage />} />
-    <Route path={routes.changePasword} element={<ChangePasswordPage />} />
-    <Route path="*" element={<EmptyPage />} />
-  </Routes>
+  <MainErrorBoundary>
+    <Suspense fallback={<Loader className="full-screen" />}>
+      <Routes>
+        <Route path={routes.userDetail()} element={<UserDetailPage />} />
+        <Route path={routes.myProfile} element={<MyProfilePage />} />
+        <Route path={routes.editProfile} element={<EditProfilePage />} />
+        <Route path={routes.changePasword} element={<ChangePasswordPage />} />
+        <Route path="*" element={<EmptyPage />} />
+      </Routes>
+    </Suspense>
+  </MainErrorBoundary>
 );
 
 export default UserRoutes;

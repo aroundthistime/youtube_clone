@@ -6,6 +6,7 @@
     width: 100%;
     aspect-ratio: 16 / 9;
     margin-bottom: row-gap('small');
+    background-color: $light-gray;
   }
   .video__detail {
     display: flex;

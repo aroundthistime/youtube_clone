@@ -2,6 +2,7 @@
 import {useEffect, useState} from 'react';
 import {useDispatch} from 'react-redux';
 import {useNavigate} from 'react-router-dom';
+import {usePublicValidation} from '../../../@hooks/useAuthValidation';
 import {useInput} from '../../../@hooks/useInput';
 import {setUser} from '../../../@modules/userSlice';
 import {useLoginMutation} from '../../../@queries/useAuthMutation';
@@ -17,6 +18,7 @@ type ReturnType = {
 };
 
 export const useLoginPage = (): ReturnType => {
+  usePublicValidation();
   const [alertMessage, setAlertMessage] = useState<string>('');
   const {mutateAsync, isLoading, data} = useLoginMutation();
   const dispatch = useDispatch();

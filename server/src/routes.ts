@@ -22,6 +22,7 @@ const routes = {
 
   // user
   user: '/user',
+  myProfile: '/me',
   userDetail: '/:id',
   userVideo: '/:id/video',
   userPassword: '/password',
@@ -32,6 +33,9 @@ const routes = {
   videoLike: '/:id/like',
   videoComment: '/:id/comment',
   blockVideo: '/:id/block',
+  videohistory: '/:id/history',
+  videoWatchLater: '/:id/watch-later',
+  videoNoInterest: '/:id/no-interest',
 
   // comment
   comment: '/comment',
@@ -41,17 +45,8 @@ const routes = {
   // feed
   feed: '/feed',
   history: '/history',
-  get historyDetail() {
-    return `${this.history}/:id`;
-  },
   watchLater: '/watch-later',
-  get watchLaterDetail() {
-    return `${this.watchLater}/:id`;
-  },
   noInterest: '/no-interest',
-  get noInterestDetail() {
-    return `${this.noInterest}/:id`;
-  },
 };
 
 export default routes;

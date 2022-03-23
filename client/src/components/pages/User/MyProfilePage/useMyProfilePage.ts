@@ -1,5 +1,5 @@
 /* eslint-disable import/prefer-default-export */
-import {useCallback, useMemo} from 'react';
+import {useMemo} from 'react';
 import {useDispatch} from 'react-redux';
 import {useNavigate} from 'react-router-dom';
 import {usePopup} from '../../../../@hooks/usePopup';

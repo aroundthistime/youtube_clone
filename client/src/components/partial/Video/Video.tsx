@@ -7,6 +7,7 @@ import routes from '../../../routes';
 import {getTimeDiffFromNowString} from '../../../utils/dateHandler';
 import {getBiggestUnitFromNumber} from '../../../utils/mathHandler';
 import './Video.scss';
+import LazyImage from '../LazyImage/LazyImage';
 
 type Props = {
   video: BriefVideoType;
@@ -44,7 +45,7 @@ const Video = ({video, className = ''}: PropsWithChildren<Props>) => {
 };
 
 Video.Thumbnail = ({thumbnailUrl, videoTitle}: VideoThumbnailProps) => (
-  <img className="video__thumbnail" src={thumbnailUrl} alt={videoTitle} />
+  <LazyImage className="video__thumbnail" src={thumbnailUrl} alt={videoTitle} />
 );
 
 Video.Detail = ({children}: PropsWithChildren<{}>) => (

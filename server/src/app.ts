@@ -19,12 +19,12 @@ import authRouter from './routers/authRouter';
 import feedRouter from './routers/feedRouter';
 import commentRouter from './routers/commentRouter';
 
+const ONE_MONTH_IN_MILLISECONDS = 1000 * 60 * 60 * 24 * 30;
+
 const app = express();
 const CookieStore = MongoStore(session);
 
 app.use(helmet());
-app.set('view engine', 'pug');
-app.set('views', path.join(__dirname, 'views'));
 app.use('/uploads', express.static('uploads'));
 app.use('/static', express.static(path.join(__dirname, 'static')));
 app.use('/images', express.static(path.join(__dirname, 'images')));
@@ -34,8 +34,11 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(morgan('dev'));
 app.use(
   session({
+    cookie: {
+      maxAge: ONE_MONTH_IN_MILLISECONDS,
+    },
     secret: process.env.COOKIE_SECRET,
-    resave: true,
+    resave: false,
     saveUninitialized: false,
     store: new CookieStore({mongooseConnection: mongoose.connection}),
   }),

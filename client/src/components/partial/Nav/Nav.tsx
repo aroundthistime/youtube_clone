@@ -1,6 +1,6 @@
 import React, {PropsWithChildren} from 'react';
 import {NavTabType} from '../../../@types/NavTabType';
-import FeedTabs from '../../pages/FeedTabs/FeedTabs';
+import FeedTabs from '../FeedTabs/FeedTabs';
 import ErrorBoundary from '../../wrapper/ErrorBoundary/ErrorBoundary';
 import Categories from '../Categories/Categories';
 import ErrorMessage from '../ErrorMessage/ErrorMessage';

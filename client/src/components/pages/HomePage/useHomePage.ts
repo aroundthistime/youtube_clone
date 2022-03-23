@@ -1,5 +1,6 @@
 /* eslint-disable import/prefer-default-export */
-import {useEffect, useMemo} from 'react';
+import {useMemo} from 'react';
+import {useLazyInfiniteScroll} from '../../../@hooks/useLazyInfiniteScroll';
 import {
   GetVideoSuccess,
   useVideosQuery,
@@ -8,18 +9,13 @@ import {BriefVideoType} from '../../../@types/VideoType';
 
 type ReturnType = {
   videos: BriefVideoType[];
-  fetchNextPage: Function;
+  isFetchingNextPage: boolean;
 };
 
 export const useHomePage = (): ReturnType => {
   const {data, isFetchingNextPage, hasNextPage, fetchNextPage} =
     useVideosQuery();
 
-  // useEffect(() => {
-  //     const a = setInterval(() => {
-  //         fetchNextPage()
-  //     })
-  // })
   const videos = useMemo(() => {
     return data?.pages
       .filter((page): page is GetVideoSuccess => {
@@ -28,8 +24,17 @@ export const useHomePage = (): ReturnType => {
       .map(page => page.videos)
       .flat();
   }, [data]);
+
+  useLazyInfiniteScroll(
+    videos,
+    'video',
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  );
+
   return {
     videos: videos || [],
-    fetchNextPage,
+    isFetchingNextPage,
   };
 };

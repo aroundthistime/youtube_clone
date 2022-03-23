@@ -8,3 +8,9 @@
   row-gap: row-gap('large');
   padding: padding-vertical() 0;
 }
+
+@include mobile {
+  .videos {
+    padding: 0;
+  }
+}

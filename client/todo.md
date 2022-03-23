@@ -4,3 +4,6 @@
 4. video 역시 state으로 관리 : 현재 동영상 객체(video) + 현재 재생시간까지? (timestamp도 정말 필요할까?) - 일단 페이지 나왔을 때 팝업형식의 동영상 관련해서 생각중
 5. thumbnail은 필수로 지정할까?
 6. 영상에 해시태그 추가?
+7. 동영상 없을 때 화면
+8. 동영상 모두 로딩되기 전까지 React.Lazy Suspense로 Fake video (회색빈칸)
+9. history는 if loggedin일 때 videoDetail화면에서 useEffect로 실행하기

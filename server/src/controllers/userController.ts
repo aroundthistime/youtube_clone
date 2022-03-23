@@ -1,10 +1,8 @@
 import {Request, Response, NextFunction} from 'express';
 import {Types} from 'mongoose';
 import passport from 'passport';
-import bcrypt from 'bcrypt';
 import routes from '../routes';
 import User, {UserType} from '../models/User';
-import {failedResponse} from '../@types/responseType';
 import {
   returnErrorResponse,
   returnSuccessResponse,
@@ -24,16 +22,18 @@ type JoinRequiredFieldsType = {
 };
 
 export const join = async (req: Request, res: Response, next: NextFunction) => {
-  const {name, email, password}: JoinRequiredFieldsType = req.body;
   try {
-    await User.create({
+    const {name, email, password}: JoinRequiredFieldsType = req.body;
+    const user = new User({
       name,
       email,
-      password,
     });
+    await User.register(user, password);
     next();
   } catch (error) {
-    returnErrorResponse(res);
+    res.status(409).json({
+      result: false,
+    });
   }
 };
 
@@ -42,17 +42,23 @@ export const handleAuthFail = (req: Request, res: Response) => {
 };
 
 export const login = passport.authenticate('local', {
-  failureRedirect: routes.authFail,
-  successRedirect: routes.loginSuccess,
+  failureRedirect: routes.auth + routes.authFail,
+  successRedirect: routes.auth + routes.loginSuccess,
 });
 
 export const handleLoginSuccess = (req: Request, res: Response) => {
-  if (req.user) {
+  req.session.user = req.user;
+  req.session.save(() => {
     res.status(200).json({
       result: true,
-      user: req.user,
+      user: {
+        id: req.user.id,
+        name: req.user.name,
+        email: req.user.email,
+        avatarUrl: req.user.avatarUrl,
+      },
     });
-  }
+  });
 };
 
 // export const googleLogin = passport.authenticate('google', {
@@ -117,10 +123,12 @@ export const handleLoginSuccess = (req: Request, res: Response) => {
 // export const postFacebookLogin = (req: Request, res: Response) =>
 //   returnSuccessResponse(res);
 
-export const logout = (req: Request, res: Response) => {
+export const logout = async (req: Request, res: Response) => {
   try {
-    req.logout();
-    returnSuccessResponse(res);
+    req.session.destroy((err) => {
+      req.logout();
+      returnSuccessResponse(res);
+    });
   } catch {
     returnErrorResponse(res);
   }
@@ -150,19 +158,20 @@ export const logout = (req: Request, res: Response) => {
 //   }
 // };
 
-export const mymProfile = async (req: Request, res: Response) => {
+export const getMyProfile = async (req: Request, res: Response) => {
   try {
     const user = await User.findById(req.user._id);
     res.status(200).json({
       result: true,
       user,
     });
-  } catch {
+  } catch (error) {
+    console.log(error);
     returnErrorResponse(res);
   }
 };
 
-export const userDetail = async (req: Request, res: Response) => {
+export const getUserDetail = async (req: Request, res: Response) => {
   try {
     const {
       params: {id},
@@ -219,7 +228,9 @@ export const editUser = async (req: Request, res: Response) => {
       status,
       avatarUrl: avatarUrl ? avatarUrl : req.user.avatarUrl,
     });
-    returnSuccessResponse(res);
+    req.session.save(() => {
+      returnSuccessResponse(res);
+    });
   } catch (error) {
     returnErrorResponse(res);
   }
@@ -227,48 +238,41 @@ export const editUser = async (req: Request, res: Response) => {
 
 export const changeUserPassword = async (req: Request, res: Response) => {
   try {
-    const {password, newPassword} = req.body;
+    const {oldPassword, newPassword} = req.body;
     const canChange = await canChangeUserPassword(
-      password,
+      oldPassword,
       newPassword,
       req.user.id,
     );
     if (!canChange) {
       throw Error;
     }
-    await User.findByIdAndUpdate(req.user._id, {
-      password: newPassword,
+    const user = await User.findById(req.user._id);
+    await user.changePassword(oldPassword, newPassword);
+    await user.save();
+    req.session.save(() => {
+      returnSuccessResponse(res);
     });
-    returnSuccessResponse(res);
   } catch {
     returnErrorResponse(res);
   }
 };
 
 const canChangeUserPassword = async (
-  password: string | undefined,
+  oldPassword: string | undefined,
   newPassword: string | undefined,
   userId: Types.ObjectId,
 ): Promise<boolean> => {
   try {
     if (
-      password === undefined ||
+      oldPassword === undefined ||
       newPassword === undefined ||
       userId === undefined
     ) {
       throw Error;
-    } else if (password !== newPassword) {
-      throw Error;
     }
     const user = await User.findById(userId);
     if (!user) {
-      throw Error;
-    }
-    const isVerifiedPassword = await bcrypt.compareSync(
-      password,
-      user.password,
-    );
-    if (!isVerifiedPassword) {
       throw Error;
     }
     return true;

@@ -4,7 +4,7 @@ import AuthFormLink from '../../partial/AuthFormLink/AuthFormLink';
 import FieldInput, {
   FieldInputPropsType,
 } from '../../partial/FieldInput/FieldInput';
-import Loader from '../../partial/Loader/Loader';
+import Loader from '../../atom/Loader/Loader';
 import PageForm from '../../partial/PageForm/PageForm';
 import './LoginPage.scss';
 import {useLoginPage} from './useLoginPage';

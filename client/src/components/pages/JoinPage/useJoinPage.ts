@@ -3,6 +3,7 @@
 import {useEffect, useState} from 'react';
 import {useDispatch} from 'react-redux';
 import {useNavigate} from 'react-router-dom';
+import {usePublicValidation} from '../../../@hooks/useAuthValidation';
 import {useInput} from '../../../@hooks/useInput';
 import {setUser} from '../../../@modules/userSlice';
 import {useJoinMutation} from '../../../@queries/useAuthMutation';
@@ -25,6 +26,7 @@ type CanSubmitReturnType = {
 };
 
 export const useJoinPage = (): ReturnType => {
+  usePublicValidation();
   const [alertMessage, setAlertMessage] = useState<string>('');
   const {mutateAsync, isLoading, data} = useJoinMutation();
   const navigate = useNavigate();

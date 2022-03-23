@@ -27,6 +27,7 @@ const multerAvater = multer({dest: 'uploads/avatars/'});
 export const onlyPublic = (req: Request, res: Response, next) => {
   // allow some pages (ex.join) only when not loged in
   if (req.user) {
+    console.log('너로그인 되어있잖아');
     returnErrorResponse(res);
   } else {
     next();

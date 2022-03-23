@@ -45,7 +45,7 @@ const routes = {
   changePasword: CHANGE_PASSWORD,
   userDetail: (id?: string) => {
     if (id) {
-      return `/users/${id}`;
+      return `/user/${id}`;
     }
     return USER_DETAIL;
   },

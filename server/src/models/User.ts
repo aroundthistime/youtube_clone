@@ -3,18 +3,15 @@ import mongoose, {
   PassportLocalDocument,
   PassportLocalModel,
   PassportLocalSchema,
-  Types,
   PopulatedDoc,
 } from 'mongoose';
 import passportLocalMongoose from 'passport-local-mongoose';
-import bcrypt from 'bcrypt';
 import {CommentType} from './Comment';
 import {VideoType} from './Video';
 
 export interface UserType extends PassportLocalDocument {
   name: string;
   email: string;
-  password: string;
   status: string;
   avatarUrl: string;
   facebookId?: number;
@@ -88,11 +85,11 @@ const UserSchema = new mongoose.Schema({
 
 export interface UserModel<T extends Document> extends PassportLocalModel<T> {}
 
-UserSchema.plugin(passportLocalMongoose, {usernameField: 'email'});
-
-UserSchema.pre<UserType>('save', async function () {
-  this.password = await bcrypt.hash(this.password, process.env.SALT_ROUNDS);
+UserSchema.virtual('id').get(function () {
+  return this._id.toHexString();
 });
+
+UserSchema.plugin(passportLocalMongoose, {usernameField: 'email'});
 
 const model: UserModel<UserType> = mongoose.model<UserType>('User', UserSchema);
 
