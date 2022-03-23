@@ -16,6 +16,9 @@ const apiUrls = {
   get myProfile() {
     return `${this.user}/me`;
   },
+  get myVideos() {
+    return `${this.myProfile}/video`;
+  },
   userDetail: (id: string): string => {
     return `/user/${id}`;
   },
@@ -102,6 +105,10 @@ const apiRoutes: Record<string, ApiRouteType> = {
   changePassword: {
     url: apiUrls.userPassword,
     method: 'patch',
+  },
+  getMyVideos: {
+    url: apiUrls.myVideos,
+    method: 'get',
   },
   getUserVideos: {
     url: (id: string) => apiUrls.userVideo(id),

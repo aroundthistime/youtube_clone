@@ -1,35 +1,22 @@
 /* eslint-disable import/prefer-default-export */
+
 import axios from 'axios';
 import {useInfiniteQuery} from 'react-query';
 import {
   DefaultInfiniteQueryParams,
   GetVideosReturnType,
 } from '../@types/QueryParamsType';
-import {VideoSortMethodType} from '../@types/SortMethodType';
 import apiRoutes from '../apiRoutes';
 
-interface Params extends DefaultInfiniteQueryParams {
-  keyword?: string;
-  category?: string;
-  sortMethod?: VideoSortMethodType;
-}
+interface Params extends DefaultInfiniteQueryParams {}
 
-const getVideos = async ({
-  keyword,
-  category,
-  sortMethod,
+const getMyVideos = async ({
   pageParam = 1,
 }: Params): Promise<GetVideosReturnType> => {
-  const route = apiRoutes.getVideos;
+  const route = apiRoutes.getMyVideos;
   const {data} = await axios({
     url: route.url as string,
     method: route.method,
-    params: {
-      keyword,
-      category,
-      sortMethod,
-      page: pageParam,
-    },
   });
   return {
     ...data,
@@ -37,10 +24,10 @@ const getVideos = async ({
   };
 };
 
-export const useVideosQuery = (queryParams: Params = {pageParam: 1}) => {
+export const useMyVideosQuery = () => {
   return useInfiniteQuery(
-    'videos',
-    ({pageParam}) => getVideos({...queryParams, pageParam}),
+    'myVideos',
+    ({pageParam}) => getMyVideos({pageParam}),
     {
       getNextPageParam: lastPage =>
         lastPage.result === true && lastPage.hasNextPage

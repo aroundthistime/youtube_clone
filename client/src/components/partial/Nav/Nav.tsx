@@ -1,9 +1,7 @@
 import React, {PropsWithChildren} from 'react';
 import {NavTabType} from '../../../@types/NavTabType';
 import FeedTabs from '../FeedTabs/FeedTabs';
-import ErrorBoundary from '../../wrapper/ErrorBoundary/ErrorBoundary';
 import Categories from '../Categories/Categories';
-import ErrorMessage from '../ErrorMessage/ErrorMessage';
 import './Nav.scss';
 import {useNav} from './useNav';
 
@@ -11,16 +9,14 @@ const Nav = React.forwardRef<HTMLElement>((_, ref) => {
   const {user, innerRef} = useNav(ref);
   return (
     <nav ref={innerRef}>
-      <ErrorBoundary fallback={<ErrorMessage />}>
-        {user && (
-          <NavSection>
-            <FeedTabs />
-          </NavSection>
-        )}
+      {user && (
         <NavSection>
-          <Categories />
+          <FeedTabs />
         </NavSection>
-      </ErrorBoundary>
+      )}
+      <NavSection>
+        <Categories />
+      </NavSection>
     </nav>
   );
 });

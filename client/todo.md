@@ -7,3 +7,5 @@
 7. 동영상 없을 때 화면
 8. 동영상 모두 로딩되기 전까지 React.Lazy Suspense로 Fake video (회색빈칸)
 9. history는 if loggedin일 때 videoDetail화면에서 useEffect로 실행하기
+10. profile videos에서 isMyProfile 여부는 route뿐만 아니라 user && (user.\_id == 현재 url의 id)인지 확인
+11.
