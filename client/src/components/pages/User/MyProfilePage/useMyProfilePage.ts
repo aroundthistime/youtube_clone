@@ -5,7 +5,7 @@ import {useNavigate} from 'react-router-dom';
 import {usePopup} from '../../../../@hooks/usePopup';
 import {clearUser} from '../../../../@modules/userSlice';
 import {useLogoutQuery} from '../../../../@queries/useLogoutQuery';
-import {useMyProfileQuery} from '../../../../@queries/useMyProfileQuery';
+import {useMyProfileQuery} from '../../../../@queries/useProfileQuery';
 import {VideosQueryParams} from '../../../../@queries/useVideosQuery';
 import {UserType} from '../../../../@types/UserType';
 import routes from '../../../../routes';

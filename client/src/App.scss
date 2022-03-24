@@ -32,6 +32,11 @@ main {
   & > * {
     margin: auto;
   }
+  &.main--empty {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 }
 
 @include mobile {

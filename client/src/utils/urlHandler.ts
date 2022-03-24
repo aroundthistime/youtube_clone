@@ -4,3 +4,7 @@ export const getCurrentCategoryFromPathname = (
 ): string | undefined => {
   return pathname.split('/')[2]?.replaceAll('%20', ' ');
 };
+
+export const getUserIdFromPathname = (pathname: string): string | undefined => {
+  return pathname.split('/')[2];
+};

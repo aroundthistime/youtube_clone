@@ -1,23 +1,30 @@
 /* eslint-disable import/prefer-default-export */
+import {useMemo} from 'react';
+import {useLocation} from 'react-router-dom';
+import {useUserProfileQuery} from '../../../../@queries/useProfileQuery';
+import {VideosQueryParams} from '../../../../@queries/useVideosQuery';
 import {UserType} from '../../../../@types/UserType';
+import {getUserIdFromPathname} from '../../../../utils/urlHandler';
 
 type ReturnType = {
   user: UserType;
+  queryParams: VideosQueryParams;
 };
 
 export const useUserProfilePage = (): ReturnType => {
-  // const {
-  //   data : {user}
-  // } =
-  const user = {
-    name: '콘요',
-    status: 'asdf',
-    _id: '123516',
-    email: 'asetNaver.ocm',
-    avatarUrl:
-      'https://s3.ap-northeast-2.amazonaws.com/elasticbeanstalk-ap-northeast-2-176213403491/media/magazine_img/magazine_280/5-3-%EC%8D%B8%EB%84%A4%EC%9D%BC.jpg',
-  };
+  const location = useLocation();
+  const userId = useMemo(
+    () => getUserIdFromPathname(location.pathname),
+    [location.pathname],
+  ) as string;
+  const {
+    data: {user},
+  } = useUserProfileQuery(userId);
+
   return {
     user,
+    queryParams: {
+      userId,
+    },
   };
 };

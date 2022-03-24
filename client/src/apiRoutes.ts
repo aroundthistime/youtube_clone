@@ -19,7 +19,7 @@ const apiUrls = {
   get myVideos() {
     return `${this.myProfile}/video`;
   },
-  userDetail: (id: string): string => {
+  userProfile: (id: string): string => {
     return `/user/${id}`;
   },
   userVideo: (id: string): string => {
@@ -98,8 +98,8 @@ const apiRoutes: Record<string, ApiRouteType> = {
     url: apiUrls.myProfile,
     method: 'get',
   },
-  getUserDetail: {
-    url: (id: string) => apiUrls.userDetail(id),
+  getUserProfile: {
+    url: (id: string) => apiUrls.userProfile(id),
     method: 'get',
   },
   changePassword: {
