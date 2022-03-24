@@ -1,32 +1,17 @@
 /* eslint-disable import/prefer-default-export */
-import {useMemo} from 'react';
-import {useLazyInfiniteScroll} from '../../../@hooks/useLazyInfiniteScroll';
-import {useVideosQuery} from '../../../@queries/useVideosQuery';
-import {GetVideosSuccess} from '../../../@types/QueryParamsType';
-import {BriefVideoType} from '../../../@types/VideoType';
-import {getVideosFromData} from '../../../utils/fetchHandlers';
+import {useEffect, useCallback} from 'react';
+import {useLocation, useNavigate} from 'react-router-dom';
 
-type ReturnType = {
-  videos: BriefVideoType[];
-  isFetchingNextPage: boolean;
-};
+export const useHomePage = () => {
+  const navigate = useNavigate();
+  const {pathname, search} = useLocation();
+  useEffect(() => {
+    removeUrlQuery();
+  }, [search]);
 
-export const useHomePage = (): ReturnType => {
-  const {data, isFetchingNextPage, hasNextPage, fetchNextPage} =
-    useVideosQuery();
-
-  const videos = useMemo(() => getVideosFromData(data), [data]);
-
-  useLazyInfiniteScroll(
-    videos,
-    'video',
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage,
-  );
-
-  return {
-    videos: videos || [],
-    isFetchingNextPage,
-  };
+  const removeUrlQuery = useCallback(() => {
+    if (search) {
+      navigate(pathname);
+    }
+  }, [search, pathname]);
 };

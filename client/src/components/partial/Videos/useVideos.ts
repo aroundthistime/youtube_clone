@@ -1,5 +1,5 @@
 /* eslint-disable import/prefer-default-export */
-import {useMemo} from 'react';
+import {useCallback, useMemo} from 'react';
 import {useLazyInfiniteScroll} from '../../../@hooks/useLazyInfiniteScroll';
 import {useUrlQuery} from '../../../@hooks/useUrlQuery';
 import {
@@ -35,6 +35,7 @@ export const useVideos = (queryParams: VideosQueryParams): ReturnType => {
     }
     return undefined;
   }, [urlQuery]);
+
   const uploadTime = useMemo(() => {
     const uploadTimeQuery = urlQuery.get('upload');
     if (
@@ -48,9 +49,9 @@ export const useVideos = (queryParams: VideosQueryParams): ReturnType => {
 
   const {data, isFetchingNextPage, hasNextPage, fetchNextPage} = useVideosQuery(
     {
+      ...queryParams,
       sortMethod,
       uploadTime,
-      ...queryParams,
     },
   );
 

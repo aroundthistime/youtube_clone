@@ -46,7 +46,7 @@ export const useVideosQuery = (
   queryParams: VideosQueryParams = {pageParam: 1},
 ) => {
   return useInfiniteQuery(
-    'videos',
+    ['videos', queryParams],
     ({pageParam}) => getVideos({...queryParams, pageParam}),
     {
       getNextPageParam,
