@@ -1,5 +1,5 @@
-import React, {PropsWithChildren, useMemo} from 'react';
-import {Link} from 'react-router-dom';
+import React, {PropsWithChildren, useCallback, useEffect, useMemo} from 'react';
+import {Link, useNavigate} from 'react-router-dom';
 import {UserType} from '../../../@types/UserType';
 import {BriefVideoType} from '../../../@types/VideoType';
 import ProfileImage from '../../atom/ProfileImage/ProfileImage';
@@ -8,6 +8,8 @@ import {getTimeDiffFromNowString} from '../../../utils/dateHandler';
 import {getBiggestUnitFromNumber} from '../../../utils/mathHandler';
 import './Video.scss';
 import LazyImage from '../LazyImage/LazyImage';
+import {useVideo} from './useVideo';
+import {useDeleteVideoMutation} from '../../../@queries/useVideoMutation';
 
 type Props = {
   video: BriefVideoType;
@@ -15,12 +17,7 @@ type Props = {
 };
 
 const Video = ({video, className = ''}: PropsWithChildren<Props>) => {
-  const timeDiffFromUploadDate = useMemo(() => {
-    return getTimeDiffFromNowString(new Date(video.uploadTime));
-  }, [video.uploadTime]);
-  const briefViews = useMemo(() => {
-    return getBiggestUnitFromNumber(video.views);
-  }, [video.views]);
+  const {isMyVideo, timeDiffFromUploadDate, briefViews} = useVideo(video);
   return (
     <Link to={routes.videoDetail(video._id)} className={`video ${className}`}>
       <Video.Thumbnail
@@ -84,6 +81,67 @@ Video.CreatorNameLink = ({
   </Link>
 );
 
+Video.OverlayButton = ({
+  text,
+  iconClassName,
+  onClick,
+}: VideoOverlayButtonProps) => (
+  <button className="video__overlay-button" type="button" onClick={onClick}>
+    <div className="overlay-button__full-text">{text}</div>
+    <i className={`overlay-button__icon ${iconClassName}`} />
+  </button>
+);
+
+// Video.MyVideoOverlayButtons = ({videoId}: VideoOverlayButtonsProps) => {
+//   return (
+//     <div className="video__overlay-buttons">
+//       <Video.EditButton videoId={videoId} />
+//       <Video.DeleteButton videoId={videoId} />
+//     </div>
+//   );
+// };
+
+// Video.EditButton = ({videoId}: VideoIdParams) => {
+//   const navigate = useNavigate();
+//   const onClick = () =>
+//     useCallback(() => {
+//       navigate(routes.editVideo(videoId));
+//     }, [videoId]);
+//   return (
+//     <Video.OverlayButton
+//       text="Edit Video"
+//       onClick={onClick}
+//       iconClassName="fa-solid fa-pencil"
+//     />
+//   );
+// };
+
+// Video.DeleteButton = ({videoId}: VideoIdParams) => {
+//   const {mutateAsync, data} = useDeleteVideoMutation();
+//   const navigate = useNavigate();
+//   const onClick = () =>
+//     useCallback(() => {
+//       if (window.confirm('정말 해당 영상을 삭제하시겠습니까?')) {
+//         mutateAsync(videoId);
+//       }
+//     }, [videoId]);
+//   useEffect(() => {
+//     if (data === true) {
+//       alert('해당 영상이 삭제되었습니다.');
+//       navigate(routes.home);
+//     } else {
+//       alert('요청하신 작업에 실패했습니다.');
+//     }
+//   }, [data]);
+//   return (
+//     <Video.OverlayButton
+//       text="Delete Video"
+//       onClick={onClick}
+//       iconClassName="fa-solid fa-trash-can"
+//     />
+//   );
+// };
+
 type VideoThumbnailProps = {
   thumbnailUrl: string;
   videoTitle: string;
@@ -95,6 +153,20 @@ type VideoCreatorAvatarProps = {
 
 type VideoCreatorNameProps = {
   creator: UserType;
+};
+
+type VideoOverlayButtonsProps = {
+  videoId: string;
+};
+
+type VideoOverlayButtonProps = {
+  text: string;
+  iconClassName: string;
+  onClick: React.MouseEventHandler<HTMLButtonElement>;
+};
+
+type VideoIdParams = {
+  videoId: string;
 };
 
 export default React.memo(Video);

@@ -5,9 +5,12 @@ import DetailUserProfile from '../../../partial/DetailUserProfile/DetailUserProf
 import PopupWithButtons from '../../../partial/PopupWithButtons/PopupWithButtons';
 import './MyProfilePage.scss';
 import {useMyProfilePage} from './useMyProfilePage';
+import VideosFilterer from '../../../partial/VideosFilterer/VideosFilterer';
+import Videos from '../../../partial/Videos/Videos';
 
 const MyProfilePage = () => {
-  const {user, popupRef, showButtonsPopup, popupButtons} = useMyProfilePage();
+  const {user, popupRef, showButtonsPopup, popupButtons, queryParams} =
+    useMyProfilePage();
   return (
     <main className="user-profile my-profile">
       <DetailUserProfile
@@ -16,6 +19,8 @@ const MyProfilePage = () => {
           <MyProfilePage.ConfigButton onClick={showButtonsPopup} />
         }
       />
+      <VideosFilterer />
+      <Videos queryParams={queryParams} />
       <PopupWithButtons ref={popupRef} className="my-profile__config-popup">
         {popupButtons.map(popupButton => (
           <PopupWithButtons.Button {...popupButton} key={popupButton.text} />

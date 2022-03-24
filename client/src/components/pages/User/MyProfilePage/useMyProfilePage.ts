@@ -1,16 +1,14 @@
 /* eslint-disable import/prefer-default-export */
-import {useMemo} from 'react';
+import {useEffect, useMemo} from 'react';
 import {useDispatch} from 'react-redux';
 import {useNavigate} from 'react-router-dom';
-import {useLazyInfiniteScroll} from '../../../../@hooks/useLazyInfiniteScroll';
 import {usePopup} from '../../../../@hooks/usePopup';
 import {clearUser} from '../../../../@modules/userSlice';
 import {useLogoutQuery} from '../../../../@queries/useLogoutQuery';
 import {useMyProfileQuery} from '../../../../@queries/useMyProfileQuery';
+import {VideosQueryParams} from '../../../../@queries/useVideosQuery';
 import {UserType} from '../../../../@types/UserType';
-import {BriefVideoType} from '../../../../@types/VideoType';
 import routes from '../../../../routes';
-import {getVideosFromData} from '../../../../utils/fetchHandlers';
 import {PopupButtonProps} from '../../../partial/PopupWithButtons/PopupWithButtons';
 
 type ReturnType = {
@@ -18,7 +16,7 @@ type ReturnType = {
   popupRef: React.RefObject<HTMLDivElement>;
   showButtonsPopup: React.MouseEventHandler<HTMLButtonElement>;
   popupButtons: PopupButtonProps[];
-  // videos: BriefVideoType[];
+  queryParams: VideosQueryParams;
 };
 
 export const useMyProfilePage = (): ReturnType => {
@@ -30,15 +28,6 @@ export const useMyProfilePage = (): ReturnType => {
   const dispatch = useDispatch();
   const {ref: popupRef, showByButtonClick: showButtonsPopup} =
     usePopup<HTMLDivElement>();
-
-  // const videos = useMemo(() => getVideosFromData(myVideosData), [myVideosData]);
-  // useLazyInfiniteScroll(
-  //   videos,
-  //   'video',
-  //   fetchNextPage,
-  //   hasNextPage,
-  //   isFetchingNextPage,
-  // );
 
   const onLogoutButtonClick = async () => {
     await executeLogoutQuery();
@@ -63,11 +52,19 @@ export const useMyProfilePage = (): ReturnType => {
     ];
   }, [navigate]);
 
+  useEffect(() => {
+    if (!user) {
+      navigate(routes.login);
+    }
+  }, [user]);
+
   return {
     user,
     popupRef,
     showButtonsPopup,
     popupButtons,
-    // videos,
+    queryParams: {
+      userId: user._id,
+    },
   };
 };

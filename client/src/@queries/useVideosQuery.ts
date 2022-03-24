@@ -11,6 +11,7 @@ import apiRoutes from '../apiRoutes';
 import {getNextPageParam} from '../utils/fetchHandlers';
 
 export interface VideosQueryParams extends DefaultInfiniteQueryParams {
+  userId?: string;
   keyword?: string;
   category?: string;
   sortMethod?: VideoSortMethodType;
@@ -42,12 +43,41 @@ const getVideos = async ({
   };
 };
 
+const getUserVideos = async ({
+  userId,
+  sortMethod,
+  pageParam = 1,
+  uploadTime = '전체',
+}: VideosQueryParams): Promise<GetVideosReturnType> => {
+  const route = apiRoutes.getUserVideos;
+  const urlFunction = route.url as Function;
+  const {data} = await axios({
+    url: urlFunction(userId),
+    method: route.method,
+    params: {
+      sortMethod,
+      page: pageParam,
+      uploadTime: uploadTime === '전체' ? undefined : uploadTime,
+    },
+  });
+  return {
+    ...data,
+    nextPage: pageParam + 1,
+  };
+};
+
 export const useVideosQuery = (
   queryParams: VideosQueryParams = {pageParam: 1},
 ) => {
   return useInfiniteQuery(
     ['videos', queryParams],
-    ({pageParam}) => getVideos({...queryParams, pageParam}),
+    ({pageParam}) => {
+      const queryParamsWithPage = {...queryParams, pageParam};
+      if (queryParams.userId) {
+        return getUserVideos(queryParamsWithPage);
+      }
+      return getVideos(queryParamsWithPage);
+    },
     {
       getNextPageParam,
     },

@@ -1,8 +1,11 @@
 import React from 'react';
-import Videos from '../../partial/Videos/Videos';
-import VideosFilterer from '../../partial/VideosFilterer/VideosFilterer';
 import './CategoryPage.scss';
 import {useCategoryPage} from './useCategoryPage';
+
+const Videos = React.lazy(() => import('../../partial/Videos/Videos'));
+const VideosFilterer = React.lazy(
+  () => import('../../partial/VideosFilterer/VideosFilterer'),
+);
 
 const CategoryPage = () => {
   const {queryParams} = useCategoryPage();

@@ -3,7 +3,7 @@ const 억 = 100000000;
 const 만 = 10000;
 const 천 = 1000;
 
-export const getBiggestUnitFromNumber = (number: number) => {
+export const getBiggestUnitFromNumber = (number: number): string => {
   if (number >= 억) {
     return `${leaveNOrLessDecimalPlaces(number / 억)}억`;
   }
@@ -13,7 +13,7 @@ export const getBiggestUnitFromNumber = (number: number) => {
   if (number >= 천) {
     return `${leaveNOrLessDecimalPlaces(number / 천)}천`;
   }
-  return number;
+  return `${number}`;
 };
 
 const leaveNOrLessDecimalPlaces = (number: number, N: number = 1): number => {

@@ -1,4 +1,4 @@
-import React, {Suspense} from 'react';
+import React, {PropsWithChildren, Suspense} from 'react';
 import {VideosQueryParams} from '../../../@queries/useVideosQuery';
 import EmptyContent from '../../atom/EmptyContent/EmptyContent';
 import Loader from '../../atom/Loader/Loader';
