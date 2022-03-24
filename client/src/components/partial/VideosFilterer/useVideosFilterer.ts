@@ -33,8 +33,8 @@ export const useVideosFilterer = (): ReturnType => {
   const location = useLocation();
   const navigate = useNavigate();
   const urlQuery = useUrlQuery();
-  const currentSortMethod = urlQuery.get('sort') || '전체';
-  const currentUploadTimeStandard = urlQuery.get('upload');
+  const currentSortMethod = urlQuery.get('sort');
+  const currentUploadTimeStandard = urlQuery.get('upload') || '전체';
 
   const sortMethodFilterButtons = useMemo(() => {
     return VIDEO_SORT_METHODS.map(videoSortMethod => {
