@@ -4,8 +4,6 @@ import {UserType} from '../../../@types/UserType';
 import {BriefVideoType} from '../../../@types/VideoType';
 import ProfileImage from '../../atom/ProfileImage/ProfileImage';
 import routes from '../../../routes';
-import {getTimeDiffFromNowString} from '../../../utils/dateHandler';
-import {getBiggestUnitFromNumber} from '../../../utils/mathHandler';
 import './Video.scss';
 import LazyImage from '../LazyImage/LazyImage';
 import {useVideo} from './useVideo';
@@ -42,7 +40,9 @@ const Video = ({video, className = ''}: PropsWithChildren<Props>) => {
 };
 
 Video.Thumbnail = ({thumbnailUrl, videoTitle}: VideoThumbnailProps) => (
-  <LazyImage className="video__thumbnail" src={thumbnailUrl} alt={videoTitle} />
+  <div className="video__thumbnail">
+    <LazyImage src={thumbnailUrl} alt={videoTitle} />
+  </div>
 );
 
 Video.Detail = ({children}: PropsWithChildren<{}>) => (

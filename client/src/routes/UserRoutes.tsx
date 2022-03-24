@@ -4,8 +4,8 @@ import {MainErrorBoundary} from '../App';
 import Loader from '../components/atom/Loader/Loader';
 import routes from '../routes';
 
-const UserDetailPage = React.lazy(
-  () => import('../components/pages/User/UserDetailpage/UserDetailPage'),
+const UserProfilePage = React.lazy(
+  () => import('../components/pages/User/UserProfilepage/UserProfilePage'),
 );
 const MyProfilePage = React.lazy(
   () => import('../components/pages/User/MyProfilePage/MyProfilePage'),
@@ -25,7 +25,7 @@ const UserRoutes = () => (
   <MainErrorBoundary>
     <Suspense fallback={<Loader className="full-screen" />}>
       <Routes>
-        <Route path={routes.userDetail()} element={<UserDetailPage />} />
+        <Route path={routes.userDetail()} element={<UserProfilePage />} />
         <Route path={routes.myProfile} element={<MyProfilePage />} />
         <Route path={routes.editProfile} element={<EditProfilePage />} />
         <Route path={routes.changePasword} element={<ChangePasswordPage />} />

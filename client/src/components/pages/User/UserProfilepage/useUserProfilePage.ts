@@ -5,7 +5,10 @@ type ReturnType = {
   user: UserType;
 };
 
-export const useUserDetailPage = (): ReturnType => {
+export const useUserProfilePage = (): ReturnType => {
+  // const {
+  //   data : {user}
+  // } =
   const user = {
     name: '콘요',
     status: 'asdf',
