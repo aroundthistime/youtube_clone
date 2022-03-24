@@ -1,19 +1,24 @@
 import React from 'react';
-import EmptyContent from '../../../atom/EmptyContent/EmptyContent';
-import DetailUserProfile from '../../../partial/DetailUserProfile/DetailUserProfile';
-import Videos from '../../../partial/Videos/Videos';
-import VideosFilterer from '../../../partial/VideosFilterer/VideosFilterer';
 import ErrorBoundary from '../../../wrapper/ErrorBoundary/ErrorBoundary';
 import './UserProfilePage.scss';
 import {useUserProfilePage} from './useUserProfilePage';
+
+const DetailUserProfile = React.lazy(
+  () => import('../../../partial/DetailUserProfile/DetailUserProfile'),
+);
+const VideosWithFilterer = React.lazy(
+  () => import('../../../partial/VideosWithFilterer/VideosWithFilterer'),
+);
+const EmptyContent = React.lazy(
+  () => import('../../../atom/EmptyContent/EmptyContent'),
+);
 
 const UserDetailPage = () => {
   const {user, queryParams} = useUserProfilePage();
   return (
     <main className="user-profile">
       <DetailUserProfile user={user} />
-      <VideosFilterer />
-      <Videos queryParams={queryParams} />
+      <VideosWithFilterer queryParams={queryParams} />
     </main>
   );
 };

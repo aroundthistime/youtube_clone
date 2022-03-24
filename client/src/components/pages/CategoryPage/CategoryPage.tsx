@@ -2,17 +2,15 @@ import React from 'react';
 import './CategoryPage.scss';
 import {useCategoryPage} from './useCategoryPage';
 
-const Videos = React.lazy(() => import('../../partial/Videos/Videos'));
-const VideosFilterer = React.lazy(
-  () => import('../../partial/VideosFilterer/VideosFilterer'),
+const VideosWithFilterer = React.lazy(
+  () => import('../../partial/VideosWithFilterer/VideosWithFilterer'),
 );
 
 const CategoryPage = () => {
   const {queryParams} = useCategoryPage();
   return (
     <main className="category-page">
-      <VideosFilterer />
-      <Videos queryParams={queryParams} />
+      <VideosWithFilterer queryParams={queryParams} />
     </main>
   );
 };

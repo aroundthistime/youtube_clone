@@ -1,12 +1,16 @@
 import React from 'react';
 import {faCog} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import DetailUserProfile from '../../../partial/DetailUserProfile/DetailUserProfile';
 import PopupWithButtons from '../../../partial/PopupWithButtons/PopupWithButtons';
 import './MyProfilePage.scss';
 import {useMyProfilePage} from './useMyProfilePage';
-import VideosFilterer from '../../../partial/VideosFilterer/VideosFilterer';
-import Videos from '../../../partial/Videos/Videos';
+
+const DetailUserProfile = React.lazy(
+  () => import('../../../partial/DetailUserProfile/DetailUserProfile'),
+);
+const VideosWithFilterer = React.lazy(
+  () => import('../../../partial/VideosWithFilterer/VideosWithFilterer'),
+);
 
 const MyProfilePage = () => {
   const {user, popupRef, showButtonsPopup, popupButtons, queryParams} =
@@ -19,8 +23,7 @@ const MyProfilePage = () => {
           <MyProfilePage.ConfigButton onClick={showButtonsPopup} />
         }
       />
-      <VideosFilterer />
-      <Videos queryParams={queryParams} />
+      <VideosWithFilterer queryParams={queryParams} />
       <PopupWithButtons ref={popupRef} className="my-profile__config-popup">
         {popupButtons.map(popupButton => (
           <PopupWithButtons.Button {...popupButton} key={popupButton.text} />
