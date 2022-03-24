@@ -16,7 +16,7 @@ $scrollbar-width: 10px;
 
 @mixin scrollbar($axis: 'xy') {
   @include overflow($axis);
-  scrollbar-gutter: stable both-edges;
+  scrollbar-gutter: stable;
   &::-webkit-scrollbar {
     width: $scrollbar-width;
   }
