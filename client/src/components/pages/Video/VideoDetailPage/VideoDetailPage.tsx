@@ -1,8 +1,15 @@
 import React from 'react';
+import VideoPlayer from '../../../partial/VideoPlayer/VideoPlayer';
+import {useVideoDetailPage} from './useVideoDetailPage';
 import './VideoDetailPage.scss';
 
 const VideoDetailPage = () => {
-  return <main className="video-detail">비디오</main>;
+  const {video} = useVideoDetailPage();
+  return (
+    <main className="video-detail">
+      <VideoPlayer video={video} />
+    </main>
+  );
 };
 
-export default VideoDetailPage;
+export default React.memo(VideoDetailPage);

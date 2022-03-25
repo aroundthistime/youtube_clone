@@ -21,11 +21,13 @@ PageForm.Form = ({
   className = '',
   onSubmit,
   children,
+  id,
 }: PropsWithChildren<{
   onSubmit: React.FormEventHandler<HTMLFormElement>;
   className?: string;
+  id?: string;
 }>) => (
-  <form className={className} onSubmit={onSubmit}>
+  <form className={className} onSubmit={onSubmit} id={id}>
     {children}
   </form>
 );

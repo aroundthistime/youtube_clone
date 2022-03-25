@@ -1,6 +1,9 @@
 @import './variables/variables';
 
-input {
+input,
+textarea,
+select {
   width: 100%;
   padding: padding-vertical('small') padding-horizontal('small');
+  font-family: 'Oxygen', 'Nanum Gothic', sans-serif;
 }

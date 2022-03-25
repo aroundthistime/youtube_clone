@@ -8,3 +8,9 @@ export const getCurrentCategoryFromPathname = (
 export const getUserIdFromPathname = (pathname: string): string | undefined => {
   return pathname.split('/')[2];
 };
+
+export const getVideoIdFromPathname = (
+  pathname: string,
+): string | undefined => {
+  return pathname.split('/')[2];
+};
