@@ -2,13 +2,17 @@
 import {useCallback, useEffect, useMemo} from 'react';
 import {useSelector} from 'react-redux';
 import {useLocation, useNavigate} from 'react-router-dom';
+import {useVideosFilterQueries} from '../../../@hooks/useVideosFilterQueries';
 import {RootState} from '../../../@modules/root';
-import {VideosQueryParams} from '../../../@queries/useVideosQuery';
+import {
+  useVideosQuery,
+  VideosQueryType,
+} from '../../../@queries/useVideosQuery';
 import routes from '../../../routes';
 import {getCurrentCategoryFromPathname} from '../../../utils/urlHandler';
 
 type ReturnType = {
-  queryParams: VideosQueryParams;
+  videosQuery: VideosQueryType;
 };
 
 export const useCategoryPage = (): ReturnType => {
@@ -32,9 +36,18 @@ export const useCategoryPage = (): ReturnType => {
     [categories],
   );
 
-  return {
-    queryParams: {
+  const {sortMethod, uploadTime} = useVideosFilterQueries();
+  const videosQueryParams = useMemo(() => {
+    return {
+      sortMethod,
+      uploadTime,
       category: currentCategory,
-    },
+    };
+  }, [sortMethod, uploadTime, currentCategory]);
+
+  const videosQuery = useVideosQuery(videosQueryParams);
+
+  return {
+    videosQuery,
   };
 };

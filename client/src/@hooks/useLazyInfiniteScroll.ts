@@ -7,8 +7,7 @@ export const useLazyInfiniteScroll = (
   items: undefined | any[],
   elementClassName: string,
   fetchNextPage: Function,
-  hasNextPage: boolean | undefined,
-  isFetchingNextPage: boolean,
+  canFetchNextPage: boolean,
 ) => {
   const [observer, setElements, entries] = useInterSectionObserver();
 
@@ -33,11 +32,7 @@ export const useLazyInfiniteScroll = (
         });
 
         observer?.unobserve(targetElement);
-        if (
-          entries.length - 1 === index &&
-          hasNextPage &&
-          !isFetchingNextPage
-        ) {
+        if (entries.length - 1 === index && canFetchNextPage) {
           fetchNextPage();
         }
       }

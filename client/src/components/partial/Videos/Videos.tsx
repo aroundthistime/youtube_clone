@@ -1,5 +1,5 @@
 import React, {PropsWithChildren, Suspense} from 'react';
-import {VideosQueryParams} from '../../../@queries/useVideosQuery';
+import {VideosQueryType} from '../../../@queries/useVideosQuery';
 import EmptyContent from '../../atom/EmptyContent/EmptyContent';
 import Loader from '../../atom/Loader/Loader';
 import FetchMoreIndicator from '../FetchMoreIndicator/FetchMoreIndicator';
@@ -8,26 +8,35 @@ import {useVideos} from './useVideos';
 import './Videos.scss';
 
 type Props = {
-  queryParams?: VideosQueryParams;
+  videosQuery: VideosQueryType;
   className?: string;
 };
 
-const Videos = ({queryParams = {}, className = ''}: Props) => {
-  const {videos, isFetchingNextPage} = useVideos(queryParams);
-  return (
-    <Suspense fallback={<Loader />}>
-      {videos.length > 0 ? (
-        <ul className={`videos ${className}`}>
-          {videos.map(video => (
-            <Video className="videos__video" video={video} key={video._id} />
-          ))}
-        </ul>
-      ) : (
-        <EmptyContent message="동영상이 존재하지 않습니다" />
-      )}
-      {isFetchingNextPage && <FetchMoreIndicator />}
-    </Suspense>
-  );
+const Videos = ({videosQuery, className = ''}: Props) => {
+  const {videos, isFetchingNextPage} = useVideos(videosQuery);
+  if (videos.length > 0) {
+    return (
+      <ul className={`videos ${className}`}>
+        {videos.map(video => (
+          <Video className="videos__video" video={video} key={video._id} />
+        ))}
+      </ul>
+    );
+  }
+  return <EmptyContent message="동영상이 존재하지 않습니다" />;
 };
 
-export default React.memo(Videos);
+// <Suspense fallback={<Loader />}>
+// {videos.length > 0 ? (
+//   <ul className={`videos ${className}`}>
+//     {videos.map(video => (
+//       <Video className="videos__video" video={video} key={video._id} />
+//     ))}
+//   </ul>
+// ) : (
+//   <EmptyContent message="동영상이 존재하지 않습니다" />
+// )}
+//   {isFetchingNextPage && <FetchMoreIndicator />}
+// </Suspense>
+
+export default Videos;

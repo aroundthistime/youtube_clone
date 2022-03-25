@@ -7,10 +7,10 @@ const VideosWithFilterer = React.lazy(
 );
 
 const SearchPage = () => {
-  const {queryParams} = useSearchPage();
+  const {videosQuery} = useSearchPage();
   return (
     <main className="search">
-      <VideosWithFilterer queryParams={queryParams} />
+      <VideosWithFilterer videosQuery={videosQuery} />
     </main>
   );
 };

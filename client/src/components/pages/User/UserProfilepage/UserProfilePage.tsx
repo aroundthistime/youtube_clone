@@ -14,11 +14,11 @@ const EmptyContent = React.lazy(
 );
 
 const UserDetailPage = () => {
-  const {user, queryParams} = useUserProfilePage();
+  const {user, videosQuery} = useUserProfilePage();
   return (
     <main className="user-profile">
       <DetailUserProfile user={user} />
-      <VideosWithFilterer queryParams={queryParams} />
+      {videosQuery && <VideosWithFilterer videosQuery={videosQuery} />}
     </main>
   );
 };

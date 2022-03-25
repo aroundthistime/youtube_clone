@@ -1,17 +1,19 @@
 /* eslint-disable import/prefer-default-export */
-import {useEffect, useCallback} from 'react';
-import {useLocation, useNavigate} from 'react-router-dom';
+import {useRemoveUrlQuery} from '../../../@hooks/useRemoveUrlQuery';
+import {
+  useVideosQuery,
+  VideosQueryType,
+} from '../../../@queries/useVideosQuery';
 
-export const useHomePage = () => {
-  const navigate = useNavigate();
-  const {pathname, search} = useLocation();
-  useEffect(() => {
-    removeUrlQuery();
-  }, [search]);
+type ReturnType = {
+  videosQuery: VideosQueryType;
+};
 
-  const removeUrlQuery = useCallback(() => {
-    if (search) {
-      navigate(pathname);
-    }
-  }, [search, pathname]);
+export const useHomePage = (): ReturnType => {
+  useRemoveUrlQuery();
+  const videosQuery = useVideosQuery();
+
+  return {
+    videosQuery,
+  };
 };

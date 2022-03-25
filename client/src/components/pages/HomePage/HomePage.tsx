@@ -4,10 +4,10 @@ import './HomePage.scss';
 import {useHomePage} from './useHomePage';
 
 const HomePage = () => {
-  useHomePage();
+  const {videosQuery} = useHomePage();
   return (
     <main className="home">
-      <Videos queryParams={{sortMethod: undefined, uploadTime: undefined}} />
+      <Videos videosQuery={videosQuery} />
     </main>
   );
 };

@@ -1,9 +1,14 @@
-import React from 'react';
+import React, {useCallback} from 'react';
 import {faCog} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {useDispatch} from 'react-redux';
+import {useNavigate} from 'react-router-dom';
 import PopupWithButtons from '../../../partial/PopupWithButtons/PopupWithButtons';
 import './MyProfilePage.scss';
 import {useMyProfilePage} from './useMyProfilePage';
+import routes from '../../../../routes';
+import {useLogoutQuery} from '../../../../@queries/useLogoutQuery';
+import {clearUser} from '../../../../@modules/userSlice';
 
 const DetailUserProfile = React.lazy(
   () => import('../../../partial/DetailUserProfile/DetailUserProfile'),
@@ -13,8 +18,7 @@ const VideosWithFilterer = React.lazy(
 );
 
 const MyProfilePage = () => {
-  const {user, popupRef, showButtonsPopup, popupButtons, queryParams} =
-    useMyProfilePage();
+  const {user, popupRef, showButtonsPopup, videosQuery} = useMyProfilePage();
   return (
     <main className="user-profile my-profile">
       <DetailUserProfile
@@ -23,11 +27,11 @@ const MyProfilePage = () => {
           <MyProfilePage.ConfigButton onClick={showButtonsPopup} />
         }
       />
-      <VideosWithFilterer queryParams={queryParams} />
+      <VideosWithFilterer videosQuery={videosQuery} />
       <PopupWithButtons ref={popupRef} className="my-profile__config-popup">
-        {popupButtons.map(popupButton => (
-          <PopupWithButtons.Button {...popupButton} key={popupButton.text} />
-        ))}
+        <MyProfilePage.EditProfileButton />
+        <MyProfilePage.ChangePasswordButton />
+        <MyProfilePage.LogoutButton />
       </PopupWithButtons>
     </main>
   );
@@ -42,5 +46,36 @@ MyProfilePage.ConfigButton = ({onClick}: ConfigButtonProps) => (
     <FontAwesomeIcon icon={faCog} className="config-button__icon" />
   </button>
 );
+
+MyProfilePage.EditProfileButton = () => {
+  const navigate = useNavigate();
+  const onClick = useCallback(
+    () => navigate(routes.users + routes.editProfile),
+    [],
+  );
+  return <PopupWithButtons.Button text="프로필 수정" onClick={onClick} />;
+};
+
+MyProfilePage.ChangePasswordButton = () => {
+  const navigate = useNavigate();
+  const onClick = useCallback(
+    () => navigate(routes.users + routes.changePasword),
+    [],
+  );
+
+  return <PopupWithButtons.Button text="비밀번호 변경" onClick={onClick} />;
+};
+
+MyProfilePage.LogoutButton = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [executeLogoutQuery] = useLogoutQuery();
+  const onClick = useCallback(async () => {
+    await executeLogoutQuery();
+    dispatch(clearUser());
+    navigate(routes.home);
+  }, []);
+  return <PopupWithButtons.Button text="로그아웃" onClick={onClick} />;
+};
 
 export default MyProfilePage;

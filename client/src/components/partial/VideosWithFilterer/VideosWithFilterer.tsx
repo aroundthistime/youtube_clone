@@ -1,5 +1,5 @@
 import React from 'react';
-import {VideosQueryParams} from '../../../@queries/useVideosQuery';
+import {VideosQueryType} from '../../../@queries/useVideosQuery';
 
 const VideosFilterer = React.lazy(
   () => import('../VideosFilterer/VideosFilterer'),
@@ -7,13 +7,13 @@ const VideosFilterer = React.lazy(
 const Videos = React.lazy(() => import('../Videos/Videos'));
 
 type Props = {
-  queryParams?: VideosQueryParams;
+  videosQuery: VideosQueryType;
 };
 
-const VideosWithFilterer = ({queryParams}: Props) => (
+const VideosWithFilterer = ({videosQuery}: Props) => (
   <>
     <VideosFilterer />
-    <Videos queryParams={queryParams} />
+    <Videos videosQuery={videosQuery} />
   </>
 );
 

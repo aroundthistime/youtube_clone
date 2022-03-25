@@ -1,14 +1,18 @@
 /* eslint-disable import/prefer-default-export */
 import {useMemo} from 'react';
 import {useLocation} from 'react-router-dom';
+import {useVideosFilterQueries} from '../../../../@hooks/useVideosFilterQueries';
 import {useUserProfileQuery} from '../../../../@queries/useProfileQuery';
-import {VideosQueryParams} from '../../../../@queries/useVideosQuery';
+import {
+  useUserVideosQuery,
+  VideosQueryType,
+} from '../../../../@queries/useVideosQuery';
 import {UserType} from '../../../../@types/UserType';
 import {getUserIdFromPathname} from '../../../../utils/urlHandler';
 
 type ReturnType = {
   user: UserType;
-  queryParams: VideosQueryParams;
+  videosQuery?: VideosQueryType;
 };
 
 export const useUserProfilePage = (): ReturnType => {
@@ -21,10 +25,19 @@ export const useUserProfilePage = (): ReturnType => {
     data: {user},
   } = useUserProfileQuery(userId);
 
+  const {sortMethod, uploadTime} = useVideosFilterQueries();
+  const videosQueryParams = useMemo(() => {
+    return {
+      sortMethod,
+      uploadTime,
+      userId: user._id,
+    };
+  }, [sortMethod, uploadTime, user?.id]);
+
+  const videosQuery = useUserVideosQuery(videosQueryParams);
+
   return {
     user,
-    queryParams: {
-      userId,
-    },
+    videosQuery,
   };
 };
