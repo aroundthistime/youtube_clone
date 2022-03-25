@@ -1,8 +1,16 @@
 import React from 'react';
+import {useWatchLaterPage} from './useWatchLaterPage';
 import './WatchLaterPage.scss';
 
+const Videos = React.lazy(() => import('../../../partial/Videos/Videos'));
+
 const WatchLaterPage = () => {
-  return <main className="watch-later">나중에 볼 영상</main>;
+  const {videosQuery} = useWatchLaterPage();
+  return (
+    <main className="watch-later">
+      <Videos videosQuery={videosQuery} />
+    </main>
+  );
 };
 
 export default WatchLaterPage;

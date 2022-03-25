@@ -6,6 +6,7 @@ import ErrorMessage from './components/partial/ErrorMessage/ErrorMessage';
 import Loader from './components/atom/Loader/Loader';
 import ErrorBoundary from './components/wrapper/ErrorBoundary/ErrorBoundary';
 import routes from './routes';
+import VideoUploadPage from './components/pages/Video/VideoUploadPage/VideoUploadPage';
 
 const Header = React.lazy(() => import('./components/partial/Header/Header'));
 const Nav = React.lazy(() => import('./components/partial/Nav/Nav'));
@@ -89,6 +90,14 @@ function App() {
                 element={
                   <MainErrorBoundary>
                     <CategoryPage />
+                  </MainErrorBoundary>
+                }
+              />
+              <Route
+                path={routes.uploadVideo}
+                element={
+                  <MainErrorBoundary>
+                    <VideoUploadPage />
                   </MainErrorBoundary>
                 }
               />

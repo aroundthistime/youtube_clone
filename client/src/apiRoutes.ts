@@ -64,6 +64,9 @@ const apiUrls = {
 
   // feed
   feed: '/feed',
+  get likedVideos() {
+    return `${this.feed}/liked-videos`;
+  },
   get history() {
     return `${this.feed}/history`;
   },
@@ -184,6 +187,10 @@ const apiRoutes: Record<string, ApiRouteType> = {
   },
   getCategories: {
     url: apiUrls.category,
+    method: 'get',
+  },
+  getLikedVideos: {
+    url: apiUrls.likedVideos,
     method: 'get',
   },
   getHistories: {

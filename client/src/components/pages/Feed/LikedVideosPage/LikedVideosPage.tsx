@@ -1,8 +1,16 @@
 import React from 'react';
 import './LikedVideosPage.scss';
+import {useLikedVideosPage} from './useLikedVideosPage';
+
+const Videos = React.lazy(() => import('../../../partial/Videos/Videos'));
 
 const LikedVideosPage = () => {
-  return <main className="liked-videos">좋아요한 영상</main>;
+  const {videosQuery} = useLikedVideosPage();
+  return (
+    <main className="liked-videos">
+      <Videos videosQuery={videosQuery} />
+    </main>
+  );
 };
 
 export default LikedVideosPage;

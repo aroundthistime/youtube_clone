@@ -1,8 +1,16 @@
 import React from 'react';
 import './HistoryPage.scss';
+import {useHistoryPage} from './useHistoryPage';
+
+const Videos = React.lazy(() => import('../../../partial/Videos/Videos'));
 
 const HistoryPage = () => {
-  return <main className="history">히스토리</main>;
+  const {videosQuery} = useHistoryPage();
+  return (
+    <main className="history">
+      <Videos videosQuery={videosQuery} />
+    </main>
+  );
 };
 
 export default HistoryPage;
