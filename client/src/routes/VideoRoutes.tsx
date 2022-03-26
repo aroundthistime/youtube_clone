@@ -18,16 +18,14 @@ const EmptyPage = React.lazy(
 );
 
 const VideoRoutes = () => (
-  <MainErrorBoundary>
-    <Suspense fallback={<Loader className="full-screen" />}>
-      <Routes>
-        <Route path={routes.videoDetail()} element={<VideoDetailPage />} />
-        <Route path={routes.uploadVideo} element={<VideoUploadPage />} />
-        <Route path={routes.editVideo()} element={<VideoEditPage />} />
-        <Route path="*" element={<EmptyPage />} />
-      </Routes>
-    </Suspense>
-  </MainErrorBoundary>
+  <Suspense fallback={<Loader className="full-screen" />}>
+    <Routes>
+      <Route path={routes.videoDetail()} element={<VideoDetailPage />} />
+      <Route path={routes.uploadVideo} element={<VideoUploadPage />} />
+      <Route path={routes.editVideo()} element={<VideoEditPage />} />
+      <Route path="*" element={<EmptyPage />} />
+    </Routes>
+  </Suspense>
 );
 
 export default VideoRoutes;

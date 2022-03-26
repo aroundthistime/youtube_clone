@@ -9,4 +9,4 @@
 9. history는 if loggedin일 때 videoDetail화면에서 useEffect로 실행하기
 10. profile videos에서 isMyProfile 여부는 route뿐만 아니라 user && (user.\_id == 현재 url의 id)인지 확인
 11. filter 변경했을 때 다시 fetching중인지 여부 보여지지 않음 -> 그에 따라 Loader 적용
-12.
+12. centered main classname 추가해서 해당 className의 main들은 flex center center 적용하기

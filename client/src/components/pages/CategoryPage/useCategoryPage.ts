@@ -1,13 +1,14 @@
 /* eslint-disable import/prefer-default-export */
 import {useEffect, useMemo} from 'react';
+import {useSelector} from 'react-redux';
 import {useLocation, useNavigate} from 'react-router-dom';
 import {useVideosFilterQueries} from '../../../@hooks/useVideosFilterQueries';
+import {RootState} from '../../../@modules/root';
 import {
   useVideosQuery,
   VideosQueryType,
 } from '../../../@queries/useVideosQuery';
 import routes from '../../../routes';
-import {isValidCategory} from '../../../utils/fetchHandlers';
 import {getCurrentCategoryFromPathname} from '../../../utils/urlHandler';
 
 type ReturnType = {
@@ -17,12 +18,13 @@ type ReturnType = {
 export const useCategoryPage = (): ReturnType => {
   const location = useLocation();
   const navigate = useNavigate();
+  const categories = useSelector((state: RootState) => state.categories);
   const currentCategory = useMemo(() => {
     return getCurrentCategoryFromPathname(location.pathname);
   }, [location.pathname]);
 
   useEffect(() => {
-    if (!isValidCategory(currentCategory)) {
+    if (!currentCategory || !categories.includes(currentCategory)) {
       navigate(routes.home);
     }
   }, [currentCategory]);

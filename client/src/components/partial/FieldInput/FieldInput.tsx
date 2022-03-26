@@ -1,4 +1,5 @@
 import React, {PropsWithChildren} from 'react';
+import {getSizeInMB} from '../../../utils/mathHandler';
 import './FieldInput.scss';
 
 export interface FieldInputPropsType
@@ -26,6 +27,28 @@ interface FieldNameProps extends DefaultProps {
 
 FieldInput.FieldName = ({fieldName, className = ''}: FieldNameProps) => (
   <p className={`field-input__field-name ${className}`}>{fieldName}</p>
+);
+interface FieldInputLabelProps {
+  htmlFor: string;
+  file?: File;
+  className?: string;
+}
+
+FieldInput.Label = React.memo(
+  ({htmlFor, file, className = ''}: FieldInputLabelProps) => (
+    <label
+      htmlFor={htmlFor}
+      className={`file-input__label no-drag ${className}`}>
+      {file ? (
+        <div className="file-information">
+          <p>파일명 : {file.name}</p>
+          <p>파일용량 : {getSizeInMB(file.size)}MB</p>
+        </div>
+      ) : (
+        <div className="file-upload-button">파일 선택하기</div>
+      )}
+    </label>
+  ),
 );
 
 export default FieldInput;

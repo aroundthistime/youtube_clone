@@ -1,8 +1,5 @@
 /* eslint-disable import/prefer-default-export */
-import {useCallback} from 'react';
 import {InfiniteData} from 'react-query';
-import {useSelector} from 'react-redux';
-import {RootState} from '../@modules/root';
 import {GetVideosReturnType, GetVideosSuccess} from '../@types/QueryParamsType';
 import {BriefVideoType} from '../@types/VideoType';
 
@@ -36,9 +33,4 @@ export const getFormDataFromObject = (obj: Object): FormData => {
     formData.append(key, value);
   });
   return formData;
-};
-
-export const isValidCategory = (category: string | undefined) => {
-  const categories = useSelector((state: RootState) => state.categories);
-  return category && categories.includes(category);
 };
