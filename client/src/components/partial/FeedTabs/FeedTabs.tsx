@@ -1,29 +1,63 @@
-import React from 'react';
-import {Link} from 'react-router-dom';
-import Nav, {NavTabContent} from '../Nav/Nav';
-import {FeedTabType, useFeedTabs} from './useFeedTabs';
+import React, {useMemo} from 'react';
+import {Link, useLocation} from 'react-router-dom';
+import {NavTabContentType} from '../../../@types/NavTabType';
+import routes from '../../../routes';
+import {NavTabContent} from '../Nav/Nav';
 
 const FeedTabs = () => {
-  const {feedTabs} = useFeedTabs();
   return (
     <ul className="nav__tabs feed-tabs">
-      {feedTabs.map(feedTab => (
-        <FeedTabs.FeedTab {...feedTab} key={feedTab.name} />
-      ))}
+      <FeedTabs.LikedVideosTab />
+      <FeedTabs.HistoryTab />
+      <FeedTabs.WatchLaterTab />
     </ul>
   );
 };
 
-FeedTabs.FeedTab = ({name, iconClassName, path, isSelected}: FeedTabType) => (
-  <Link to={path} className="feed-link">
-    <NavTabContent
-      tab={{
-        name,
-        iconClassName,
-        isSelected,
-      }}
-    />
-  </Link>
+FeedTabs.LikedVideosTab = () => (
+  <FeedTabs.FeedTab
+    name="Liked Videos"
+    iconClassName="fa-solid fa-thumbs-up"
+    path={routes.likedVideos}
+  />
 );
+
+FeedTabs.HistoryTab = () => (
+  <FeedTabs.FeedTab
+    name="History"
+    iconClassName="fa-solid fa-clock-rotate-left"
+    path={routes.history}
+  />
+);
+
+FeedTabs.WatchLaterTab = () => (
+  <FeedTabs.FeedTab
+    name="Watch Later"
+    iconClassName="fa-regular fa-clock"
+    path={routes.watchLater}
+  />
+);
+
+type FeedTabProps = Pick<NavTabContentType, 'name' | 'iconClassName'> & {
+  path: string;
+};
+
+FeedTabs.FeedTab = ({name, iconClassName, path}: FeedTabProps) => {
+  const location = useLocation();
+  const isSelected = useMemo(() => {
+    return location.pathname === routes.feed + path;
+  }, [location.pathname]);
+  return (
+    <Link to={path} className="feed-link">
+      <NavTabContent
+        tab={{
+          name,
+          iconClassName,
+          isSelected,
+        }}
+      />
+    </Link>
+  );
+};
 
 export default FeedTabs;

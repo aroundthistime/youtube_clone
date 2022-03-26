@@ -1,29 +1,69 @@
 import axios from 'axios';
 import {useMutation} from 'react-query';
+import qs from 'qs';
 import apiRoutes from '../apiRoutes';
+import {getFormDataFromObject} from '../utils/fetchHandlers';
 
-const editVideo = async (videoId: string): Promise<boolean> => {
+interface VideoMutationRequirements {
+  title: string;
+  description?: string;
+  category?: string;
+}
+
+interface VideoEditRequirements extends VideoMutationRequirements {
+  videoId: string;
+}
+
+interface VideoUploadRequirements extends VideoMutationRequirements {
+  videoFile: File;
+  thumbnailImage: File;
+}
+
+const uploadVideo = async (
+  videoUploadRequirements: VideoUploadRequirements,
+) => {
+  const route = apiRoutes.uploadVideo;
+  const formData = getFormDataFromObject(videoUploadRequirements);
+  const {data} = await axios({
+    url: route.url as string,
+    method: route.method,
+    data: formData,
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+  return data;
+};
+
+const editVideo = async (videoEditRequirements: VideoEditRequirements) => {
   const route = apiRoutes.editVideo;
   const urlFunction = route.url as Function;
-  const {
-    data: {result},
-  } = await axios({
-    url: urlFunction(videoId),
+  const {data} = await axios({
+    url: urlFunction(videoEditRequirements.videoId),
     method: route.method,
+    data: qs.stringify({
+      title: videoEditRequirements.title,
+      description: videoEditRequirements.description,
+      category: videoEditRequirements.category,
+    }),
   });
-  return result;
+  return data;
 };
 
 const deleteVideo = async (videoId: string): Promise<boolean> => {
   const route = apiRoutes.deleteVideo;
   const urlFunction = route.url as Function;
-  const {
-    data: {result},
-  } = await axios({
+  const {data} = await axios({
     url: urlFunction(videoId),
     method: route.method,
   });
-  return result;
+  return data;
+};
+
+export const useUploadVideoMutation = () => {
+  return useMutation(uploadVideo, {
+    mutationKey: 'uploadVideo',
+  });
 };
 
 export const useEditVideoMutation = () => {

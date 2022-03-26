@@ -12,7 +12,7 @@ export interface BriefVideoType {
 export interface VideoType extends BriefVideoType {
   fileUrl: string;
   description?: string;
-  category: string;
+  category?: string;
   isLiked?: boolean;
   commentsCount?: number;
 }

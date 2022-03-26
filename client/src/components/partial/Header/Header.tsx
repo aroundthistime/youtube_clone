@@ -1,11 +1,12 @@
 import {IconProp} from '@fortawesome/fontawesome-svg-core';
 import {faBars, faVideo} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import React, {useCallback} from 'react';
+import React, {PropsWithChildren, useCallback} from 'react';
 import {useSelector} from 'react-redux';
 import {Link} from 'react-router-dom';
 import {RootState} from '../../../@modules/root';
 import {UserState} from '../../../@modules/userSlice';
+import {UserType} from '../../../@types/UserType';
 import LogoImage from '../../../assets/images/logo.png';
 import routes from '../../../routes';
 import ProfileImage from '../../atom/ProfileImage/ProfileImage';
@@ -17,11 +18,19 @@ type Props = {
 };
 
 const Header = ({showMobileNav}: Props) => {
+  const user = useSelector((state: RootState) => state.user);
   return (
     <header className="header">
       <Header.Logo />
       <SearchForm />
-      <Header.Right showMobileNav={showMobileNav} />
+      <Header.Right>
+        {user ? (
+          <Header.LoggedInButtons user={user} />
+        ) : (
+          <Header.NotLoggedInButtons />
+        )}
+        <Header.MobileNavToggleButton showMobileNav={showMobileNav} />
+      </Header.Right>
     </header>
   );
 };
@@ -35,23 +44,25 @@ Header.Logo = () => {
   );
 };
 
-type HeaderRightProps = {
-  showMobileNav: React.MouseEventHandler<HTMLButtonElement>;
+Header.Right = ({children}: PropsWithChildren<{}>) => (
+  <div className="header__right no-drag">{children}</div>
+);
+
+type HeaderLoggedInButtonsProps = {
+  user: UserType;
 };
 
-Header.Right = ({showMobileNav}: HeaderRightProps) => {
-  const user = useSelector((state: RootState) => state.user);
-  return (
-    <div className="header__right no-drag">
-      {user && <Header.UploadButton />}
-      <Header.AuthButton user={user} />
-      <Header.MobileNavToggleButton showMobileNav={showMobileNav} />
-    </div>
-  );
-};
+Header.LoggedInButtons = ({user}: HeaderLoggedInButtonsProps) => (
+  <>
+    <Header.UploadButton />
+    <Header.AuthButton user={user} />
+  </>
+);
+
+Header.NotLoggedInButtons = () => <Header.AuthButton />;
 
 type AuthButtonProps = {
-  user: UserState;
+  user?: UserState;
 };
 
 Header.AuthButton = ({user}: AuthButtonProps) => {

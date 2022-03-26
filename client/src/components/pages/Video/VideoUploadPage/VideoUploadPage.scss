@@ -2,4 +2,12 @@ main.video-upload {
   display: flex;
   justify-content: center;
   align-items: center;
+  .upload-form {
+    .upload-form__file-input {
+      display: none;
+    }
+    .file-input-label {
+      margin-top: 0.1rem;
+    }
+  }
 }

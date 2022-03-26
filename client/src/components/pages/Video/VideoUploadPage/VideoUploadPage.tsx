@@ -1,5 +1,6 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {useSelector} from 'react-redux';
+import {useFileInputOnChange} from '../../../../@hooks/useFileInputOnChange';
 import {RootState} from '../../../../@modules/root';
 import FieldInput from '../../../partial/FieldInput/FieldInput';
 import FileInputLabel from '../../../partial/FileInputLabel/FileInputLabel';
@@ -39,13 +40,7 @@ const VideoUploadPage = () => {
 
 VideoUploadPage.VideoInput = React.memo(
   React.forwardRef<HTMLInputElement>((_, ref) => {
-    const [file, setFile] = useState<File>();
-    const onChange = useCallback(event => {
-      const targetElement = event.target as HTMLInputElement;
-      if (targetElement.files) {
-        setFile(targetElement.files[0]);
-      }
-    }, []);
+    const {file, onChange} = useFileInputOnChange();
 
     return (
       <FieldInput>
@@ -67,19 +62,26 @@ VideoUploadPage.VideoInput = React.memo(
 );
 
 VideoUploadPage.ThumbnailInput = React.memo(
-  React.forwardRef<HTMLInputElement>((_, ref) => (
-    <FieldInput>
-      <FieldInput.FieldName fieldName="썸네일 이미지" />
-      <input
-        type="file"
-        required
-        accept="image/*"
-        className="upload-form__input upload-form__file-input"
-        name="thumbnailImage"
-        ref={ref}
-      />
-    </FieldInput>
-  )),
+  React.forwardRef<HTMLInputElement>((_, ref) => {
+    const {file, onChange} = useFileInputOnChange();
+
+    return (
+      <FieldInput>
+        <FieldInput.FieldName fieldName="썸네일 이미지" />
+        <input
+          type="file"
+          required
+          accept="image/*"
+          className="upload-form__input upload-form__file-input"
+          id="thumbnailImage"
+          name="thumbnailImage"
+          onChange={onChange}
+          ref={ref}
+        />
+        <FileInputLabel htmlFor="thumbnailImage" file={file} />
+      </FieldInput>
+    );
+  }),
 );
 
 VideoUploadPage.TitleInput = React.memo(

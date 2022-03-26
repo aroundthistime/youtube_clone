@@ -5,6 +5,9 @@
   padding: padding-vertical('small') padding-horizontal('small');
   background-color: $light-gray;
   border-radius: $border-radius;
+  &:active {
+    background-color: $light-gray-active;
+  }
   .file-upload-button {
     text-align: center;
   }

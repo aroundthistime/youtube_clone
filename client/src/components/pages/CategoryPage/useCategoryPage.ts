@@ -1,14 +1,13 @@
 /* eslint-disable import/prefer-default-export */
-import {useCallback, useEffect, useMemo} from 'react';
-import {useSelector} from 'react-redux';
+import {useEffect, useMemo} from 'react';
 import {useLocation, useNavigate} from 'react-router-dom';
 import {useVideosFilterQueries} from '../../../@hooks/useVideosFilterQueries';
-import {RootState} from '../../../@modules/root';
 import {
   useVideosQuery,
   VideosQueryType,
 } from '../../../@queries/useVideosQuery';
 import routes from '../../../routes';
+import {isValidCategory} from '../../../utils/fetchHandlers';
 import {getCurrentCategoryFromPathname} from '../../../utils/urlHandler';
 
 type ReturnType = {
@@ -16,7 +15,6 @@ type ReturnType = {
 };
 
 export const useCategoryPage = (): ReturnType => {
-  const categories = useSelector((state: RootState) => state.categories);
   const location = useLocation();
   const navigate = useNavigate();
   const currentCategory = useMemo(() => {
@@ -28,13 +26,6 @@ export const useCategoryPage = (): ReturnType => {
       navigate(routes.home);
     }
   }, [currentCategory]);
-
-  const isValidCategory = useCallback(
-    (category: string | undefined) => {
-      return category && categories.includes(category);
-    },
-    [categories],
-  );
 
   const {sortMethod, uploadTime} = useVideosFilterQueries();
   const videosQueryParams = useMemo(() => {
