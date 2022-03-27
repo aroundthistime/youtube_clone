@@ -1,5 +1,5 @@
 /* eslint-disable import/prefer-default-export */
-import {useMemo} from 'react';
+import {useMemo, useRef} from 'react';
 import {useLocation} from 'react-router-dom';
 import {useVideoQuery} from '../../../../@queries/useVideoQuery';
 import {VideoType} from '../../../../@types/VideoType';
@@ -15,10 +15,13 @@ export const useVideoDetailPage = (): ReturnType => {
     () => getVideoIdFromPathname(location.pathname),
     [location.pathname],
   ) as string;
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   const {
     data: {video},
   } = useVideoQuery(videoId);
+
+  // before component unmount => playing video set
 
   return {
     video: {
