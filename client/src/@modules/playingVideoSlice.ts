@@ -1,12 +1,7 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {VideoType} from '../@types/VideoType';
 
-interface PlayingVideoType {
-  video: VideoType;
-  currentTime: number;
-}
-
-type PlayingVideoState = PlayingVideoType | null;
+type PlayingVideoState = VideoType | null;
 
 const initialState = null as PlayingVideoState;
 
@@ -14,13 +9,10 @@ const playingVideoSlice = createSlice({
   name: 'playingVideo',
   initialState,
   reducers: {
-    setPlayingVideo(_, {payload}: PayloadAction<PlayingVideoType>) {
-      return {
-        video: payload.video,
-        currentTime: payload.currentTime,
-      };
+    setPlayingVideo(_, {payload}: PayloadAction<VideoType>) {
+      return payload;
     },
-    clearPlayingVideo(_, __) {
+    clearPlayingVideo() {
       return null;
     },
   },

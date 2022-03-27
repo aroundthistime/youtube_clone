@@ -8,6 +8,7 @@ const VideoDetailPage = () => {
   return (
     <main className="video-detail">
       <VideoPlayer video={video} />
+      <VideoPlayer.Controller />
     </main>
   );
 };
