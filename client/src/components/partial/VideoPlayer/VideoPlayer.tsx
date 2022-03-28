@@ -96,31 +96,42 @@ VideoPlayer.ProgressBar = React.memo(({videoRef}: ProgressBarProps) => {
   );
   const dispatch = useDispatch();
 
+  // useEffect(() => {
+  //   setValue(currentTime / duration);
+  // }, [duration, currentTime]);
   useEffect(() => {
-    setValue(currentTime / duration);
-  }, [duration, currentTime]);
+    setValue(currentTime);
+  }, [currentTime]);
+
+  const STEP = useMemo(() => 0.1, []);
 
   const onChange: React.ChangeEventHandler<HTMLInputElement> = event => {
     if (videoRef.current) {
-      const inputCurrentTime = videoRef.current.duration * +event.target.value;
+      const inputValue = +event.target.value;
       const newCurrentTime =
-        duration - inputCurrentTime < 0.1 ? duration : inputCurrentTime;
+        duration - inputValue < STEP ? duration : inputValue;
       videoRef.current.currentTime = newCurrentTime;
     }
   };
 
+  const onMouseDown = useCallback(() => dispatch(pauseVideo()), []);
+
+  const onMouseUp = useCallback(() => dispatch(playVideo()), []);
+
   return (
-    // <div className="video-player__progress-bar-area">
-    <input
-      className="video-player__progress-bar"
-      type="range"
-      value={value}
-      min={0}
-      max={1}
-      step={1 / (duration * 30)}
-      onChange={onChange}
-    />
-    // </div>
+    <label className="video-player__progress-bar-area">
+      <input
+        className="video-player__progress-bar"
+        type="range"
+        value={value}
+        min={0}
+        max={duration}
+        step={STEP}
+        onChange={onChange}
+        onMouseDown={onMouseDown}
+        onMouseUp={onMouseUp}
+      />
+    </label>
   );
   // const percentage = useMemo(() => {
   //   return (currentTime / duration) * 100;

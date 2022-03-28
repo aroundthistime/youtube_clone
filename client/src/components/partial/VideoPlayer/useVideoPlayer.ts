@@ -43,10 +43,7 @@ export const useVideoPlayer = (video: VideoType): ReturnType => {
 
   useEffect(() => {
     if (videoElement) {
-      videoElement.onended = () => {
-        console.log('영상 지금 끝났다잉');
-        dispatch(endVideo());
-      };
+      videoElement.onended = () => dispatch(endVideo());
       videoElement.onclick = requestTogglePlayVideo;
       videoElement.ontimeupdate = saveVideoCurrentTime;
       videoElement.onloadedmetadata = () =>
@@ -61,12 +58,6 @@ export const useVideoPlayer = (video: VideoType): ReturnType => {
       videoElement?.pause();
     }
   }, [videoPlayer.status]);
-
-  // useEffect(() => {
-  //   if (videoElement) {
-  //     videoElement.currentTime = videoPlayer.currentTime;
-  //   }
-  // }, [videoPlayer.currentTime, videoElement]);
 
   useEffect(() => {
     if (videoElement) {
@@ -92,6 +83,14 @@ export const useVideoPlayer = (video: VideoType): ReturnType => {
     }
   }, [videoPlayer.viewMode]);
 
+  useEffect(() => {
+    const tryingToRewindEndedVideo =
+      !videoElement?.ended && videoPlayer.status === 'ended';
+    if (tryingToRewindEndedVideo) {
+      dispatch(playVideo());
+    }
+  }, [videoElement?.ended, videoPlayer.status]);
+
   const requestTogglePlayVideo = () => {
     dispatch(togglePlayVideo());
   };
@@ -99,11 +98,6 @@ export const useVideoPlayer = (video: VideoType): ReturnType => {
   const saveVideoCurrentTime = () => {
     if (videoElement) {
       dispatch(setCurrentTime(videoElement.currentTime));
-      const tryingToRewindEndedVideo =
-        !videoElement.ended && videoPlayer.status === 'ended';
-      if (tryingToRewindEndedVideo) {
-        dispatch(playVideo());
-      }
     }
   };
 
