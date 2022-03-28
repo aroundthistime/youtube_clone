@@ -1,14 +1,13 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {VideoType} from '../@types/VideoType';
 
 interface VideoPlayerState {
   status: 'playing' | 'paused' | 'ended';
   duration: number;
   currentTime: number;
   playbackRate: number;
-  isFullScreen: boolean;
   volume: number;
   muted: boolean;
+  viewMode: 'default' | 'cinema' | 'fullscreen';
 }
 
 const initialState = {
@@ -16,15 +15,30 @@ const initialState = {
   duration: 1,
   currentTime: 0,
   playbackRate: 1,
-  isFullScreen: false,
   volume: 1,
-  muted: false,
+  muted: true,
+  viewMode: 'default',
 } as VideoPlayerState;
 
 const videoPlayerSlice = createSlice({
   name: 'playingVideo',
   initialState,
   reducers: {
+    resetVideoPlayer() {
+      return initialState;
+    },
+    setDuration(state, {payload}: PayloadAction<number>) {
+      return {
+        ...state,
+        duration: payload,
+      };
+    },
+    setCurrentTime(state, {payload}: PayloadAction<number>) {
+      return {
+        ...state,
+        currentTime: payload,
+      };
+    },
     playVideo(state) {
       return {
         ...state,
@@ -40,6 +54,7 @@ const videoPlayerSlice = createSlice({
     endVideo(state) {
       return {
         ...state,
+        currentTime: state.duration,
         status: 'ended',
       };
     },
@@ -55,10 +70,22 @@ const videoPlayerSlice = createSlice({
         playbackRate: payload,
       };
     },
-    toggleVideoIsFullScreen(state) {
+    useFullScreen(state) {
       return {
         ...state,
-        isFullScreen: !state.isFullScreen,
+        viewMode: 'fullscreen',
+      };
+    },
+    useCinemaScreen(state) {
+      return {
+        ...state,
+        viewMode: 'cinema',
+      };
+    },
+    useDefaultScreen(state) {
+      return {
+        ...state,
+        viewMode: 'default',
       };
     },
     muteVideo(state) {
@@ -99,11 +126,16 @@ export const {
   pauseVideo,
   endVideo,
   togglePlayVideo,
-  toggleVideoIsFullScreen,
   toggleVideoIsMuted,
   muteVideo,
+  setCurrentTime,
+  setDuration,
   setPlaybackRate,
   setVolume,
+  resetVideoPlayer,
+  useFullScreen,
+  useCinemaScreen,
+  useDefaultScreen,
 } = videoPlayerSlice.actions;
 
 export default videoPlayerSlice.reducer;

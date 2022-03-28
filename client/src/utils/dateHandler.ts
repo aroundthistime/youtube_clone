@@ -52,3 +52,27 @@ export const getBiggestUnitFromMilliseconds = (milliseconds: number) => {
   }
   return '지금';
 };
+
+export const getTimestampFromSeconds = (timeInSeconds: number): string => {
+  const HOUR_TO_SECONDS = HOUR_TO_MILLISECONDS / SECOND_TO_MILLISECONDS;
+  const MINUTE_TO_SECONDS = 60;
+  let temp: number = Math.round(timeInSeconds);
+  let hours: number = 0;
+  let minutes: number = 0;
+  let seconds: number = 0;
+  if (temp >= HOUR_TO_SECONDS) {
+    hours = Math.floor(temp / HOUR_TO_SECONDS);
+    temp %= HOUR_TO_SECONDS;
+  }
+  if (temp >= MINUTE_TO_SECONDS) {
+    minutes = Math.floor(temp / MINUTE_TO_SECONDS);
+    temp %= MINUTE_TO_SECONDS;
+  }
+  seconds = temp;
+  const secondStringWithPadding = `${seconds}`.padStart(2, '0');
+  if (hours > 0) {
+    const minuteStringWithPadding = `${minutes}`.padStart(2, '0');
+    return `${hours}:${minuteStringWithPadding}:${secondStringWithPadding}`;
+  }
+  return `${minutes}:${secondStringWithPadding}`;
+};
