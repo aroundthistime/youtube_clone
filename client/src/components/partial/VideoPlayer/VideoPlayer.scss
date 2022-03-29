@@ -1,9 +1,6 @@
 @import '../../../styles/variables/variables';
 
 .video-player {
-  // display: flex;
-  // flex-direction: column;
-  // align-items: center;
   justify-content: center;
   position: relative;
   width: 900px;
@@ -19,75 +16,52 @@
   .video-player__video {
     background-color: rgba(0, 0, 0, 0.8);
   }
-  &[data-view-mode='fullscreen'] {
-    .video-player__controller {
-      transform: translateY(60px);
-      transition: all 0.25s ease-in-out;
-    }
-  }
   // &[data-view-mode='fullscreen'] {
   //   .video-player__controller {
-  //     transform: translateY(0);
+  //     transform: translateY(60px);
+  //     transition: all 0.25s ease-in-out;
   //   }
   // }
   .video-player__video {
     width: 100%;
     aspect-ratio: 16 / 9;
   }
-  .video-player__progress-bar-area {
+  .video-player__progress-bar-container {
     position: absolute;
     left: 0px;
-    bottom: 34px;
+    bottom: 32px;
     width: 100%;
-    height: 20px;
-    padding: 0;
-    z-index: $z-index-top - 1;
-
+    padding: 0 7.5px;
     .video-player__progress-bar {
-      appearance: none;
-      -webkit-appearance: none;
       width: 100%;
-      position: absolute;
-      bottom: 0;
-      margin: 0;
-      padding: 0;
-      background: transparent;
-      transition: height 0.25s ease-in-out;
+      height: 5px;
+      background-color: rgba(0, 0, 0, 0.2);
+      transition: all 0.1s ease-in-out;
       cursor: pointer;
-      &:focus {
-        outline: none;
-      }
-      &::-webkit-slider-thumb {
-        -webkit-appearance: none;
-        border: none;
-        width: 15px;
-        aspect-ratio: 1 / 1;
-        border-radius: 50%;
-        background: #fcfcfc;
-        transform: scale(0);
-        transition: all 0.1s ease-in-out;
-        bottom: 30px;
-        margin: -3.5px; /* alignment fix for Chrome */
-      }
-      &::-ms-thumb {
-        appearance: none;
-        border: none;
-        width: 15px;
-        aspect-ratio: 1 / 1;
-        border-radius: 50%;
-        bottom: 30px;
-        margin: 0; /* Reset margin in Edge since it supports -webkit-slider-thumb as well */
-      }
-      &::-webkit-slider-runnable-track {
-        background: red;
-        height: 6px;
-      }
       &:hover {
-        &::-webkit-slider-thumb {
-          transform: scale(1);
+        height: 10px;
+        .progress-bar--filled {
+          .progress-bar__current {
+            transform: scale(1);
+          }
         }
-        &::-webkit-slider-runnable-track {
-          height: 10px;
+      }
+      .progress-bar--filled {
+        height: 100%;
+        max-width: 100%;
+        background-color: red;
+        position: relative;
+        .progress-bar__current {
+          width: 15px;
+          aspect-ratio: 1 / 1;
+          border-radius: 50%;
+          position: absolute;
+          top: 50%;
+          margin-top: -7.5px;
+          right: -7.5px;
+          transform: scale(0);
+          background-color: white;
+          z-index: 3;
         }
       }
     }

@@ -7,3 +7,24 @@ select {
   padding: padding-vertical('small') padding-horizontal('small');
   font-family: 'Oxygen', 'Nanum Gothic', sans-serif;
 }
+
+@mixin track {
+  &::-webkit-slider-runnable-track {
+    @content;
+  }
+  &::-moz-range-track {
+    @content;
+  }
+  &::-moz-focus-outer {
+    border: 0;
+  }
+}
+
+@mixin thumb {
+  &::-webkit-slider-thumb {
+    @content;
+  }
+  &::-moz-range-thumb {
+    @content;
+  }
+}

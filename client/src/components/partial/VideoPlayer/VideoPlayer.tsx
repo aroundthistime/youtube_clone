@@ -87,78 +87,36 @@ type ProgressBarProps = {
 };
 
 VideoPlayer.ProgressBar = React.memo(({videoRef}: ProgressBarProps) => {
-  const [value, setValue] = useState<number>(0);
   const duration = useSelector(
     (state: RootState) => state.videoPlayer.duration,
   );
   const currentTime = useSelector(
     (state: RootState) => state.videoPlayer.currentTime,
   );
-  const dispatch = useDispatch();
+  const progressBarWidth = `${(currentTime / duration) * 100}%`;
 
-  // useEffect(() => {
-  //   setValue(currentTime / duration);
-  // }, [duration, currentTime]);
-  useEffect(() => {
-    setValue(currentTime);
-  }, [currentTime]);
-
-  const STEP = useMemo(() => 0.1, []);
-
-  const onChange: React.ChangeEventHandler<HTMLInputElement> = event => {
+  const setCurrentTimeByClick: React.MouseEventHandler<
+    HTMLDivElement
+  > = event => {
     if (videoRef.current) {
-      const inputValue = +event.target.value;
-      const newCurrentTime =
-        duration - inputValue < STEP ? duration : inputValue;
+      const percentage =
+        event.nativeEvent.offsetX / event.currentTarget.offsetWidth;
+      const newCurrentTime = percentage * duration;
       videoRef.current.currentTime = newCurrentTime;
     }
   };
 
-  const onMouseDown = useCallback(() => dispatch(pauseVideo()), []);
-
-  const onMouseUp = useCallback(() => dispatch(playVideo()), []);
-
   return (
-    <label className="video-player__progress-bar-area">
-      <input
+    <div className="video-player__progress-bar-container">
+      <div
         className="video-player__progress-bar"
-        type="range"
-        value={value}
-        min={0}
-        max={duration}
-        step={STEP}
-        onChange={onChange}
-        onMouseDown={onMouseDown}
-        onMouseUp={onMouseUp}
-      />
-    </label>
+        onClick={setCurrentTimeByClick}>
+        <div className="progress-bar--filled" style={{width: progressBarWidth}}>
+          <div className="progress-bar__current" />
+        </div>
+      </div>
+    </div>
   );
-  // const percentage = useMemo(() => {
-  //   return (currentTime / duration) * 100;
-  // }, [duration, currentTime]);
-  // const onProgressBarClick: React.MouseEventHandler<HTMLDivElement> = event => {
-  //   if (ref.current && videoRef.current) {
-  //     const progressBarWidth = ref.current.clientWidth;
-  //     console.log(progressBarWidth, event.nativeEvent.offsetX);
-  //     const newCurrentTime =
-  //       duration * (event.nativeEvent.offsetX / progressBarWidth);
-  //     videoRef.current.currentTime = newCurrentTime;
-  //   }
-  // };
-  // return (
-  //   <div className="video-player__progress-bar-area">
-  //     <div
-  //       className="video-player__progress-bar"
-  //       onClick={onProgressBarClick}
-  //       ref={ref}>
-  //       <div
-  //         className="progress-bar__current"
-  //         style={{width: `${percentage}%`}}>
-  //         <div className="current__marker" />
-  //       </div>
-  //     </div>
-  //   </div>
-  // );
 });
 
 VideoPlayer.Controller = () => (

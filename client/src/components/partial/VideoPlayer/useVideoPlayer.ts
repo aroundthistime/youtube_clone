@@ -10,10 +10,12 @@ import {
   setCurrentTime,
   setDuration,
   setVolume,
+  toggleFullScreen,
   togglePlayVideo,
   useDefaultScreen,
 } from '../../../@modules/videoPlayerSlice';
 import {VideoType} from '../../../@types/VideoType';
+import {isMobile} from '../../../utils/browser';
 
 type ReturnType = {
   videoRef: React.RefObject<HTMLVideoElement>;
@@ -45,6 +47,7 @@ export const useVideoPlayer = (video: VideoType): ReturnType => {
     if (videoElement) {
       videoElement.onended = () => dispatch(endVideo());
       videoElement.onclick = requestTogglePlayVideo;
+      videoElement.ondblclick = requestToggleFullScreen;
       videoElement.ontimeupdate = saveVideoCurrentTime;
       videoElement.onloadedmetadata = () =>
         dispatch(setDuration(videoElement.duration));
@@ -75,8 +78,14 @@ export const useVideoPlayer = (video: VideoType): ReturnType => {
   useEffect(() => {
     if (videoPlayerRef.current && videoPlayer.viewMode === 'fullscreen') {
       videoPlayerRef.current.requestFullscreen();
+      if (isMobile()) {
+        window.screen.orientation.lock('landscape');
+      }
     } else if (document.fullscreenElement) {
       document.exitFullscreen();
+      if (isMobile()) {
+        window.screen.orientation.unlock();
+      }
     }
     if (videoPlayerRef.current) {
       videoPlayerRef.current.dataset.viewMode = videoPlayer.viewMode;
@@ -93,6 +102,10 @@ export const useVideoPlayer = (video: VideoType): ReturnType => {
 
   const requestTogglePlayVideo = () => {
     dispatch(togglePlayVideo());
+  };
+
+  const requestToggleFullScreen = () => {
+    dispatch(toggleFullScreen());
   };
 
   const saveVideoCurrentTime = () => {

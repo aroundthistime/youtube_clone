@@ -88,6 +88,12 @@ const videoPlayerSlice = createSlice({
         viewMode: 'default',
       };
     },
+    toggleFullScreen(state) {
+      return {
+        ...state,
+        viewMode: state.viewMode === 'fullscreen' ? 'default' : 'fullscreen',
+      };
+    },
     muteVideo(state) {
       return {
         ...state,
@@ -136,6 +142,7 @@ export const {
   useFullScreen,
   useCinemaScreen,
   useDefaultScreen,
+  toggleFullScreen,
 } = videoPlayerSlice.actions;
 
 export default videoPlayerSlice.reducer;
