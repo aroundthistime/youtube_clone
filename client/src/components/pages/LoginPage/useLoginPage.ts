@@ -34,7 +34,7 @@ export const useLoginPage = (): ReturnType => {
   const checkLoginResult = () => {
     if (data?.result) {
       dispatch(setUser(data.user));
-      toast('로그인되었습니다.');
+      toast.success('로그인되었습니다.');
       navigate(routes.home);
     }
   };
