@@ -3,6 +3,7 @@
 import {useEffect, useState} from 'react';
 import {useDispatch} from 'react-redux';
 import {useNavigate} from 'react-router-dom';
+import {toast} from 'react-toastify';
 import {usePublicValidation} from '../../../@hooks/useAuthValidation';
 import {useInput} from '../../../@hooks/useInput';
 import {setUser} from '../../../@modules/userSlice';
@@ -46,6 +47,7 @@ export const useJoinPage = (): ReturnType => {
   const checkJoinResult = () => {
     if (data?.result) {
       dispatch(setUser(data.user));
+      toast(`환영합니다. ${data.user.name}님!`);
       navigate(routes.home);
     }
   };

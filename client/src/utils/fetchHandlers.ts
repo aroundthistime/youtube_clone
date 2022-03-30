@@ -16,14 +16,10 @@ export const getVideosFromData = (
 };
 
 export const getNextPageParam = (lastPage: any) => {
-  try {
-    if (lastPage.result === true && lastPage.hasNextPage) {
-      return lastPage.nextpage;
-    }
-    throw Error;
-  } catch {
-    return undefined;
+  if (lastPage?.result && lastPage?.hasNextPage) {
+    return lastPage.nextPage;
   }
+  return undefined;
 };
 
 export const getFormDataFromObject = (obj: Object): FormData => {

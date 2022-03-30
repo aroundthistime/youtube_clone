@@ -16,11 +16,14 @@ const Videos = ({videosQuery, className = ''}: Props) => {
   const {videos, isFetchingNextPage} = useVideos(videosQuery);
   if (videos.length > 0) {
     return (
-      <ul className={`videos ${className}`}>
-        {videos.map(video => (
-          <Video className="videos__video" video={video} key={video._id} />
-        ))}
-      </ul>
+      <>
+        <ul className={`videos ${className}`}>
+          {videos.map(video => (
+            <Video className="videos__video" video={video} key={video._id} />
+          ))}
+        </ul>
+        {isFetchingNextPage && <FetchMoreIndicator />}
+      </>
     );
   }
   return <EmptyContent message="동영상이 존재하지 않습니다" />;
@@ -39,4 +42,4 @@ const Videos = ({videosQuery, className = ''}: Props) => {
 //   {isFetchingNextPage && <FetchMoreIndicator />}
 // </Suspense>
 
-export default Videos;
+export default React.memo(Videos);

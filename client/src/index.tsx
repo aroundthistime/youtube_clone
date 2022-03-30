@@ -5,9 +5,11 @@ import './index.scss';
 import {Provider} from 'react-redux';
 import {PersistGate} from 'redux-persist/integration/react';
 import {QueryClient, QueryClientProvider} from 'react-query';
+import {ToastContainer} from 'react-toastify';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import useConfigureStore from './useConfigureStore';
+import 'react-toastify/dist/ReactToastify.css';
 
 // axios.defaults.baseURL = process.env.REACT_APP_BASE_URL;
 axios.defaults.withCredentials = true;
@@ -29,6 +31,7 @@ ReactDOM.render(
       <PersistGate loading={null} persistor={persistor}>
         <QueryClientProvider client={queryClient}>
           <App />
+          <ToastContainer position="bottom-right" />
         </QueryClientProvider>
       </PersistGate>
     </Provider>

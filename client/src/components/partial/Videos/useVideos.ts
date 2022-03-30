@@ -19,7 +19,6 @@ export const useVideos = (videosQuery: VideosQueryType): ReturnType => {
     () => Boolean(hasNextPage && !isFetchingNextPage),
     [hasNextPage, isFetchingNextPage],
   );
-
   useLazyInfiniteScroll(videos, 'video', fetchNextPage, canFetchNextPage);
 
   return {

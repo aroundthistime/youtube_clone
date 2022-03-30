@@ -2,6 +2,7 @@
 import {useEffect, useState} from 'react';
 import {useDispatch} from 'react-redux';
 import {useNavigate} from 'react-router-dom';
+import {toast} from 'react-toastify';
 import {usePublicValidation} from '../../../@hooks/useAuthValidation';
 import {useInput} from '../../../@hooks/useInput';
 import {setUser} from '../../../@modules/userSlice';
@@ -33,6 +34,7 @@ export const useLoginPage = (): ReturnType => {
   const checkLoginResult = () => {
     if (data?.result) {
       dispatch(setUser(data.user));
+      toast('로그인되었습니다.');
       navigate(routes.home);
     }
   };

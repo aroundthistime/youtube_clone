@@ -10,6 +10,7 @@ type ReturnType = {
   isMyVideo: boolean;
   timeDiffFromUploadDate: string;
   briefViews: string;
+  isLoggedIn: boolean;
 };
 
 export const useVideo = (video: BriefVideoType): ReturnType => {
@@ -26,14 +27,11 @@ export const useVideo = (video: BriefVideoType): ReturnType => {
     return getBiggestUnitFromNumber(video.views);
   }, [video.views]);
 
-  // const videoOverlayButtons = [
-  //
-  // ]
-
   return {
     isMyVideo,
     timeDiffFromUploadDate,
     briefViews,
+    isLoggedIn: Boolean(user),
   };
   // if isMyVideo => edit video, delete video
   // if !isMyVideo => watchLater, noInterest

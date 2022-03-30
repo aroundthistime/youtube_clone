@@ -12,3 +12,5 @@
 12. centered main classname 추가해서 해당 className의 main들은 flex center center 적용하기
 13. 볼륨조절 ㅠ
 14. fullscreen일때 컨트롤러
+15. partial도 form, video 등등에 따라서 subdirectory 나누기
+16. 나중에 영상 저장하는 곳 s3 storage로 바꾸면 process.env 다 지워야함 프론트에서

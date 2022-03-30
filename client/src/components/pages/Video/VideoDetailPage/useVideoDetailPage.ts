@@ -18,7 +18,6 @@ export const useVideoDetailPage = (): ReturnType => {
     () => getVideoIdFromPathname(location.pathname),
     [location.pathname],
   ) as string;
-  const videoRef = useRef<HTMLVideoElement>(null);
 
   const {
     data: {video},
