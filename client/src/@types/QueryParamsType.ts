@@ -1,5 +1,5 @@
 import {FailedResponseData, SuccessResponseData} from './ResponseData';
-import {BriefVideoType} from './VideoType';
+import {BriefVideoType, VideoType} from './VideoType';
 
 export interface DefaultInfiniteQueryParams {
   pageParam?: number;
@@ -10,9 +10,8 @@ export interface DefaultInfiniteFetchSuccess extends SuccessResponseData {
   nextPage: number;
 }
 
-interface FetchedVideoType {
+interface FetchedVideoType extends VideoType {
   isInWatchLater?: boolean | undefined;
-  _doc: BriefVideoType;
 }
 
 export interface GetVideosSuccess extends DefaultInfiniteFetchSuccess {

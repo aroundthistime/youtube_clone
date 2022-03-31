@@ -18,7 +18,7 @@ FeedTabs.LikedVideosTab = () => (
   <FeedTabs.FeedTab
     name="Liked Videos"
     iconClassName="fa-solid fa-thumbs-up"
-    path={routes.likedVideos}
+    path={routes.feed + routes.likedVideos}
   />
 );
 
@@ -26,7 +26,7 @@ FeedTabs.HistoryTab = () => (
   <FeedTabs.FeedTab
     name="History"
     iconClassName="fa-solid fa-clock-rotate-left"
-    path={routes.history}
+    path={routes.feed + routes.history}
   />
 );
 
@@ -34,7 +34,7 @@ FeedTabs.WatchLaterTab = () => (
   <FeedTabs.FeedTab
     name="Watch Later"
     iconClassName="fa-regular fa-clock"
-    path={routes.watchLater}
+    path={routes.feed + routes.watchLater}
   />
 );
 

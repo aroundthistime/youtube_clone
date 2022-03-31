@@ -4,12 +4,12 @@ import {BriefVideoType} from '../../../@types/VideoType';
 import Video from '../Video/Video';
 import {useDefaultVideo} from './useDefaultVideo';
 
-interface Props {
+export interface DefaultVideoProps {
   video: BriefVideoType;
   className?: string;
 }
 
-const DefaultVideo = ({video, className = ''}: Props) => {
+const DefaultVideo = ({video, className = ''}: DefaultVideoProps) => {
   const {isLoggedIn, isMyVideo, render, setRender} = useDefaultVideo(video);
   return (
     <Video video={video} className={className} render={render}>
@@ -18,7 +18,10 @@ const DefaultVideo = ({video, className = ''}: Props) => {
           {isMyVideo ? (
             <>
               <Video.EditVideoButton videoId={video._id} />
-              <Video.DeleteVideoButton videoId={video._id} />
+              <Video.DeleteVideoButton
+                videoId={video._id}
+                setRender={setRender}
+              />
             </>
           ) : (
             <>
@@ -30,6 +33,7 @@ const DefaultVideo = ({video, className = ''}: Props) => {
                 videoId={video._id}
                 mutation={useToggleNotInterestedMutation}
                 setRender={setRender}
+                isRevocable
               />
             </>
           )}

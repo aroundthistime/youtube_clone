@@ -3,6 +3,7 @@ import React, {
   PropsWithChildren,
   useCallback,
   useEffect,
+  useMemo,
   useState,
 } from 'react';
 import {Link, useNavigate} from 'react-router-dom';
@@ -17,7 +18,6 @@ import LazyImage from '../LazyImage/LazyImage';
 import {useVideo} from './useVideo';
 import {
   useDeleteVideoMutation,
-  useToggleNotInterestedMutation,
   useToggleWatchLaterMutation,
 } from '../../../@queries/useVideoMutation';
 import constants from '../../../constants';
@@ -33,19 +33,19 @@ interface IVideo
   InfoText: React.FC<VideoInfoTextProps>;
   OverlayButtons: React.FC<{}>;
   CreatorNameLink: React.FC<VideoCreatorNameProps>;
-  EditVideoButton: React.FC<VideoIdProps>;
-  DeleteVideoButton: React.FC<VideoIdProps>;
+  EditVideoButton: React.FC<VideoEditButtonProps>;
+  DeleteVideoButton: React.FC<VideoDeleteButtonProps>;
   ToggleWatchLaterButton: React.FC<ToggleWatchLaterButtonProps>;
   DeleteFromListButton: React.FC<DeleteVideoFromListButtonProps>;
   LoadingOverlayButton: React.FC<{}>;
   OverlayButton: React.FC<VideoOverlayButtonProps>;
 }
 
-type Props = {
+interface Props {
   video: BriefVideoType;
   className?: string;
   render?: boolean;
-};
+}
 
 const Video = React.memo(
   ({
@@ -135,7 +135,7 @@ Video.OverlayButtons = ({children}: PropsWithChildren<{}>) => (
   <div className="video__overlay-buttons">{children}</div>
 );
 
-Video.EditVideoButton = ({videoId}: VideoIdProps) => {
+Video.EditVideoButton = ({videoId}: VideoEditButtonProps) => {
   const navigate = useNavigate();
   const onClick = useCallback(() => {
     navigate(routes.editVideo(videoId));
@@ -149,7 +149,7 @@ Video.EditVideoButton = ({videoId}: VideoIdProps) => {
   );
 };
 
-Video.DeleteVideoButton = ({videoId}: VideoIdProps) => {
+Video.DeleteVideoButton = ({videoId, setRender}: VideoDeleteButtonProps) => {
   const {mutateAsync, data} = useDeleteVideoMutation();
   const onClick = useCallback(() => {
     if (window.confirm('정말 해당 영상을 삭제하시겠습니까?')) {
@@ -160,7 +160,7 @@ Video.DeleteVideoButton = ({videoId}: VideoIdProps) => {
   useEffect(() => {
     if (data?.result === true) {
       toast.success('해당 영상을 삭제했습니다.');
-      window.location.reload();
+      setRender(false);
     } else if (data?.result === false) {
       toast.error('요청하신 작업에 실패했습니다.');
     }
@@ -240,14 +240,15 @@ Video.DeleteFromListButton = ({
   videoId,
   mutation,
   setRender,
+  isRevocable = false,
 }: DeleteVideoFromListButtonProps) => {
   const {mutateAsync, isLoading} = mutation();
-  const delteVideoFromList = useCallback(async () => {
+  const deleteVideoFromList = useCallback(async () => {
     if (!window.confirm(constants.messages.confirmRemoveVideoFromList)) return;
     try {
       await mutateAsync(videoId);
-      toast.success(constants.messages.videoRemovedFromList, {
-        onClick: restoreVideoToList,
+      toast.success(deleteSuccessMessage, {
+        onClick: isRevocable ? restoreVideoToList : undefined,
       });
       setRender(false);
     } catch {
@@ -265,6 +266,12 @@ Video.DeleteFromListButton = ({
     }
   }, [videoId, setRender]);
 
+  const deleteSuccessMessage = useMemo(() => {
+    return isRevocable
+      ? constants.messages.videoRemovedFromList + constants.messages.cancelTask
+      : constants.messages.videoRemovedFromList;
+  }, [isRevocable]);
+
   if (isLoading) {
     return <Video.LoadingOverlayButton />;
   }
@@ -272,7 +279,7 @@ Video.DeleteFromListButton = ({
   return (
     <Video.OverlayButton
       text="목록에서 제거"
-      onClick={delteVideoFromList}
+      onClick={deleteVideoFromList}
       iconClassName="fa-solid fa-x"
     />
   );
@@ -310,8 +317,12 @@ type VideoCreatorNameProps = {
   creator: UserType;
 };
 
-interface VideoIdProps {
+interface VideoEditButtonProps {
   videoId: string;
+}
+
+interface VideoDeleteButtonProps extends VideoEditButtonProps {
+  setRender: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 interface ToggleWatchLaterButtonProps {
@@ -323,6 +334,7 @@ interface DeleteVideoFromListButtonProps {
   videoId: string;
   mutation: () => UseMutationResult<any, unknown, string, unknown>;
   setRender: React.Dispatch<React.SetStateAction<boolean>>;
+  isRevocable?: boolean;
 }
 
 type VideoOverlayButtonProps = {

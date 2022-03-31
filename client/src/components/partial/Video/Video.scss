@@ -75,10 +75,12 @@
       & > * {
         border-radius: 3px;
         background-color: black;
+        height: 20px;
       }
       .overlay-button__full-text {
+        display: flex;
+        align-items: center;
         width: 0;
-        height: 20px;
         border-radius: 3px;
         overflow: hidden;
         background-color: black;
@@ -88,7 +90,6 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        width: 20px;
         aspect-ratio: 1 / 1;
       }
     }
@@ -99,10 +100,8 @@
   .videos__video {
     .video__overlay-buttons {
       display: flex;
-      .video__overlay-button {
-        .overlay-button--default {
-          width: 30px;
-        }
+      .video__overlay-button > * {
+        height: 30px;
       }
     }
   }

@@ -7,6 +7,9 @@ import Loader from './components/atom/Loader/Loader';
 import ErrorBoundary from './components/wrapper/ErrorBoundary/ErrorBoundary';
 import routes from './routes';
 import VideoUploadPage from './components/pages/Video/VideoUploadPage/VideoUploadPage';
+import FeedRoutes from './routes/FeedRoutes';
+import UserRoutes from './routes/UserRoutes';
+import VideoRoutes from './routes/VideoRoutes';
 
 const Header = React.lazy(() => import('./components/partial/Header/Header'));
 const Nav = React.lazy(() => import('./components/partial/Nav/Nav'));
@@ -25,9 +28,6 @@ const SearchPage = React.lazy(
 const CategoryPage = React.lazy(
   () => import('./components/pages/CategoryPage/CategoryPage'),
 );
-const FeedRoutes = React.lazy(() => import('./routes/FeedRoutes'));
-const UserRoutes = React.lazy(() => import('./routes/UserRoutes'));
-const VideoRoutes = React.lazy(() => import('./routes/VideoRoutes'));
 const EmptyPage = React.lazy(
   () => import('./components/pages/EmptyPage/EmptyPage'),
 );
