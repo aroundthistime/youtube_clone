@@ -94,3 +94,16 @@
     }
   }
 }
+
+@include mobile {
+  .videos__video {
+    .video__overlay-buttons {
+      display: flex;
+      .video__overlay-button {
+        .overlay-button--default {
+          width: 30px;
+        }
+      }
+    }
+  }
+}
