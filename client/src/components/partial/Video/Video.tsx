@@ -3,11 +3,11 @@ import React, {
   PropsWithChildren,
   useCallback,
   useEffect,
-  useMemo,
   useState,
 } from 'react';
 import {Link, useNavigate} from 'react-router-dom';
 import {toast} from 'react-toastify';
+import {UseMutationResult} from 'react-query';
 import {UserType} from '../../../@types/UserType';
 import {BriefVideoType} from '../../../@types/VideoType';
 import ProfileImage from '../../atom/ProfileImage/ProfileImage';
@@ -16,10 +16,30 @@ import './Video.scss';
 import LazyImage from '../LazyImage/LazyImage';
 import {useVideo} from './useVideo';
 import {
-  useAddNoInterestMutation,
   useDeleteVideoMutation,
+  useToggleNotInterestedMutation,
+  useToggleWatchLaterMutation,
 } from '../../../@queries/useVideoMutation';
 import constants from '../../../constants';
+
+interface IVideo
+  extends React.MemoExoticComponent<
+    ({video, className, render}: PropsWithChildren<Props>) => JSX.Element | null
+  > {
+  Thumbnail: React.FC<VideoThumbnailProps>;
+  Detail: React.FC<{}>;
+  CreatorProfileLink: React.FC<VideoCreatorAvatarProps>;
+  Infos: React.FC<{}>;
+  InfoText: React.FC<VideoInfoTextProps>;
+  OverlayButtons: React.FC<{}>;
+  CreatorNameLink: React.FC<VideoCreatorNameProps>;
+  EditVideoButton: React.FC<VideoIdProps>;
+  DeleteVideoButton: React.FC<VideoIdProps>;
+  ToggleWatchLaterButton: React.FC<ToggleWatchLaterButtonProps>;
+  DeleteFromListButton: React.FC<DeleteVideoFromListButtonProps>;
+  LoadingOverlayButton: React.FC<{}>;
+  OverlayButton: React.FC<VideoOverlayButtonProps>;
+}
 
 type Props = {
   video: BriefVideoType;
@@ -27,49 +47,47 @@ type Props = {
   render?: boolean;
 };
 
-const Video = ({
-  video,
-  className = '',
-  render = true,
-}: PropsWithChildren<Props>) => {
-  const {isMyVideo, timeDiffFromUploadDate, briefViews, isLoggedIn} =
-    useVideo(video);
-  if (!render) {
-    return null;
-  }
-  return (
-    // <Link to={routes.videoDetail(video._id)} className={`video ${className}`}>
-    <div className={`video ${className}`}>
-      <Link to={routes.videoDetail(video._id)}>
-        <Video.Thumbnail
-          thumbnailUrl={process.env.REACT_APP_BASE_URL + video.thumbnailUrl}
-          videoTitle={video.title}
-        />
-      </Link>
-      {isLoggedIn && (
-        <Video.OverlayButtons videoId={video._id} isMyVideo={isMyVideo} />
-      )}
-      <Video.Detail>
-        <Video.CreatorProfileLink creator={video.creator} />
-        <Video.Infos>
-          <Link to={routes.videoDetail(video._id)}>
-            <Video.InfoText className="video__title">
-              {video.title}
-            </Video.InfoText>
-          </Link>
-          <Video.CreatorNameLink creator={video.creator} />
-          <Link to={routes.videoDetail(video._id)}>
-            <Video.InfoText>
-              <span>조회수 {briefViews}회</span>
-              <span>{timeDiffFromUploadDate}</span>
-            </Video.InfoText>
-          </Link>
-        </Video.Infos>
-      </Video.Detail>
-    </div>
-    // </Link>
-  );
-};
+const Video = React.memo(
+  ({
+    video,
+    className = '',
+    render = true,
+    children,
+  }: PropsWithChildren<Props>) => {
+    const {timeDiffFromUploadDate, briefViews} = useVideo(video);
+    if (!render) {
+      return null;
+    }
+    return (
+      <div className={`video ${className}`}>
+        <Link to={routes.videoDetail(video._id)}>
+          <Video.Thumbnail
+            thumbnailUrl={process.env.REACT_APP_BASE_URL + video.thumbnailUrl}
+            videoTitle={video.title}
+          />
+        </Link>
+        <Video.Detail>
+          <Video.CreatorProfileLink creator={video.creator} />
+          <Video.Infos>
+            <Link to={routes.videoDetail(video._id)}>
+              <Video.InfoText className="video__title">
+                {video.title}
+              </Video.InfoText>
+            </Link>
+            <Video.CreatorNameLink creator={video.creator} />
+            <Link to={routes.videoDetail(video._id)}>
+              <Video.InfoText>
+                <span>조회수 {briefViews}회</span>
+                <span>{timeDiffFromUploadDate}</span>
+              </Video.InfoText>
+            </Link>
+          </Video.Infos>
+        </Video.Detail>
+        {children}
+      </div>
+    );
+  },
+) as IVideo;
 
 Video.Thumbnail = ({thumbnailUrl, videoTitle}: VideoThumbnailProps) => (
   <div className="video__thumbnail">
@@ -99,7 +117,7 @@ Video.Infos = ({children}: PropsWithChildren<{}>) => (
 Video.InfoText = ({
   children,
   className = '',
-}: PropsWithChildren<{className?: string}>) => (
+}: PropsWithChildren<VideoInfoTextProps>) => (
   <p className={`video__info-text ${className}`}>{children}</p>
 );
 
@@ -113,20 +131,9 @@ Video.CreatorNameLink = ({
   </Link>
 );
 
-Video.OverlayButtons = ({videoId, isMyVideo}: VideoOverlayButtonsProps) => {
-  return (
-    <div className="video__overlay-buttons">
-      {isMyVideo ? (
-        <>
-          <Video.EditVideoButton videoId={videoId} />
-          <Video.DeleteVideoButton videoId={videoId} />
-        </>
-      ) : (
-        <Video.NoInterestButton videoId={videoId} />
-      )}
-    </div>
-  );
-};
+Video.OverlayButtons = ({children}: PropsWithChildren<{}>) => (
+  <div className="video__overlay-buttons">{children}</div>
+);
 
 Video.EditVideoButton = ({videoId}: VideoIdProps) => {
   const navigate = useNavigate();
@@ -135,7 +142,7 @@ Video.EditVideoButton = ({videoId}: VideoIdProps) => {
   }, [videoId]);
   return (
     <Video.OverlayButton
-      text="Edit Video"
+      text="영상 수정"
       onClick={onClick}
       iconClassName="fa-solid fa-pencil"
     />
@@ -161,109 +168,127 @@ Video.DeleteVideoButton = ({videoId}: VideoIdProps) => {
 
   return (
     <Video.OverlayButton
-      text="Delete Video"
+      text="영상 삭제"
       onClick={onClick}
       iconClassName="fa-solid fa-trash-can"
     />
   );
 };
 
-// Video.WatchLaterButton = ({isLiked : isLikedProp, videoId} : VideoWatchLaterButtonProps) => {
-//   const [isLiked, setIsLiked] = useState<boolean>(isLikedProp);
-//   // const {mutateAsync, data} =
+Video.ToggleWatchLaterButton = React.memo(
+  ({
+    videoId,
+    isInWatchLater: isInWatchLaterProp,
+  }: ToggleWatchLaterButtonProps) => {
+    const [isInWatchLater, setIsInWatchLater] =
+      useState<boolean>(isInWatchLaterProp);
+    const {mutateAsync, isLoading, isSuccess, isError} =
+      useToggleWatchLaterMutation();
+    const onClick = useCallback(async () => {
+      await mutateAsync(videoId);
+      console.log(isSuccess, isError, isLoading);
+      if (isSuccess) {
+        toggleState();
+      } else {
+        toast.error(constants.messages.taskFailed);
+      }
+    }, [videoId]);
 
-//   return (
+    const toggleState = useCallback(() => {
+      setIsInWatchLater(prev => {
+        const newState = !prev;
+        if (newState) {
+          showAddedToWatchLaterToast();
+        } else {
+          showDeletedFromWatchLaterToast();
+        }
+        return newState;
+      });
+    }, [setIsInWatchLater]);
 
-//   )
-//   }
+    const showAddedToWatchLaterToast = useCallback(() => {
+      toast.success('나중에 볼 영상에 추가되었습니다.');
+    }, []);
 
-Video.NoInterestButton = ({videoId}: VideoIdProps) => {
-  const {mutateAsync, data} = useAddNoInterestMutation();
-  const onClick = useCallback(() => {
-    if (window.confirm('해당 영상을 더 이상 보고싶지 않으신가요?')) {
-      mutateAsync(videoId);
+    const showDeletedFromWatchLaterToast = useCallback(() => {
+      toast.success('나중에 볼 영상에서 삭제되었습니다.');
+    }, []);
+
+    if (isLoading) {
+      return <Video.LoadingOverlayButton />;
     }
-  }, [videoId]);
 
-  useEffect(() => {
-    if (data?.result === true) {
-      toast.success(
-        `해당 영상이 더 이상 보여지지 않습니다.${constants.messages.cancelTask}`,
-        {},
-      );
-      window.location.reload();
-    } else if (data?.result === false) {
+    return (
+      <Video.OverlayButton
+        text={
+          isInWatchLater ? '나중에 볼 영상에서 제거' : '나중에 볼 영상에 추가'
+        }
+        onClick={onClick}
+        iconClassName={isInWatchLater ? 'fa-solid fa-x' : 'fa-regular fa-clock'}
+      />
+    );
+  },
+);
+
+Video.DeleteFromListButton = ({
+  videoId,
+  mutation,
+  setRender,
+}: DeleteVideoFromListButtonProps) => {
+  const a = mutation();
+  const {mutateAsync, isLoading, isSuccess, isError} = a;
+  // const {mutateAsync, isLoading, isSuccess, isError} = mutation();
+  const delteVideoFromList = useCallback(async () => {
+    if (!window.confirm(constants.messages.confirmRemoveVideoFromList)) return;
+    await mutateAsync(videoId);
+    console.log(a);
+    if (isSuccess) {
+      toast.success(constants.messages.videoRemovedFromList, {
+        onClick: restoreVideoToList,
+      });
+      setRender(false);
+    } else if (isError) {
       toast.error(constants.messages.taskFailed);
     }
-  }, [data?.result]);
+  }, [videoId, setRender]);
+
+  const restoreVideoToList = useCallback(async () => {
+    await mutateAsync(videoId);
+    if (isSuccess) {
+      toast.success(constants.messages.taskCanceled);
+      setRender(true);
+    } else if (isError) {
+      toast.error(constants.messages.taskFailed);
+    }
+  }, [videoId, setRender]);
+
+  if (isLoading) {
+    return <Video.LoadingOverlayButton />;
+  }
 
   return (
     <Video.OverlayButton
-      text="Not Interested"
-      onClick={onClick}
+      text="목록에서 제거"
+      onClick={delteVideoFromList}
       iconClassName="fa-solid fa-x"
     />
   );
 };
 
+Video.LoadingOverlayButton = React.memo(() => (
+  <Video.OverlayButton iconClassName="fa-solid fa-spinner" />
+));
+
 Video.OverlayButton = React.memo(
   ({text, iconClassName, onClick}: VideoOverlayButtonProps) => (
     <button className="video__overlay-button" type="button" onClick={onClick}>
-      <div className="overlay-button__full-text">{text}</div>
-      <i className={`overlay-button__icon ${iconClassName}`} />
+      {text && <div className="overlay-button__full-text">{text}</div>}
+      <div className="overlay-button--default">
+        <i className={`overlay-button__icon ${iconClassName}`} />
+      </div>
     </button>
   ),
 );
-
-// Video.MyVideoOverlayButtons = ({videoId}: VideoOverlayButtonsProps) => {
-//   return (
-//     <div className="video__overlay-buttons">
-//       <Video.EditButton videoId={videoId} />
-//       <Video.DeleteButton videoId={videoId} />
-//     </div>
-//   );
-// };
-
-// Video.EditButton = ({videoId}: VideoIdParams) => {
-//   const navigate = useNavigate();
-//   const onClick = () =>
-//     useCallback(() => {
-//       navigate(routes.editVideo(videoId));
-//     }, [videoId]);
-//   return (
-//     <Video.OverlayButton
-//       text="Edit Video"
-//       onClick={onClick}
-//       iconClassName="fa-solid fa-pencil"
-//     />
-//   );
-// };
-
-// Video.DeleteButton = ({videoId}: VideoIdParams) => {
-//   const {mutateAsync, data} = useDeleteVideoMutation();
-//   const navigate = useNavigate();
-//   const onClick = () =>
-//     useCallback(() => {
-//       if (window.confirm('정말 해당 영상을 삭제하시겠습니까?')) {
-//         mutateAsync(videoId);
-//       }
-//     }, [videoId]);
-//   useEffect(() => {
-//     if (data === true) {
-//       alert('해당 영상이 삭제되었습니다.');
-//       navigate(routes.home);
-//     } else {
-//       alert('요청하신 작업에 실패했습니다.');
-//     }
-//   }, [data]);
-//   return (
-//     <Video.OverlayButton
-//       text="Delete Video"
-//       onClick={onClick}
-//       iconClassName="fa-solid fa-trash-can"
-//     />
-//   );
-// };
 
 type VideoThumbnailProps = {
   thumbnailUrl: string;
@@ -274,27 +299,33 @@ type VideoCreatorAvatarProps = {
   creator: UserType;
 };
 
-type VideoCreatorNameProps = {
-  creator: UserType;
+type VideoInfoTextProps = {
+  className?: string;
 };
 
-type VideoOverlayButtonsProps = {
-  videoId: string;
-  isMyVideo: boolean;
+type VideoCreatorNameProps = {
+  creator: UserType;
 };
 
 interface VideoIdProps {
   videoId: string;
 }
 
-interface VideoWatchLaterButtonProps extends VideoIdProps {
-  isLiked: boolean;
+interface ToggleWatchLaterButtonProps {
+  videoId: string;
+  isInWatchLater: boolean;
+}
+
+interface DeleteVideoFromListButtonProps {
+  videoId: string;
+  mutation: () => UseMutationResult<any, unknown, string, unknown>;
+  setRender: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 type VideoOverlayButtonProps = {
-  text: string;
+  text?: string;
   iconClassName: string;
-  onClick: React.MouseEventHandler<HTMLButtonElement>;
+  onClick?: React.MouseEventHandler<HTMLButtonElement>;
 };
 
-export default React.memo(Video);
+export default Video;

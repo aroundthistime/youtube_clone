@@ -7,6 +7,7 @@ export interface BriefVideoType {
   views: number;
   uploadTime: Date;
   creator: UserType;
+  isInWatchLater?: boolean;
 }
 
 export interface VideoType extends BriefVideoType {

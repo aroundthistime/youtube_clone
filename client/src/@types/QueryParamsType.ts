@@ -10,8 +10,13 @@ export interface DefaultInfiniteFetchSuccess extends SuccessResponseData {
   nextPage: number;
 }
 
+interface FetchedVideoType {
+  isInWatchLater?: boolean | undefined;
+  _doc: BriefVideoType;
+}
+
 export interface GetVideosSuccess extends DefaultInfiniteFetchSuccess {
-  videos: BriefVideoType[];
+  videos: FetchedVideoType[];
 }
 
 export type GetVideosReturnType = FailedResponseData | GetVideosSuccess;

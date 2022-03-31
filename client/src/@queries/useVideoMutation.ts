@@ -50,7 +50,7 @@ const editVideo = async (videoEditRequirements: VideoEditRequirements) => {
   return data;
 };
 
-const deleteVideo = async (videoId: string) => {
+export const deleteVideo = async (videoId: string) => {
   const route = apiRoutes.deleteVideo;
   const urlFunction = route.url as Function;
   const {data} = await axios({
@@ -60,8 +60,8 @@ const deleteVideo = async (videoId: string) => {
   return data;
 };
 
-const addVideoToNoIneterest = async (videoId: string) => {
-  const route = apiRoutes.addNoInterest;
+export const toggleWatchLater = async (videoId: string) => {
+  const route = apiRoutes.toggleWatchLater;
   const urlFunction = route.url as Function;
   const {data} = await axios({
     url: urlFunction(videoId),
@@ -70,8 +70,8 @@ const addVideoToNoIneterest = async (videoId: string) => {
   return data;
 };
 
-const addVideoToWatchLater = async (videoId: string) => {
-  const route = apiRoutes.addWachLater;
+const toggleLikeVideo = async (videoId: string) => {
+  const route = apiRoutes.toggleLikeVideo;
   const urlFunction = route.url as Function;
   const {data} = await axios({
     url: urlFunction(videoId),
@@ -80,8 +80,8 @@ const addVideoToWatchLater = async (videoId: string) => {
   return data;
 };
 
-const deleteVideoFromWatchLater = async (videoId: string) => {
-  const route = apiRoutes.addWachLater;
+const toggleNotInterested = async (videoId: string) => {
+  const route = apiRoutes.toggleNotInterested;
   const urlFunction = route.url as Function;
   const {data} = await axios({
     url: urlFunction(videoId),
@@ -89,6 +89,36 @@ const deleteVideoFromWatchLater = async (videoId: string) => {
   });
   return data;
 };
+
+// const addVideoToNoIneterest = async (videoId: string) => {
+// const route = apiRoutes.addNoInterest;
+// const urlFunction = route.url as Function;
+// const {data} = await axios({
+//   url: urlFunction(videoId),
+//   method: route.method,
+// });
+// return data;
+// };
+
+// const addVideoToWatchLater = async (videoId: string) => {
+//   const route = apiRoutes.addWachLater;
+//   const urlFunction = route.url as Function;
+//   const {data} = await axios({
+//     url: urlFunction(videoId),
+//     method: route.method,
+//   });
+//   return data;
+// };
+
+// const deleteVideoFromWatchLater = async (videoId: string) => {
+//   const route = apiRoutes.addWachLater;
+//   const urlFunction = route.url as Function;
+//   const {data} = await axios({
+//     url: urlFunction(videoId),
+//     method: route.method,
+//   });
+//   return data;
+// };
 
 export const useUploadVideoMutation = () => {
   return useMutation(uploadVideo, {
@@ -108,20 +138,38 @@ export const useDeleteVideoMutation = () => {
   });
 };
 
-export const useAddNoInterestMutation = () => {
-  return useMutation(addVideoToNoIneterest, {
-    mutationKey: 'addNoInterest',
+export const useToggleWatchLaterMutation = () => {
+  return useMutation(toggleWatchLater, {
+    mutationKey: 'toggleWatchLater',
   });
 };
 
-export const useAddWatchLaterMutation = () => {
-  return useMutation(addVideoToWatchLater, {
-    mutationKey: 'addWatchLater',
+export const useToggleLikeVideoMutation = () => {
+  return useMutation(toggleLikeVideo, {
+    mutationKey: 'toggleLikeVideo',
   });
 };
 
-export const useDeleteWatchLaterMutation = () => {
-  return useMutation(deleteVideoFromWatchLater, {
-    mutationKey: 'deleteWatchLater',
+export const useToggleNotInterestedMutation = () => {
+  return useMutation(toggleNotInterested, {
+    mutationKey: 'toggleNotInterested',
   });
 };
+
+// export const useAddNoInterestMutation = () => {
+//   return useMutation(addVideoToNoIneterest, {
+//     mutationKey: 'addNoInterest',
+//   });
+// };
+
+// export const useAddWatchLaterMutation = () => {
+//   return useMutation(addVideoToWatchLater, {
+//     mutationKey: 'addWatchLater',
+//   });
+// };
+
+// export const useDeleteWatchLaterMutation = () => {
+//   return useMutation(deleteVideoFromWatchLater, {
+//     mutationKey: 'deleteWatchLater',
+//   });
+// };

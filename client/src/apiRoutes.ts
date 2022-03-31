@@ -137,14 +137,18 @@ const apiRoutes: Record<string, ApiRouteType> = {
     url: (id: string) => apiUrls.videoDetail(id),
     method: 'delete',
   },
-  likeVideo: {
+  toggleLikeVideo: {
     url: (id: string) => apiUrls.videoLike(id),
     method: 'post',
   },
-  unlikeVideo: {
-    url: (id: string) => apiUrls.videoLike(id),
-    method: 'delete',
-  },
+  // likeVideo: {
+  //   url: (id: string) => apiUrls.videoLike(id),
+  //   method: 'post',
+  // },
+  // unlikeVideo: {
+  //   url: (id: string) => apiUrls.videoLike(id),
+  //   method: 'delete',
+  // },
   getVideoComments: {
     url: (id: string) => apiUrls.videoComment(id),
     method: 'get',
@@ -169,22 +173,30 @@ const apiRoutes: Record<string, ApiRouteType> = {
     url: (id: string) => apiUrls.videoHistory(id),
     method: 'delete',
   },
-  addWatchLater: {
+  toggleWatchLater: {
     url: (id: string) => apiUrls.videoWatchLater(id),
     method: 'post',
   },
-  deleteWatchLater: {
-    url: (id: string) => apiUrls.videoWatchLater(id),
-    method: 'delete',
-  },
-  addNoInterest: {
+  // addWatchLater: {
+  //   url: (id: string) => apiUrls.videoWatchLater(id),
+  //   method: 'post',
+  // },
+  // deleteWatchLater: {
+  //   url: (id: string) => apiUrls.videoWatchLater(id),
+  //   method: 'delete',
+  // },
+  toggleNotInterested: {
     url: (id: string) => apiUrls.videoNoInterest(id),
     method: 'post',
   },
-  deleteNoInterest: {
-    url: (id: string) => apiUrls.videoNoInterest(id),
-    method: 'delete',
-  },
+  // addNoInterest: {
+  //   url: (id: string) => apiUrls.videoNoInterest(id),
+  //   method: 'post',
+  // },
+  // deleteNoInterest: {
+  //   url: (id: string) => apiUrls.videoNoInterest(id),
+  //   method: 'delete',
+  // },
   getCategories: {
     url: apiUrls.category,
     method: 'get',

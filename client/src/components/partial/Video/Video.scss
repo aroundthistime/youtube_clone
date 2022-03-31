@@ -2,6 +2,7 @@
 
 .videos__video {
   width: 100%;
+  position: relative;
   .video__thumbnail {
     width: 100%;
     aspect-ratio: 16 / 9;
@@ -42,6 +43,36 @@
             margin: 0 column-gap('x-small');
           }
         }
+      }
+    }
+  }
+  .video__overlay-buttons {
+    position: absolute;
+    top: row-gap('small');
+    right: column-gap('small');
+    background-color: orange;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    row-gap: row-gap('small');
+    .video__overlay-button {
+      display: flex;
+      align-items: center;
+      column-gap: column-gap('small');
+      color: white;
+      background-color: black;
+      border-radius: 3px;
+      overflow: hidden;
+      .overlay-button__full-text {
+        width: 0;
+        overflow: hidden;
+      }
+      .overlay-button--default {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 20px;
+        aspect-ratio: 1 / 1;
       }
     }
   }

@@ -11,7 +11,11 @@ export const getVideosFromData = (
       return page.result;
     })
     .map(page => page.videos)
-    .flat();
+    .flat()
+    .map(video => ({
+      ...video._doc,
+      isInWatchLater: video.isInWatchLater,
+    }));
   return videos || [];
 };
 
