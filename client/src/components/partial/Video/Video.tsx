@@ -182,14 +182,12 @@ Video.ToggleWatchLaterButton = React.memo(
   }: ToggleWatchLaterButtonProps) => {
     const [isInWatchLater, setIsInWatchLater] =
       useState<boolean>(isInWatchLaterProp);
-    const {mutateAsync, isLoading, isSuccess, isError} =
-      useToggleWatchLaterMutation();
+    const {mutateAsync, isLoading} = useToggleWatchLaterMutation();
     const onClick = useCallback(async () => {
-      await mutateAsync(videoId);
-      console.log(isSuccess, isError, isLoading);
-      if (isSuccess) {
+      try {
+        await mutateAsync(videoId);
         toggleState();
-      } else {
+      } catch (error) {
         toast.error(constants.messages.taskFailed);
       }
     }, [videoId]);
@@ -207,11 +205,15 @@ Video.ToggleWatchLaterButton = React.memo(
     }, [setIsInWatchLater]);
 
     const showAddedToWatchLaterToast = useCallback(() => {
-      toast.success('나중에 볼 영상에 추가되었습니다.');
+      toast.success('나중에 볼 영상에 추가되었습니다.', {
+        toastId: 'addToWatchLaterSuccess',
+      });
     }, []);
 
     const showDeletedFromWatchLaterToast = useCallback(() => {
-      toast.success('나중에 볼 영상에서 삭제되었습니다.');
+      toast.success('나중에 볼 영상에서 삭제되었습니다.', {
+        toastId: 'deleteFromWatchLaterSuccess',
+      });
     }, []);
 
     if (isLoading) {
@@ -224,7 +226,11 @@ Video.ToggleWatchLaterButton = React.memo(
           isInWatchLater ? '나중에 볼 영상에서 제거' : '나중에 볼 영상에 추가'
         }
         onClick={onClick}
-        iconClassName={isInWatchLater ? 'fa-solid fa-x' : 'fa-regular fa-clock'}
+        iconClassName={
+          isInWatchLater
+            ? 'fa-solid fa-clock-rotate-left'
+            : 'fa-regular fa-clock'
+        }
       />
     );
   },
@@ -235,29 +241,26 @@ Video.DeleteFromListButton = ({
   mutation,
   setRender,
 }: DeleteVideoFromListButtonProps) => {
-  const a = mutation();
-  const {mutateAsync, isLoading, isSuccess, isError} = a;
-  // const {mutateAsync, isLoading, isSuccess, isError} = mutation();
+  const {mutateAsync, isLoading} = mutation();
   const delteVideoFromList = useCallback(async () => {
     if (!window.confirm(constants.messages.confirmRemoveVideoFromList)) return;
-    await mutateAsync(videoId);
-    console.log(a);
-    if (isSuccess) {
+    try {
+      await mutateAsync(videoId);
       toast.success(constants.messages.videoRemovedFromList, {
         onClick: restoreVideoToList,
       });
       setRender(false);
-    } else if (isError) {
+    } catch {
       toast.error(constants.messages.taskFailed);
     }
   }, [videoId, setRender]);
 
   const restoreVideoToList = useCallback(async () => {
-    await mutateAsync(videoId);
-    if (isSuccess) {
+    try {
+      await mutateAsync(videoId);
       toast.success(constants.messages.taskCanceled);
       setRender(true);
-    } else if (isError) {
+    } catch {
       toast.error(constants.messages.taskFailed);
     }
   }, [videoId, setRender]);
