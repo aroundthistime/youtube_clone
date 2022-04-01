@@ -60,7 +60,7 @@ export const deleteVideo = async (videoId: string) => {
   return data;
 };
 
-export const toggleWatchLater = async (videoId: string) => {
+const toggleWatchLater = async (videoId: string) => {
   const route = apiRoutes.toggleWatchLater;
   const urlFunction = route.url as Function;
   const {data} = await axios({
@@ -95,6 +95,24 @@ const deleteHistory = async (videoId: string) => {
   const urlFunction = route.url as Function;
   const {data} = await axios({
     url: urlFunction(videoId),
+    method: route.method,
+  });
+  return data;
+};
+
+const clearWatchLater = async () => {
+  const route = apiRoutes.clearWatchLaters;
+  const {data} = await axios({
+    url: route.url as string,
+    method: route.method,
+  });
+  return data;
+};
+
+const clearHistory = async () => {
+  const route = apiRoutes.clearHistories;
+  const {data} = await axios({
+    url: route.url as string,
     method: route.method,
   });
   return data;
@@ -139,5 +157,17 @@ export const useToggleNotInterestedMutation = () => {
 export const useDeleteHistoryMutation = () => {
   return useMutation(deleteHistory, {
     mutationKey: 'deleteHistory',
+  });
+};
+
+export const useClearWatchLaterMutation = () => {
+  return useMutation(clearWatchLater, {
+    mutationKey: 'clearWatchLater',
+  });
+};
+
+export const useClearHistoryMutation = () => {
+  return useMutation(clearHistory, {
+    mutationKey: 'clearHistory',
   });
 };

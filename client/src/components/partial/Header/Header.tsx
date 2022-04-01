@@ -70,7 +70,11 @@ Header.AuthButton = ({user}: AuthButtonProps) => {
     <Link
       to={user ? routes.users + routes.myProfile : routes.login}
       className="header__button">
-      <ProfileImage className="header__icon" src={user?.avatarUrl} />
+      <ProfileImage
+        className="header__icon"
+        src={user?.avatarUrl}
+        isLazyImage={false}
+      />
     </Link>
   );
 };

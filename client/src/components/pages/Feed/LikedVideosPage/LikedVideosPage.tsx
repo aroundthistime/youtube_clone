@@ -11,6 +11,7 @@ const LikedVideosPage = () => {
   const {videosQuery} = useLikedVideosPage();
   return (
     <main className="liked-videos">
+      <LikedVideosPage.Header />
       <Videos
         videosQuery={videosQuery}
         VideoComponent={LikedVideosPage.Video}
@@ -19,23 +20,11 @@ const LikedVideosPage = () => {
   );
 };
 
-// LikedVideosPage.Header = () => (
-//   <Videos.Header>
-//     <Videos.Title>좋아요한 영상</Videos.Title>
-//     <Videos.HeaderRight>
-//       <Videos.HeaderRightButton>모두 삭제하기</Videos.HeaderRightButton>
-//     </Videos.HeaderRight>
-//   </Videos.Header>
-// );
-
-// LikedVideosPage.ClearButton = () => {
-//   const {m}
-//   const onClick = () => {
-//     if (!window.confirm(constants.messages.confirmClear)) return;
-
-//   };
-//   return <Videos.HeaderRightButton>모두 삭제하기</Videos.HeaderRightButton>;
-// };
+LikedVideosPage.Header = () => (
+  <Videos.Header>
+    <Videos.Title>좋아요한 영상</Videos.Title>
+  </Videos.Header>
+);
 
 LikedVideosPage.Video = (props: DefaultVideoProps) => (
   <FeedVideo mutation={useToggleLikeVideoMutation} {...props} />

@@ -9,6 +9,25 @@
   padding: padding-vertical() 0;
 }
 
+.videos__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: padding-vertical() 0;
+  border-bottom: light-gray-border();
+  .videos__title {
+    @include font-size('semi-large');
+  }
+  .header__right {
+    font-weight: bold;
+    color: $blur-text;
+    .header__button {
+      font-weight: inherit;
+      color: currentColor;
+    }
+  }
+}
+
 @include mobile {
   .videos {
     padding: 0;

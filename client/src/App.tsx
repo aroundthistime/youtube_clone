@@ -53,7 +53,7 @@ function App() {
           <Router>
             <Header showMobileNav={showMobileNav} />
             <Nav ref={navRef} />
-            <Suspense fallback={<Loader className="full-screen" />}>
+            <Suspense fallback={<Loader />}>
               <Routes>
                 {RouteWithErrorBoundary({
                   path: routes.home,
