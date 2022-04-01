@@ -32,6 +32,9 @@ interface IVideoPlayer
   extends React.MemoExoticComponent<
     ({video, className, children}: PropsWithChildren<Props>) => JSX.Element
   > {
+  OverlayEffect: React.ForwardRefExoticComponent<
+    React.RefAttributes<HTMLDivElement>
+  >;
   ProgressBar: React.FC<ProgressBarProps>;
   Controller: React.FC<{}>;
   ControllerButton: React.FC<VideoControllerButtonProps>;
@@ -58,7 +61,7 @@ type Props = {
 
 const VideoPlayer = React.memo(
   ({video, className = '', children}: PropsWithChildren<Props>) => {
-    const {videoRef, videoPlayerRef} = useVideoPlayer(video);
+    const {videoRef, videoPlayerRef, overlayEffectRef} = useVideoPlayer(video);
     return (
       <div
         className={`video-player ${className}`}
@@ -73,12 +76,19 @@ const VideoPlayer = React.memo(
           preload="auto"
           playsInline
         />
+        <VideoPlayer.OverlayEffect ref={overlayEffectRef} />
         <VideoPlayer.ProgressBar videoRef={videoRef} />
         {children}
       </div>
     );
   },
 ) as IVideoPlayer;
+
+VideoPlayer.OverlayEffect = React.forwardRef<HTMLDivElement>((_, ref) => (
+  <div className="video-player__overlay-effect" ref={ref}>
+    <i />
+  </div>
+));
 
 type ProgressBarProps = {
   videoRef: React.RefObject<HTMLVideoElement>;

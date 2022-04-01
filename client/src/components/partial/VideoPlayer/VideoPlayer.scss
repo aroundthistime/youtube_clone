@@ -26,6 +26,22 @@
     width: 100%;
     aspect-ratio: 16 / 9;
   }
+  .video-player__overlay-effect {
+    opacity: 0;
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.8);
+    top: 50%;
+    right: 50%;
+    transform: translate(50%, -50%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 80px;
+    aspect-ratio: 1 /1;
+    border-radius: 50%;
+    color: white;
+    font-size: 30px;
+  }
   .video-player__progress-bar-container {
     position: absolute;
     left: 0px;
