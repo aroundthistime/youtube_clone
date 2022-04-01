@@ -2,6 +2,7 @@ import React, {Suspense} from 'react';
 import {Route, Routes} from 'react-router-dom';
 import {MainErrorBoundary} from '../App';
 import Loader from '../components/atom/Loader/Loader';
+import RouteWithErrorBoundary from '../components/wrapper/RouteWithErrorBoundary/RouteWithErrorBoundary';
 import routes from '../routes';
 
 const UserProfilePage = React.lazy(
@@ -22,17 +23,25 @@ const EmptyPage = React.lazy(
 );
 
 const UserRoutes = () => (
-  <MainErrorBoundary>
-    <Suspense fallback={<Loader className="full-screen" />}>
-      <Routes>
-        <Route path={routes.userDetail()} element={<UserProfilePage />} />
-        <Route path={routes.myProfile} element={<MyProfilePage />} />
-        <Route path={routes.editProfile} element={<EditProfilePage />} />
-        <Route path={routes.changePasword} element={<ChangePasswordPage />} />
-        <Route path="*" element={<EmptyPage />} />
-      </Routes>
-    </Suspense>
-  </MainErrorBoundary>
+  <Routes>
+    {RouteWithErrorBoundary({
+      path: routes.userDetail(),
+      element: <UserProfilePage />,
+    })}
+    {RouteWithErrorBoundary({
+      path: routes.myProfile,
+      element: <MyProfilePage />,
+    })}
+    {RouteWithErrorBoundary({
+      path: routes.editProfile,
+      element: <EditProfilePage />,
+    })}
+    {RouteWithErrorBoundary({
+      path: routes.changePasword,
+      element: <ChangePasswordPage />,
+    })}
+    <Route path="*" element={<EmptyPage />} />
+  </Routes>
 );
 
 export default UserRoutes;

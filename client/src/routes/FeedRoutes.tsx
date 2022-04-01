@@ -1,7 +1,7 @@
 import React, {Suspense} from 'react';
 import {Route, Routes} from 'react-router-dom';
-import {MainErrorBoundary} from '../App';
 import Loader from '../components/atom/Loader/Loader';
+import RouteWithErrorBoundary from '../components/wrapper/RouteWithErrorBoundary/RouteWithErrorBoundary';
 import routes from '../routes';
 
 const HistoryPage = React.lazy(
@@ -18,16 +18,23 @@ const EmptyPage = React.lazy(
 );
 
 const FeedRoutes = () => (
-  <MainErrorBoundary>
-    <Suspense fallback={<Loader />}>
-      <Routes>
-        <Route path={routes.history} element={<HistoryPage />} />
-        <Route path={routes.watchLater} element={<WatchLaterPage />} />
-        <Route path={routes.likedVideos} element={<LikedVideosPage />} />
-        <Route path="*" element={<EmptyPage />} />
-      </Routes>
-    </Suspense>
-  </MainErrorBoundary>
+  <Suspense fallback={<Loader />}>
+    <Routes>
+      {RouteWithErrorBoundary({
+        path: routes.history,
+        element: <HistoryPage />,
+      })}
+      {RouteWithErrorBoundary({
+        path: routes.watchLater,
+        element: <WatchLaterPage />,
+      })}
+      {RouteWithErrorBoundary({
+        path: routes.likedVideos,
+        element: <LikedVideosPage />,
+      })}
+      <Route path="*" element={<EmptyPage />} />
+    </Routes>
+  </Suspense>
 );
 
 export default FeedRoutes;

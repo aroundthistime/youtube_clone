@@ -1,7 +1,7 @@
 import React, {Suspense} from 'react';
 import {Route, Routes} from 'react-router-dom';
-import {MainErrorBoundary} from '../App';
 import Loader from '../components/atom/Loader/Loader';
+import RouteWithErrorBoundary from '../components/wrapper/RouteWithErrorBoundary/RouteWithErrorBoundary';
 import routes from '../routes';
 
 const VideoDetailPage = React.lazy(
@@ -20,9 +20,18 @@ const EmptyPage = React.lazy(
 const VideoRoutes = () => (
   <Suspense fallback={<Loader className="full-screen" />}>
     <Routes>
-      <Route path={routes.videoDetail()} element={<VideoDetailPage />} />
-      <Route path={routes.uploadVideo} element={<VideoUploadPage />} />
-      <Route path={routes.editVideo()} element={<VideoEditPage />} />
+      {RouteWithErrorBoundary({
+        path: routes.videoDetail(),
+        element: <VideoDetailPage />,
+      })}
+      {RouteWithErrorBoundary({
+        path: routes.uploadVideo,
+        element: <VideoUploadPage />,
+      })}
+      {RouteWithErrorBoundary({
+        path: routes.editVideo(),
+        element: <VideoEditPage />,
+      })}
       <Route path="*" element={<EmptyPage />} />
     </Routes>
   </Suspense>

@@ -10,6 +10,7 @@ import VideoUploadPage from './components/pages/Video/VideoUploadPage/VideoUploa
 import FeedRoutes from './routes/FeedRoutes';
 import UserRoutes from './routes/UserRoutes';
 import VideoRoutes from './routes/VideoRoutes';
+import RouteWithErrorBoundary from './components/wrapper/RouteWithErrorBoundary/RouteWithErrorBoundary';
 
 const Header = React.lazy(() => import('./components/partial/Header/Header'));
 const Nav = React.lazy(() => import('./components/partial/Nav/Nav'));
@@ -52,60 +53,52 @@ function App() {
           <Router>
             <Header showMobileNav={showMobileNav} />
             <Nav ref={navRef} />
-            <Routes>
-              <Route
-                path={routes.home}
-                element={
-                  <MainErrorBoundary>
-                    <HomePage />
-                  </MainErrorBoundary>
-                }
-              />
-              <Route
-                path={routes.join}
-                element={
-                  <MainErrorBoundary>
-                    <JoinPage />
-                  </MainErrorBoundary>
-                }
-              />
-              <Route
-                path={routes.login}
-                element={
-                  <MainErrorBoundary>
-                    <LoginPage />
-                  </MainErrorBoundary>
-                }
-              />
-              <Route
-                path={routes.search}
-                element={
-                  <MainErrorBoundary>
-                    <SearchPage />
-                  </MainErrorBoundary>
-                }
-              />
-              <Route
-                path={routes.category()}
-                element={
-                  <MainErrorBoundary>
-                    <CategoryPage />
-                  </MainErrorBoundary>
-                }
-              />
-              <Route
-                path={routes.uploadVideo}
-                element={
-                  <MainErrorBoundary>
-                    <VideoUploadPage />
-                  </MainErrorBoundary>
-                }
-              />
-              <Route path={`${routes.feed}/*`} element={<FeedRoutes />} />
-              <Route path={`${routes.users}/*`} element={<UserRoutes />} />
-              <Route path={`${routes.videos}/*`} element={<VideoRoutes />} />
-              <Route path="*" element={<EmptyPage />} />
-            </Routes>
+            <Suspense fallback={<Loader className="full-screen" />}>
+              <Routes>
+                {RouteWithErrorBoundary({
+                  path: routes.home,
+                  element: <HomePage />,
+                })}
+                {RouteWithErrorBoundary({
+                  path: routes.join,
+                  element: <JoinPage />,
+                })}
+                {RouteWithErrorBoundary({
+                  path: routes.login,
+                  element: <LoginPage />,
+                })}
+                {RouteWithErrorBoundary({
+                  path: routes.search,
+                  element: <SearchPage />,
+                })}
+                {RouteWithErrorBoundary({
+                  path: routes.search,
+                  element: <SearchPage />,
+                })}
+                {RouteWithErrorBoundary({
+                  path: routes.category(),
+                  element: <CategoryPage />,
+                })}
+
+                {RouteWithErrorBoundary({
+                  path: routes.uploadVideo,
+                  element: <VideoUploadPage />,
+                })}
+                {RouteWithErrorBoundary({
+                  path: `${routes.feed}/*`,
+                  element: <FeedRoutes />,
+                })}
+                {RouteWithErrorBoundary({
+                  path: `${routes.users}/*`,
+                  element: <UserRoutes />,
+                })}
+                {RouteWithErrorBoundary({
+                  path: `${routes.videos}/*`,
+                  element: <VideoRoutes />,
+                })}
+                <Route path="*" element={<EmptyPage />} />
+              </Routes>
+            </Suspense>
             <BlurBackground />
           </Router>
         </div>

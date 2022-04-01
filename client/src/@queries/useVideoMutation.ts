@@ -90,35 +90,15 @@ const toggleNotInterested = async (videoId: string) => {
   return data;
 };
 
-// const addVideoToNoIneterest = async (videoId: string) => {
-// const route = apiRoutes.addNoInterest;
-// const urlFunction = route.url as Function;
-// const {data} = await axios({
-//   url: urlFunction(videoId),
-//   method: route.method,
-// });
-// return data;
-// };
-
-// const addVideoToWatchLater = async (videoId: string) => {
-//   const route = apiRoutes.addWachLater;
-//   const urlFunction = route.url as Function;
-//   const {data} = await axios({
-//     url: urlFunction(videoId),
-//     method: route.method,
-//   });
-//   return data;
-// };
-
-// const deleteVideoFromWatchLater = async (videoId: string) => {
-//   const route = apiRoutes.addWachLater;
-//   const urlFunction = route.url as Function;
-//   const {data} = await axios({
-//     url: urlFunction(videoId),
-//     method: route.method,
-//   });
-//   return data;
-// };
+const deleteHistory = async (videoId: string) => {
+  const route = apiRoutes.deleteHistory;
+  const urlFunction = route.url as Function;
+  const {data} = await axios({
+    url: urlFunction(videoId),
+    method: route.method,
+  });
+  return data;
+};
 
 export const useUploadVideoMutation = () => {
   return useMutation(uploadVideo, {
@@ -156,20 +136,8 @@ export const useToggleNotInterestedMutation = () => {
   });
 };
 
-// export const useAddNoInterestMutation = () => {
-//   return useMutation(addVideoToNoIneterest, {
-//     mutationKey: 'addNoInterest',
-//   });
-// };
-
-// export const useAddWatchLaterMutation = () => {
-//   return useMutation(addVideoToWatchLater, {
-//     mutationKey: 'addWatchLater',
-//   });
-// };
-
-// export const useDeleteWatchLaterMutation = () => {
-//   return useMutation(deleteVideoFromWatchLater, {
-//     mutationKey: 'deleteWatchLater',
-//   });
-// };
+export const useDeleteHistoryMutation = () => {
+  return useMutation(deleteHistory, {
+    mutationKey: 'deleteHistory',
+  });
+};
