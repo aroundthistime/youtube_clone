@@ -8,7 +8,7 @@ type Props = {
 const TextHoverButtonWrapper = ({text, children}: PropsWithChildren<Props>) => (
   <div className="text-hover-button">
     {children}
-    <div className="text-hover-button__hidden-text">{text}</div>
+    <div className="text-hover-button__hidden-text no-drag">{text}</div>
   </div>
 );
 

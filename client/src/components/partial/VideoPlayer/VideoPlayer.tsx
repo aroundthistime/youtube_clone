@@ -10,7 +10,6 @@ import React, {
   useEffect,
   useMemo,
   useRef,
-  useState,
 } from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '../../../@modules/root';
@@ -22,11 +21,10 @@ import {
   useCinemaScreen,
   useDefaultScreen,
   useFullScreen,
-  setCurrentTime,
-  endVideo,
 } from '../../../@modules/videoPlayerSlice';
 import {VideoType} from '../../../@types/VideoType';
 import {getTimestampFromSeconds} from '../../../utils/dateHandler';
+import TextHoverButtonWrapper from '../../wrapper/TextHoverButtonWrapper/TextHoverButtonWrapper';
 import {useVideoPlayer} from './useVideoPlayer';
 import './VideoPlayer.scss';
 
@@ -151,6 +149,7 @@ VideoPlayer.RewindButton = () => {
   return (
     <VideoPlayer.ControllerButton
       onClick={onClick}
+      hiddenText="다시보기"
       iconClassName="fa-solid fa-rotate-right"
     />
   );
@@ -164,6 +163,7 @@ VideoPlayer.PlayButton = () => {
   return (
     <VideoPlayer.ControllerButton
       onClick={onClick}
+      hiddenText="재생"
       iconClassName="fa-solid fa-play"
     />
   );
@@ -177,6 +177,7 @@ VideoPlayer.PauseButton = () => {
   return (
     <VideoPlayer.ControllerButton
       onClick={onClick}
+      hiddenText="일시정지"
       iconClassName="fa-solid fa-pause"
     />
   );
@@ -193,6 +194,11 @@ VideoPlayer.VolumeButton = () => {
   const muted = useSelector((state: RootState) => state.videoPlayer.muted);
   const volume = useSelector((state: RootState) => state.videoPlayer.volume);
   const dispatch = useDispatch();
+
+  const onVolumeControllerButtonClick = useCallback(() => {
+    dispatch(toggleVideoIsMuted());
+  }, []);
+
   const volumeIconClassName = useMemo(() => {
     if (muted || volume === 0) {
       return 'fa-solid fa-volume-xmark';
@@ -202,13 +208,18 @@ VideoPlayer.VolumeButton = () => {
     }
     return 'fa-solid fa-volume-high';
   }, [volume, muted]);
-  const onVolumeControllerButtonClick = useCallback(() => {
-    dispatch(toggleVideoIsMuted());
-  }, []);
+
+  const hiddenText = useMemo(() => {
+    if (muted || volume === 0) {
+      return '음소거 해제';
+    }
+    return '음소거';
+  }, [volume, muted]);
 
   return (
     <VideoPlayer.ControllerButton
       onClick={onVolumeControllerButtonClick}
+      hiddenText={hiddenText}
       iconClassName={volumeIconClassName}
       className="volume-controller__volume-button"
     />
@@ -311,6 +322,7 @@ VideoPlayer.DefaultViewButton = () => {
   return (
     <VideoPlayer.ControllerButton
       onClick={onClick}
+      hiddenText="기본 화면"
       iconClassName="fa-solid fa-compress"
     />
   );
@@ -324,6 +336,7 @@ VideoPlayer.CinemaViewButton = () => {
   return (
     <VideoPlayer.ControllerButton
       onClick={onClick}
+      hiddenText="영화관 모드"
       iconClassName="fa-solid fa-film"
       className="view-controller__cinema-button"
     />
@@ -338,6 +351,7 @@ VideoPlayer.FullscreenButton = () => {
   return (
     <VideoPlayer.ControllerButton
       onClick={onClick}
+      hiddenText="전체 화면"
       iconClassName="fa-solid fa-expand"
     />
   );
@@ -345,6 +359,7 @@ VideoPlayer.FullscreenButton = () => {
 
 type VideoControllerButtonProps = {
   onClick: React.MouseEventHandler<HTMLButtonElement>;
+  hiddenText: string;
   iconClassName: string;
   className?: string;
 };
@@ -352,14 +367,17 @@ type VideoControllerButtonProps = {
 VideoPlayer.ControllerButton = ({
   onClick,
   iconClassName,
+  hiddenText,
   className = '',
 }: VideoControllerButtonProps) => (
-  <button
-    type="button"
-    className={`controller__button ${className}`}
-    onClick={onClick}>
-    <i className={`button__icon ${iconClassName}`} />
-  </button>
+  <TextHoverButtonWrapper text={hiddenText}>
+    <button
+      type="button"
+      className={`controller__button ${className}`}
+      onClick={onClick}>
+      <i className={`button__icon ${iconClassName}`} />
+    </button>
+  </TextHoverButtonWrapper>
 );
 
 export default VideoPlayer;
