@@ -1,5 +1,5 @@
 /* eslint-disable import/prefer-default-export */
-import {useMemo} from 'react';
+import {useEffect, useMemo} from 'react';
 import {useLazyInfiniteScroll} from '../../../@hooks/useLazyInfiniteScroll';
 import {VideosQueryType} from '../../../@queries/useVideosQuery';
 import {BriefVideoType} from '../../../@types/VideoType';
@@ -11,7 +11,12 @@ type ReturnType = {
 };
 
 export const useVideos = (videosQuery: VideosQueryType): ReturnType => {
-  const {data, isFetchingNextPage, hasNextPage, fetchNextPage} = videosQuery;
+  const {data, isFetchingNextPage, hasNextPage, fetchNextPage, refetch} =
+    videosQuery;
+
+  useEffect(() => {
+    refetch();
+  }, []);
 
   const videos = useMemo(() => getVideosFromData(data), [data]);
 
