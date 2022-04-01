@@ -76,3 +76,10 @@ export const getTimestampFromSeconds = (timeInSeconds: number): string => {
   }
   return `${minutes}:${secondStringWithPadding}`;
 };
+
+export const getDateTimestamp = (dateObject: Date): string => {
+  const year = dateObject.getFullYear();
+  const month = dateObject.getMonth() + 1;
+  const date = dateObject.getDate();
+  return `${year}.${month}.${date}`;
+};

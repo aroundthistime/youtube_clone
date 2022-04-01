@@ -21,6 +21,7 @@ import {
   useToggleWatchLaterMutation,
 } from '../../../@queries/useVideoMutation';
 import constants from '../../../constants';
+import UserAvatarLink from '../../atom/Links/UserAvatarLink/UserAvatarLink';
 
 interface IVideo
   extends React.MemoExoticComponent<
@@ -28,7 +29,6 @@ interface IVideo
   > {
   Thumbnail: React.FC<VideoThumbnailProps>;
   Detail: React.FC<{}>;
-  CreatorProfileLink: React.FC<VideoCreatorAvatarProps>;
   Infos: React.FC<{}>;
   InfoText: React.FC<VideoInfoTextProps>;
   OverlayButtons: React.FC<{}>;
@@ -67,7 +67,10 @@ const Video = React.memo(
           />
         </Link>
         <Video.Detail>
-          <Video.CreatorProfileLink creator={video.creator} />
+          <UserAvatarLink
+            user={video.creator}
+            className="video__creator-profile-link"
+          />
           <Video.Infos>
             <Link to={routes.videoDetail(video._id)}>
               <Video.InfoText className="video__title">
@@ -97,17 +100,6 @@ Video.Thumbnail = ({thumbnailUrl, videoTitle}: VideoThumbnailProps) => (
 
 Video.Detail = ({children}: PropsWithChildren<{}>) => (
   <div className="video__detail">{children}</div>
-);
-
-Video.CreatorProfileLink = ({creator}: VideoCreatorAvatarProps) => (
-  <Link
-    to={routes.userDetail(creator._id)}
-    className="video__creator-profile-link">
-    <ProfileImage
-      src={creator.avatarUrl}
-      className="creator-link__profile-image"
-    />
-  </Link>
 );
 
 Video.Infos = ({children}: PropsWithChildren<{}>) => (
@@ -303,10 +295,6 @@ Video.OverlayButton = React.memo(
 type VideoThumbnailProps = {
   thumbnailUrl: string;
   videoTitle: string;
-};
-
-type VideoCreatorAvatarProps = {
-  creator: UserType;
 };
 
 type VideoInfoTextProps = {
