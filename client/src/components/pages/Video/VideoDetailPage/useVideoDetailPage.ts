@@ -31,7 +31,7 @@ export const useVideoDetailPage = (): ReturnType => {
   return {
     video: {
       isLiked: video.isLiked,
-      commentCounts: video.commentCounts,
+      commentsCount: video.commentsCount,
       ...video._doc,
     },
   };

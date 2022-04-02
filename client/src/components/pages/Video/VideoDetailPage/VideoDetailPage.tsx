@@ -24,8 +24,11 @@ import {
 import {VideoType} from '../../../../@types/VideoType';
 import constants from '../../../../constants';
 import {getDateTimestamp} from '../../../../utils/dateHandler';
+import {getCommaAddedNumber} from '../../../../utils/mathHandler';
 import UserAvatarLink from '../../../atom/Links/UserAvatarLink/UserAvatarLink';
 import UserNameLink from '../../../atom/Links/UserNameLink/UserNameLink';
+import Comments from '../../../partial/Comments/Comments';
+import CommentsSortMethodSelector from '../../../partial/CommentsSortMethodSelector/CommentsSortMethodSelector';
 import VideoPlayer from '../../../partial/VideoPlayer/VideoPlayer';
 import {useVideoDetailPage} from './useVideoDetailPage';
 import './VideoDetailPage.scss';
@@ -39,6 +42,10 @@ const VideoDetailPage = () => {
       </VideoPlayer>
       <VideoDetailPage.VideoInfo video={video} />
       <VideoDetailPage.VideoMeta video={video} />
+      <VideoDetailPage.Comments
+        videoId={video._id}
+        commentsCount={video.commentsCount}
+      />
     </main>
   );
 };
@@ -61,7 +68,7 @@ VideoDetailPage.VideoInfo = ({video}: VideoInfoProps) => {
       <div className="video-detail__primary-infos">
         <div className="video-statistics">
           <span className="video-statistics__statistic video__views">
-            조회수 {video.views.toLocaleString('en')}회
+            조회수 {getCommaAddedNumber(video.views)}회
           </span>
           <span className="video-statistics__statistic video__date">
             {getDateTimestamp(new Date(video.uploadTime))}
@@ -229,44 +236,14 @@ type VideoDescriptionProps = {
 
 VideoDetailPage.Description = React.memo(
   ({description = ''}: VideoDescriptionProps) => {
-    // const descriptionRef = useRef<HTMLParagraphElement>(null);
     const {
       ref: descriptionRef,
       isOverflowing,
       showFull,
       toggleShowFull,
     } = useToggleShowFull();
-    // const [showFullDescription, setShowFullDescription] = useState(false);
-
-    // useEffect(() => {
-    //   if (descriptionRef.current) {
-    //     console.log(getNumberOfLines(descriptionRef.current));
-    //   }
-    // }, [descriptionRef.current]);
-    // console.log(descriptionNumOfLines, descriptionRef.current);
-    // const [descriptionRef, isOverflowing] = useIsOverflowing();
-
-    // const onToggleButtonClick = () => {
-    //   setShowFullDescription(prev => !prev);
-    // };
-
     return (
       <>
-        {/* <div
-          ref={descriptionRef}
-          className={`video-detail__meta-content video-detail__description ${
-            showFullDescription ? 'video-detail__description--full' : ''
-          }`}>
-          {description}
-        </div>
-        {isOverflowing && (
-          <button
-            className="video-description__toggle-button"
-            onClick={onToggleButtonClick}
-            type="button">
-            {showFullDescription ? '간략히' : '자세히'}
-          </button>
-        )} */}
         <div
           ref={descriptionRef}
           className={`video-detail__meta-content video-detail__description ${
@@ -285,6 +262,26 @@ VideoDetailPage.Description = React.memo(
       </>
     );
   },
+);
+
+type VideoDetailPageCommentsProps = {
+  commentsCount: number;
+  videoId: string;
+};
+
+VideoDetailPage.Comments = ({
+  commentsCount,
+  videoId,
+}: VideoDetailPageCommentsProps) => (
+  <VideoDetailPage.Section className="video-detail__comments">
+    <div className="comments__header">
+      <p className="comments-count">
+        댓글 {getCommaAddedNumber(commentsCount)}개
+      </p>
+      <CommentsSortMethodSelector />
+    </div>
+    <Comments videoId={videoId} />
+  </VideoDetailPage.Section>
 );
 
 export default React.memo(VideoDetailPage);

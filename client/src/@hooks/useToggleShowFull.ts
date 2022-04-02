@@ -21,7 +21,7 @@ export const useToggleShowFull = (): ReturnType => {
     window.addEventListener('resize', () => setShowFull(false));
     return () => window.removeEventListener('resize', () => setShowFull(false));
   }, []);
-  const a = [ref, isOverflowing, showFull, toggleShowFull];
+
   return {
     ref,
     isOverflowing,

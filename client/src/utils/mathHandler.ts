@@ -25,3 +25,7 @@ const leaveNOrLessDecimalPlaces = (number: number, N: number = 1): number => {
 
 export const getSizeInMB = (bytes: number): number =>
   +(bytes / (1024 * 1024)).toFixed(2);
+
+export const getCommaAddedNumber = (number: number): string => {
+  return number.toLocaleString('en');
+};
