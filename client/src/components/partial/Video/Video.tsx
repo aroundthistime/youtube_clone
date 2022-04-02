@@ -22,6 +22,7 @@ import {
 } from '../../../@queries/useVideoMutation';
 import constants from '../../../constants';
 import UserAvatarLink from '../../atom/Links/UserAvatarLink/UserAvatarLink';
+import UserNameLink from '../../atom/Links/UserNameLink/UserNameLink';
 
 interface IVideo
   extends React.MemoExoticComponent<
@@ -32,7 +33,6 @@ interface IVideo
   Infos: React.FC<{}>;
   InfoText: React.FC<VideoInfoTextProps>;
   OverlayButtons: React.FC<{}>;
-  CreatorNameLink: React.FC<VideoCreatorNameProps>;
   EditVideoButton: React.FC<VideoEditButtonProps>;
   DeleteVideoButton: React.FC<VideoDeleteButtonProps>;
   ToggleWatchLaterButton: React.FC<ToggleWatchLaterButtonProps>;
@@ -77,7 +77,7 @@ const Video = React.memo(
                 {video.title}
               </Video.InfoText>
             </Link>
-            <Video.CreatorNameLink creator={video.creator} />
+            <UserNameLink user={video.creator} className="video__info-text" />
             <Link to={routes.videoDetail(video._id)}>
               <Video.InfoText>
                 <span>조회수 {briefViews}회</span>
@@ -111,16 +111,6 @@ Video.InfoText = ({
   className = '',
 }: PropsWithChildren<VideoInfoTextProps>) => (
   <p className={`video__info-text ${className}`}>{children}</p>
-);
-
-Video.CreatorNameLink = ({
-  creator,
-}: PropsWithChildren<VideoCreatorNameProps>) => (
-  <Link to={routes.userDetail(creator._id)}>
-    <Video.InfoText className="creator-link__name-text">
-      {creator.name}
-    </Video.InfoText>
-  </Link>
 );
 
 Video.OverlayButtons = ({children}: PropsWithChildren<{}>) => (
@@ -299,10 +289,6 @@ type VideoThumbnailProps = {
 
 type VideoInfoTextProps = {
   className?: string;
-};
-
-type VideoCreatorNameProps = {
-  creator: UserType;
 };
 
 interface VideoEditButtonProps {

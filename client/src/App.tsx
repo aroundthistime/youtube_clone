@@ -53,52 +53,50 @@ function App() {
           <Router>
             <Header showMobileNav={showMobileNav} />
             <Nav ref={navRef} />
-            <Suspense fallback={<Loader />}>
-              <Routes>
-                {RouteWithErrorBoundary({
-                  path: routes.home,
-                  element: <HomePage />,
-                })}
-                {RouteWithErrorBoundary({
-                  path: routes.join,
-                  element: <JoinPage />,
-                })}
-                {RouteWithErrorBoundary({
-                  path: routes.login,
-                  element: <LoginPage />,
-                })}
-                {RouteWithErrorBoundary({
-                  path: routes.search,
-                  element: <SearchPage />,
-                })}
-                {RouteWithErrorBoundary({
-                  path: routes.search,
-                  element: <SearchPage />,
-                })}
-                {RouteWithErrorBoundary({
-                  path: routes.category(),
-                  element: <CategoryPage />,
-                })}
+            <Routes>
+              {RouteWithErrorBoundary({
+                path: routes.home,
+                element: <HomePage />,
+              })}
+              {RouteWithErrorBoundary({
+                path: routes.join,
+                element: <JoinPage />,
+              })}
+              {RouteWithErrorBoundary({
+                path: routes.login,
+                element: <LoginPage />,
+              })}
+              {RouteWithErrorBoundary({
+                path: routes.search,
+                element: <SearchPage />,
+              })}
+              {RouteWithErrorBoundary({
+                path: routes.search,
+                element: <SearchPage />,
+              })}
+              {RouteWithErrorBoundary({
+                path: routes.category(),
+                element: <CategoryPage />,
+              })}
 
-                {RouteWithErrorBoundary({
-                  path: routes.uploadVideo,
-                  element: <VideoUploadPage />,
-                })}
-                {RouteWithErrorBoundary({
-                  path: `${routes.feed}/*`,
-                  element: <FeedRoutes />,
-                })}
-                {RouteWithErrorBoundary({
-                  path: `${routes.users}/*`,
-                  element: <UserRoutes />,
-                })}
-                {RouteWithErrorBoundary({
-                  path: `${routes.videos}/*`,
-                  element: <VideoRoutes />,
-                })}
-                <Route path="*" element={<EmptyPage />} />
-              </Routes>
-            </Suspense>
+              {RouteWithErrorBoundary({
+                path: routes.uploadVideo,
+                element: <VideoUploadPage />,
+              })}
+              {RouteWithErrorBoundary({
+                path: `${routes.feed}/*`,
+                element: <FeedRoutes />,
+              })}
+              {RouteWithErrorBoundary({
+                path: `${routes.users}/*`,
+                element: <UserRoutes />,
+              })}
+              {RouteWithErrorBoundary({
+                path: `${routes.videos}/*`,
+                element: <VideoRoutes />,
+              })}
+              <Route path="*" element={<EmptyPage />} />
+            </Routes>
             <BlurBackground />
           </Router>
         </div>

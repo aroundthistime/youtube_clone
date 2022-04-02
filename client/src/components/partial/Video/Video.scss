@@ -35,18 +35,23 @@
           word-break: break-all;
           margin-bottom: row-gap('x-small');
         }
-        &.creator-link__name-text {
-          font-weight: bold;
-          margin-bottom: row-gap('x-small');
-          &:hover {
-            opacity: 0.95;
-          }
-        }
         span {
           &:not(:last-child)::after {
             content: '·';
             margin: 0 column-gap('x-small');
           }
+        }
+      }
+      .username-link {
+        font-weight: bold;
+        margin-bottom: row-gap('x-small');
+        &:hover {
+          .username-link__username {
+            opacity: 0.95;
+          }
+        }
+        .username-link__username {
+          opacity: 0.65;
         }
       }
     }

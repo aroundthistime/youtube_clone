@@ -7,12 +7,17 @@ import './UserAvatarLink.scss';
 
 type Props = {
   user: UserType;
+  isLazyImage?: boolean;
   className?: string;
 };
 
-const UserAvatarLink = ({user, className = ''}: Props) => (
+const UserAvatarLink = ({user, className = '', isLazyImage}: Props) => (
   <Link to={routes.userDetail(user._id)} className={`avatar-link ${className}`}>
-    <ProfileImage src={user.avatarUrl} className="avatar-link__profile-image" />
+    <ProfileImage
+      src={user.avatarUrl}
+      className="avatar-link__profile-image"
+      isLazyImage={isLazyImage}
+    />
   </Link>
 );
 

@@ -1,0 +1,78 @@
+@import '../../../../styles/variables/variables';
+
+.video-detail {
+  .video-detail__section {
+    padding: padding-vertical('small') 0;
+    &.video-detail__infos {
+      .video__title {
+        @include font-size('large');
+      }
+      .video-detail__primary-infos {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: padding-vertical('small') 0;
+        border-bottom: light-gray-border();
+        .video-statistics {
+          .video-statistics__statistic:not(:last-child)::after {
+            content: '·';
+            margin: 0 column-gap('x-small');
+          }
+        }
+        .video-detail__interaction-buttons {
+          display: flex;
+          column-gap: column-gap();
+          .video-detail__interaction-button {
+            display: flex;
+            align-items: center;
+            column-gap: column-gap('small');
+            @include font-size();
+            .interaction-button__icon {
+              @include font-size('large');
+            }
+          }
+        }
+      }
+    }
+    &.video-detail__meta {
+      display: flex;
+      column-gap: column-gap();
+      .video-detail__meta-contents {
+        .username-link {
+          display: inline-block;
+        }
+      }
+    }
+  }
+}
+
+@include mobileAndTablet {
+  .video-detail {
+    .video-detail__section {
+      &.video-detail__infos {
+        .video-detail__primary-infos {
+          flex-direction: column;
+          align-items: flex-start;
+          row-gap: row-gap();
+          @include font-size('small');
+          .video-detail__interaction-buttons {
+            width: 100%;
+            justify-content: space-around;
+            .video-detail__interaction-button {
+              flex-direction: column;
+              row-gap: row-gap('x-small');
+              width: 100%;
+              padding: padding-vertical('small') 0;
+              .interaction-button__icon {
+                @include font-size();
+              }
+            }
+            .video-detail__share-button {
+              display: none;
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -11,7 +11,11 @@ type Props = {
 const DetailUserProfile = ({user, myProfileButton}: Props) => {
   return (
     <div className="user-profile user-profile--detail">
-      <ProfileImage src={user.avatarUrl} className="profile-image--large" />
+      <ProfileImage
+        src={user.avatarUrl}
+        className="profile-image--large"
+        isLazyImage={false}
+      />
       <h3 className="user-profile__name">{user.name}</h3>
       <h6 className="user-profile__status">{user.status}</h6>
       {myProfileButton}
