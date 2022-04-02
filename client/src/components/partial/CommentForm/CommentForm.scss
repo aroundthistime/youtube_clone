@@ -1,0 +1,27 @@
+@import '../../../styles/variables/variables';
+
+.comment-form-container {
+  display: grid;
+  grid-template-columns: min-content 1fr;
+  column-gap: column-gap();
+  .comment-form {
+    display: flex;
+    flex-direction: column;
+    row-gap: row-gap('small');
+    .comment-form__buttons {
+      display: flex;
+      justify-content: flex-end;
+      column-gap: column-gap('small');
+      .comment-form__button {
+        width: 6rem;
+        height: 2.5rem;
+        border-radius: 3px;
+        &.comment-form__submit-button {
+          border: light-gray-border();
+          background-color: $blue;
+          color: white;
+        }
+      }
+    }
+  }
+}

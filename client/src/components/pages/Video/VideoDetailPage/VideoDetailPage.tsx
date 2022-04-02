@@ -31,6 +31,7 @@ import Comments from '../../../partial/Comments/Comments';
 import CommentsSortMethodSelector from '../../../partial/CommentsSortMethodSelector/CommentsSortMethodSelector';
 import VideoPlayer from '../../../partial/VideoPlayer/VideoPlayer';
 import {useVideoDetailPage} from './useVideoDetailPage';
+import CommentForm from '../../../partial/CommentForm/CommentForm';
 import './VideoDetailPage.scss';
 
 const VideoDetailPage = () => {
@@ -280,6 +281,7 @@ VideoDetailPage.Comments = ({
       </p>
       <CommentsSortMethodSelector />
     </div>
+    <CommentForm />
     <Comments videoId={videoId} />
   </VideoDetailPage.Section>
 );

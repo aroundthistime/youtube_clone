@@ -1,0 +1,6 @@
+@import './variables/variables';
+
+button.button--disabled {
+  background-color: $light-gray !important;
+  color: $light-gray-active !important;
+}
