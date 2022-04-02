@@ -16,6 +16,7 @@ import {
 } from 'react-share';
 import {toast} from 'react-toastify';
 import {useIsOverflowing} from '../../../../@hooks/useIsOverflowing';
+import {useToggleShowFull} from '../../../../@hooks/useToggleShowFull';
 import {
   useToggleLikeVideoMutation,
   useToggleWatchLaterMutation,
@@ -229,7 +230,13 @@ type VideoDescriptionProps = {
 VideoDetailPage.Description = React.memo(
   ({description = ''}: VideoDescriptionProps) => {
     // const descriptionRef = useRef<HTMLParagraphElement>(null);
-    const [showFullDescription, setShowFullDescription] = useState(false);
+    const {
+      ref: descriptionRef,
+      isOverflowing,
+      showFull,
+      toggleShowFull,
+    } = useToggleShowFull();
+    // const [showFullDescription, setShowFullDescription] = useState(false);
 
     // useEffect(() => {
     //   if (descriptionRef.current) {
@@ -237,15 +244,15 @@ VideoDetailPage.Description = React.memo(
     //   }
     // }, [descriptionRef.current]);
     // console.log(descriptionNumOfLines, descriptionRef.current);
-    const [descriptionRef, isOverflowing] = useIsOverflowing();
+    // const [descriptionRef, isOverflowing] = useIsOverflowing();
 
-    const onToggleButtonClick = () => {
-      setShowFullDescription(prev => !prev);
-    };
+    // const onToggleButtonClick = () => {
+    //   setShowFullDescription(prev => !prev);
+    // };
 
     return (
       <>
-        <div
+        {/* <div
           ref={descriptionRef}
           className={`video-detail__meta-content video-detail__description ${
             showFullDescription ? 'video-detail__description--full' : ''
@@ -258,6 +265,21 @@ VideoDetailPage.Description = React.memo(
             onClick={onToggleButtonClick}
             type="button">
             {showFullDescription ? '간략히' : '자세히'}
+          </button>
+        )} */}
+        <div
+          ref={descriptionRef}
+          className={`video-detail__meta-content video-detail__description ${
+            showFull ? 'video-detail__description--full' : ''
+          }`}>
+          {description}
+        </div>
+        {isOverflowing && (
+          <button
+            className="video-description__toggle-button"
+            onClick={toggleShowFull}
+            type="button">
+            {showFull ? '간략히' : '자세히'}
           </button>
         )}
       </>

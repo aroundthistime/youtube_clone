@@ -16,6 +16,7 @@ export const useIsOverflowing = (): ReturnType => {
   };
 
   useEffect(() => {
+    defineIsOverflowing();
     window.addEventListener('resize', defineIsOverflowing);
     return () => window.removeEventListener('resize', defineIsOverflowing);
   }, [ref.current]);

@@ -38,11 +38,21 @@
       display: flex;
       column-gap: column-gap();
       .video-detail__meta-contents {
+        display: flex;
+        flex-direction: column;
+        row-gap: row-gap('small');
+        align-items: flex-start;
         .username-link {
           display: inline-block;
         }
         .video-detail__description {
           @include n-lines(2);
+          &.video-detail__description--full {
+            @include unset-line-limits();
+          }
+        }
+        .video-description__toggle-button {
+          color: $blur-text;
         }
       }
     }

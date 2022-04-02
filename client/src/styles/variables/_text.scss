@@ -9,3 +9,9 @@
     line-height: normal;
   }
 }
+
+@mixin unset-line-limits {
+  overflow: visible;
+  -webkit-line-clamp: unset;
+  line-height: normal;
+}
