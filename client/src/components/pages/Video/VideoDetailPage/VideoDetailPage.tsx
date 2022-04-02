@@ -15,6 +15,7 @@ import {
   TwitterShareButton,
 } from 'react-share';
 import {toast} from 'react-toastify';
+import {useIsOverflowing} from '../../../../@hooks/useIsOverflowing';
 import {
   useToggleLikeVideoMutation,
   useToggleWatchLaterMutation,
@@ -227,7 +228,7 @@ type VideoDescriptionProps = {
 
 VideoDetailPage.Description = React.memo(
   ({description = ''}: VideoDescriptionProps) => {
-    const descriptionRef = useRef<HTMLParagraphElement>(null);
+    // const descriptionRef = useRef<HTMLParagraphElement>(null);
     const [showFullDescription, setShowFullDescription] = useState(false);
 
     // useEffect(() => {
@@ -236,6 +237,7 @@ VideoDetailPage.Description = React.memo(
     //   }
     // }, [descriptionRef.current]);
     // console.log(descriptionNumOfLines, descriptionRef.current);
+    const [descriptionRef, isOverflowing] = useIsOverflowing();
 
     const onToggleButtonClick = () => {
       setShowFullDescription(prev => !prev);
@@ -243,14 +245,14 @@ VideoDetailPage.Description = React.memo(
 
     return (
       <>
-        <p
+        <div
           ref={descriptionRef}
-          className={`video-detail__meta-content video-detail__video-description ${
-            showFullDescription ? 'video-detail__video-description--full' : ''
+          className={`video-detail__meta-content video-detail__description ${
+            showFullDescription ? 'video-detail__description--full' : ''
           }`}>
           {description}
-        </p>
-        {true && (
+        </div>
+        {isOverflowing && (
           <button
             className="video-description__toggle-button"
             onClick={onToggleButtonClick}

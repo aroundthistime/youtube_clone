@@ -41,6 +41,9 @@
         .username-link {
           display: inline-block;
         }
+        .video-detail__description {
+          @include n-lines(2);
+        }
       }
     }
   }
