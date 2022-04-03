@@ -10,7 +10,7 @@
   .filterer__toggle-button {
     padding: padding-vertical('small') padding-horizontal();
     margin: row-gap('small') 0;
-    border-radius: $border-radius;
+    border-radius: border-radius();
     color: $blur-text;
     transition: all 0.2s;
     &:hover {

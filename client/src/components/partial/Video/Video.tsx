@@ -9,22 +9,20 @@ import React, {
 import {Link, useNavigate} from 'react-router-dom';
 import {toast} from 'react-toastify';
 import {UseMutationResult} from 'react-query';
-import {UserType} from '../../../@types/UserType';
 import {BriefVideoType} from '../../../@types/VideoType';
-import ProfileImage from '../../atom/ProfileImage/ProfileImage';
 import routes from '../../../routes';
 import './Video.scss';
 import LazyImage from '../LazyImage/LazyImage';
 import {useVideo} from './useVideo';
-import {
-  useDeleteVideoMutation,
-  useToggleWatchLaterMutation,
-} from '../../../@queries/useVideoMutation';
+import {useToggleWatchLaterMutation} from '../../../@queries/useVideoMutation';
 import constants from '../../../constants';
 import UserAvatarLink from '../../atom/Links/UserAvatarLink/UserAvatarLink';
 import UserNameLink from '../../atom/Links/UserNameLink/UserNameLink';
-import {useDeleteVideoButton} from '../../../@hooks/useDeleteVideoButton';
-import WithSuspense from '../../wrapper/WithSuspense/WithSuspense';
+import {
+  useDeleteVideoButton,
+  useEditvideoButton,
+  useToggleWatchLaterButton,
+} from '../../../@hooks/useVideoButton';
 
 interface IVideo
   extends React.MemoExoticComponent<
@@ -120,10 +118,7 @@ Video.OverlayButtons = ({children}: PropsWithChildren<{}>) => (
 );
 
 Video.EditVideoButton = ({videoId}: VideoEditButtonProps) => {
-  const navigate = useNavigate();
-  const onClick = useCallback(() => {
-    navigate(routes.editVideo(videoId));
-  }, [videoId]);
+  const {onClick} = useEditvideoButton(videoId);
   return (
     <Video.OverlayButton
       text="영상 수정"
@@ -151,42 +146,11 @@ Video.ToggleWatchLaterButton = React.memo(
     videoId,
     isInWatchLater: isInWatchLaterProp,
   }: ToggleWatchLaterButtonProps) => {
-    const [isInWatchLater, setIsInWatchLater] =
-      useState<boolean>(isInWatchLaterProp);
-    const {mutateAsync, isLoading} = useToggleWatchLaterMutation();
-    const onClick = useCallback(async () => {
-      try {
-        if (isLoading) return;
-        await mutateAsync(videoId);
-        toggleState();
-      } catch (error) {
-        toast.error(constants.messages.taskFailed);
-      }
-    }, [videoId]);
-
-    const toggleState = useCallback(() => {
-      setIsInWatchLater(prev => {
-        const newState = !prev;
-        if (newState) {
-          showAddedToWatchLaterToast();
-        } else {
-          showDeletedFromWatchLaterToast();
-        }
-        return newState;
-      });
-    }, [setIsInWatchLater]);
-
-    const showAddedToWatchLaterToast = useCallback(() => {
-      toast.success('나중에 볼 영상에 추가되었습니다.', {
-        toastId: 'addToWatchLaterSuccess',
-      });
-    }, []);
-
-    const showDeletedFromWatchLaterToast = useCallback(() => {
-      toast.success('나중에 볼 영상에서 삭제되었습니다.', {
-        toastId: 'deleteFromWatchLaterSuccess',
-      });
-    }, []);
+    const {
+      onClick,
+      isLoading,
+      isActive: isInWatchLater,
+    } = useToggleWatchLaterButton(videoId, isInWatchLaterProp);
 
     if (isLoading) {
       return <Video.LoadingOverlayButton />;

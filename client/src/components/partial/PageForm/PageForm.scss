@@ -35,7 +35,7 @@
       padding: padding-vertical('small') padding-horizontal();
       margin-top: row-gap();
       border: light-gray-border();
-      border-radius: $border-radius;
+      border-radius: border-radius();
       color: white;
       @include shadow();
       &.form__submit-button {

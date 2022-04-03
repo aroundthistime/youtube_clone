@@ -31,9 +31,6 @@
   padding: padding-vertical() padding-horizontal();
 }
 
-//border-radius
-$border-radius: 10px;
-
 //gap
 @function column-gap($size: 'default') {
   @if $size == 'x-small' {

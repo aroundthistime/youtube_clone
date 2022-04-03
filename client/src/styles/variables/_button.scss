@@ -1,0 +1,16 @@
+@import './border';
+@import './colors';
+@import './shadow';
+
+@mixin square-button($size: 'default') {
+  border-radius: border-radius('small');
+  @if $size == 'default' {
+    width: 6rem;
+    height: 2.5rem;
+  }
+}
+
+@mixin approve-button {
+  color: white;
+  background-color: $blue;
+}

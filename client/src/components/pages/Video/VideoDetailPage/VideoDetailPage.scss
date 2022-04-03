@@ -53,6 +53,14 @@
           .username-link {
             display: inline-block;
           }
+          .video-detail__video-config-buttons {
+            display: flex;
+            column-gap: column-gap('small');
+            .video-config-buttons__config-button {
+              @include square-button();
+              @include approve-button();
+            }
+          }
         }
         .video-detail__description {
           @include n-lines(2);

@@ -13,13 +13,10 @@
       justify-content: flex-end;
       column-gap: column-gap('small');
       .comment-form__button {
-        width: 6rem;
-        height: 2.5rem;
-        border-radius: 3px;
+        @include square-button();
         &.comment-form__submit-button {
           border: light-gray-border();
-          background-color: $blue;
-          color: white;
+          @include approve-button();
         }
       }
     }

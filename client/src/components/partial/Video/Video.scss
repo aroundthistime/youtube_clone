@@ -68,7 +68,7 @@
       display: flex;
       align-items: center;
       column-gap: column-gap('small');
-      border-radius: 3px;
+      border-radius: border-radius('small');
       color: white;
       overflow: hidden;
       &:hover {
@@ -78,7 +78,7 @@
         }
       }
       & > * {
-        border-radius: 3px;
+        border-radius: border-radius('small');
         background-color: black;
         height: 20px;
       }
@@ -86,7 +86,7 @@
         display: flex;
         align-items: center;
         width: 0;
-        border-radius: 3px;
+        border-radius: border-radius('small');
         overflow: hidden;
         background-color: black;
         transition: all 0.15s ease-in-out;

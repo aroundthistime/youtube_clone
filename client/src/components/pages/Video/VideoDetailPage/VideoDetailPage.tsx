@@ -14,15 +14,8 @@ import {
   TwitterIcon,
   TwitterShareButton,
 } from 'react-share';
-import {toast} from 'react-toastify';
 import {useSelector} from 'react-redux';
 import {useToggleShowFull} from '../../../../@hooks/useToggleShowFull';
-import {
-  useToggleLikeVideoMutation,
-  useToggleWatchLaterMutation,
-} from '../../../../@queries/useVideoMutation';
-import {VideoType} from '../../../../@types/VideoType';
-import constants from '../../../../constants';
 import {getDateTimestamp} from '../../../../utils/dateHandler';
 import {getCommaAddedNumber} from '../../../../utils/mathHandler';
 import UserAvatarLink from '../../../atom/Links/UserAvatarLink/UserAvatarLink';
@@ -34,6 +27,12 @@ import {useVideoDetailPage} from './useVideoDetailPage';
 import CommentForm from '../../../partial/CommentForm/CommentForm';
 import './VideoDetailPage.scss';
 import {RootState} from '../../../../@modules/root';
+import {
+  useDeleteVideoButton,
+  useEditvideoButton,
+  useToggleLikeButton,
+  useToggleWatchLaterButton,
+} from '../../../../@hooks/useVideoButton';
 
 const VideoDetailPage = () => {
   const {video} = useVideoDetailPage();
@@ -88,72 +87,67 @@ VideoDetailPage.InteractionButtons = React.memo(() => (
 
 VideoDetailPage.ToggleLikeButton = React.memo(() => {
   const video = useSelector((state: RootState) => state.playingVideo);
+  if (!video) return null;
+  const {onClick, isActive} = useToggleLikeButton(
+    video._id,
+    Boolean(video.isLiked),
+  );
   return (
     <VideoDetailPage.InteractionButton
-      mutation={useToggleLikeVideoMutation}
+      onClick={onClick}
       text="좋아요"
       activeIconClassName="fa-solid fa-thumbs-up"
       inactiveIconClassName="fa-regular fa-thumbs-up"
-      isActive={video?.isLiked}
+      isActive={isActive}
     />
   );
 });
 
 VideoDetailPage.ToggleWatchLaterButton = React.memo(() => {
   const video = useSelector((state: RootState) => state.playingVideo);
+  if (!video) return null;
+  const {onClick, isActive} = useToggleWatchLaterButton(
+    video._id,
+    Boolean(video.isInWatchLater),
+  );
   return (
     <VideoDetailPage.InteractionButton
-      mutation={useToggleWatchLaterMutation}
+      onClick={onClick}
       text="나중에 볼 영상에 추가"
       activeIconClassName="fa-solid fa-square-plus"
       inactiveIconClassName="fa-regular fa-square-plus"
-      isActive={video?.isInWatchLater}
+      isActive={isActive}
     />
   );
 });
 
 type VideoInteractionButtonProps = {
-  mutation: () => UseMutationResult<any, unknown, string, unknown>;
+  onClick: React.MouseEventHandler<HTMLButtonElement>;
   text: string;
   activeIconClassName: string;
   inactiveIconClassName: string;
-  isActive?: boolean;
+  isActive: boolean;
 };
 
 VideoDetailPage.InteractionButton = ({
-  mutation,
-  isActive: isActiveState,
+  onClick,
+  isActive,
   text,
   activeIconClassName,
   inactiveIconClassName,
-}: VideoInteractionButtonProps) => {
-  const video = useSelector((state: RootState) => state.playingVideo);
-  if (!video) return null;
-  const [isActive, setisActive] = useState<boolean>(Boolean(isActiveState));
-  const {mutateAsync, isLoading} = mutation();
-  const onClick = useCallback(async () => {
-    try {
-      if (isLoading) return;
-      await mutateAsync(video._id);
-      setisActive(prev => !prev);
-    } catch {
-      toast.error(constants.messages.taskFailed);
-    }
-  }, [mutateAsync]);
-  return (
-    <button
-      className="video-detail__interaction-button"
-      type="button"
-      onClick={onClick}>
-      <i
-        className={`interaction-button__icon ${
-          isActive ? activeIconClassName : inactiveIconClassName
-        }`}
-      />
-      <p className="interaction-button__text">{text}</p>
-    </button>
-  );
-};
+}: VideoInteractionButtonProps) => (
+  <button
+    className="video-detail__interaction-button"
+    type="button"
+    onClick={onClick}>
+    <i
+      className={`interaction-button__icon ${
+        isActive ? activeIconClassName : inactiveIconClassName
+      }`}
+    />
+    <p className="interaction-button__text">{text}</p>
+  </button>
+);
 
 VideoDetailPage.ShareButtons = React.memo(() => {
   const url = window.location.pathname;
@@ -221,7 +215,7 @@ VideoDetailPage.VideoMeta = React.memo(() => {
             user={video.creator}
             className="video-detail__meta-content"
           />
-          {isMyVideo && <div>1</div>}
+          {isMyVideo && <VideoDetailPage.MyVideoConfigButtons />}
         </div>
         <VideoDetailPage.Description />
       </div>
@@ -230,12 +224,29 @@ VideoDetailPage.VideoMeta = React.memo(() => {
 });
 
 VideoDetailPage.MyVideoConfigButtons = () => (
-  <div className="video-detail__video-config-buttons" />
+  <div className="video-detail__video-config-buttons">
+    <VideoDetailPage.EditVideoButton />
+    <VideoDetailPage.DeleteVideoButton />
+  </div>
 );
 
-// VideoDetailPage.EditVideoButton = () => {
-//   return <VideoDetailPage.MyVideoConfigButton text="동영상 수정" />;
-// };
+VideoDetailPage.EditVideoButton = () => {
+  const video = useSelector((state: RootState) => state.playingVideo);
+  if (!video) return null;
+  const {onClick} = useEditvideoButton(video._id);
+  return (
+    <VideoDetailPage.MyVideoConfigButton onClick={onClick} text="영상 수정" />
+  );
+};
+
+VideoDetailPage.DeleteVideoButton = () => {
+  const video = useSelector((state: RootState) => state.playingVideo);
+  if (!video) return null;
+  const {onClick} = useDeleteVideoButton(video._id);
+  return (
+    <VideoDetailPage.MyVideoConfigButton onClick={onClick} text="영상 삭제" />
+  );
+};
 
 type MyVideoConfigButtonProps = {
   onClick: React.MouseEventHandler<HTMLButtonElement>;

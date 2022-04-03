@@ -16,7 +16,7 @@
   .file-input__label {
     padding: padding-vertical('small') padding-horizontal('small');
     background-color: $light-gray;
-    border-radius: $border-radius;
+    border-radius: border-radius();
     margin-top: 0.1rem;
     &:active {
       background-color: $light-gray-active;

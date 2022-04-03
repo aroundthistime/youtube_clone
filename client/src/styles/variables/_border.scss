@@ -7,3 +7,12 @@
     @return 2.5px solid $light-gray;
   }
 }
+
+//border-radius
+@function border-radius($style: 'default') {
+  @if $style == 'default' {
+    @return 10px;
+  } @else if $style == 'small' {
+    @return 3px;
+  }
+}
