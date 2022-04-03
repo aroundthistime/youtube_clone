@@ -73,55 +73,46 @@ VideoDetailPage.VideoInfo = React.memo(() => {
             {getDateTimestamp(new Date(video.uploadTime))}
           </span>
         </div>
-        <div className="video-detail__interaction-buttons">
-          <VideoDetailPage.ToggleLikeButton
-            videoId={video._id}
-            isActivate={Boolean(video.isLiked)}
-          />
-          <VideoDetailPage.ToggleWatchLaterButton
-            videoId={video._id}
-            isActivate={video.isInWatchLater}
-          />
-          <VideoDetailPage.ShareButtons />
-        </div>
+        <VideoDetailPage.InteractionButtons />
       </div>
     </VideoDetailPage.Section>
   );
 });
 
-type VideoToggleButtonProps = {
-  videoId: string;
-  isActivate?: boolean;
-};
+VideoDetailPage.InteractionButtons = React.memo(() => (
+  <div className="video-detail__interaction-buttons">
+    <VideoDetailPage.ToggleLikeButton />
+    <VideoDetailPage.ToggleWatchLaterButton />
+  </div>
+));
 
-VideoDetailPage.ToggleLikeButton = React.memo(
-  ({videoId, isActivate}: VideoToggleButtonProps) => (
+VideoDetailPage.ToggleLikeButton = React.memo(() => {
+  const video = useSelector((state: RootState) => state.playingVideo);
+  return (
     <VideoDetailPage.InteractionButton
-      videoId={videoId}
       mutation={useToggleLikeVideoMutation}
       text="좋아요"
       activeIconClassName="fa-solid fa-thumbs-up"
       inactiveIconClassName="fa-regular fa-thumbs-up"
-      isActive={isActivate}
+      isActive={video?.isLiked}
     />
-  ),
-);
+  );
+});
 
-VideoDetailPage.ToggleWatchLaterButton = React.memo(
-  ({videoId, isActivate}: VideoToggleButtonProps) => (
+VideoDetailPage.ToggleWatchLaterButton = React.memo(() => {
+  const video = useSelector((state: RootState) => state.playingVideo);
+  return (
     <VideoDetailPage.InteractionButton
-      videoId={videoId}
       mutation={useToggleWatchLaterMutation}
       text="나중에 볼 영상에 추가"
       activeIconClassName="fa-solid fa-square-plus"
       inactiveIconClassName="fa-regular fa-square-plus"
-      isActive={isActivate}
+      isActive={video?.isInWatchLater}
     />
-  ),
-);
+  );
+});
 
 type VideoInteractionButtonProps = {
-  videoId: string;
   mutation: () => UseMutationResult<any, unknown, string, unknown>;
   text: string;
   activeIconClassName: string;
@@ -130,19 +121,20 @@ type VideoInteractionButtonProps = {
 };
 
 VideoDetailPage.InteractionButton = ({
-  videoId,
   mutation,
   isActive: isActiveState,
   text,
   activeIconClassName,
   inactiveIconClassName,
 }: VideoInteractionButtonProps) => {
+  const video = useSelector((state: RootState) => state.playingVideo);
+  if (!video) return null;
   const [isActive, setisActive] = useState<boolean>(Boolean(isActiveState));
   const {mutateAsync, isLoading} = mutation();
   const onClick = useCallback(async () => {
     try {
       if (isLoading) return;
-      await mutateAsync(videoId);
+      await mutateAsync(video._id);
       setisActive(prev => !prev);
     } catch {
       toast.error(constants.messages.taskFailed);
@@ -231,45 +223,67 @@ VideoDetailPage.VideoMeta = React.memo(() => {
           />
           {isMyVideo && <div>1</div>}
         </div>
-        <VideoDetailPage.Description description={video.description} />
+        <VideoDetailPage.Description />
       </div>
     </VideoDetailPage.Section>
   );
 });
 
-type VideoDescriptionProps = {
-  description?: string;
+VideoDetailPage.MyVideoConfigButtons = () => (
+  <div className="video-detail__video-config-buttons" />
+);
+
+// VideoDetailPage.EditVideoButton = () => {
+//   return <VideoDetailPage.MyVideoConfigButton text="동영상 수정" />;
+// };
+
+type MyVideoConfigButtonProps = {
+  onClick: React.MouseEventHandler<HTMLButtonElement>;
+  text: string;
 };
 
-VideoDetailPage.Description = React.memo(
-  ({description = ''}: VideoDescriptionProps) => {
-    const {
-      ref: descriptionRef,
-      isOverflowing,
-      showFull,
-      toggleShowFull,
-    } = useToggleShowFull();
-    return (
-      <>
-        <div
-          ref={descriptionRef}
-          className={`video-detail__meta-content video-detail__description ${
-            showFull ? 'video-detail__description--full' : ''
-          }`}>
-          {description}
-        </div>
-        {isOverflowing && (
-          <button
-            className="video-description__toggle-button"
-            onClick={toggleShowFull}
-            type="button">
-            {showFull ? '간략히' : '자세히'}
-          </button>
-        )}
-      </>
-    );
-  },
+VideoDetailPage.MyVideoConfigButton = ({
+  onClick,
+  text,
+}: MyVideoConfigButtonProps) => (
+  <button
+    onClick={onClick}
+    className="video-config-buttons__config-button"
+    type="button">
+    {text}
+  </button>
 );
+
+VideoDetailPage.Description = React.memo(() => {
+  const description = useSelector(
+    (state: RootState) => state.playingVideo?.description,
+  );
+  const {
+    ref: descriptionRef,
+    isOverflowing,
+    showFull,
+    toggleShowFull,
+  } = useToggleShowFull();
+  return (
+    <>
+      <div
+        ref={descriptionRef}
+        className={`video-detail__meta-content video-detail__description ${
+          showFull ? 'video-detail__description--full' : ''
+        }`}>
+        {description}
+      </div>
+      {isOverflowing && (
+        <button
+          className="video-description__toggle-button"
+          onClick={toggleShowFull}
+          type="button">
+          {showFull ? '간략히' : '자세히'}
+        </button>
+      )}
+    </>
+  );
+});
 
 VideoDetailPage.Comments = React.memo(() => {
   const video = useSelector((state: RootState) => state.playingVideo);

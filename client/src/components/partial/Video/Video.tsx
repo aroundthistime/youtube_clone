@@ -23,6 +23,8 @@ import {
 import constants from '../../../constants';
 import UserAvatarLink from '../../atom/Links/UserAvatarLink/UserAvatarLink';
 import UserNameLink from '../../atom/Links/UserNameLink/UserNameLink';
+import {useDeleteVideoButton} from '../../../@hooks/useDeleteVideoButton';
+import WithSuspense from '../../wrapper/WithSuspense/WithSuspense';
 
 interface IVideo
   extends React.MemoExoticComponent<
@@ -132,21 +134,8 @@ Video.EditVideoButton = ({videoId}: VideoEditButtonProps) => {
 };
 
 Video.DeleteVideoButton = ({videoId, setRender}: VideoDeleteButtonProps) => {
-  const {mutateAsync, data} = useDeleteVideoMutation();
-  const onClick = useCallback(() => {
-    if (window.confirm('정말 해당 영상을 삭제하시겠습니까?')) {
-      mutateAsync(videoId);
-    }
-  }, [videoId]);
-
-  useEffect(() => {
-    if (data?.result === true) {
-      toast.success('해당 영상을 삭제했습니다.');
-      setRender(false);
-    } else if (data?.result === false) {
-      toast.error('요청하신 작업에 실패했습니다.');
-    }
-  }, [data?.result]);
+  const onDeleteSuccessCallback = useCallback(() => setRender(false), []);
+  const {onClick} = useDeleteVideoButton(videoId, onDeleteSuccessCallback);
 
   return (
     <Video.OverlayButton
@@ -167,6 +156,7 @@ Video.ToggleWatchLaterButton = React.memo(
     const {mutateAsync, isLoading} = useToggleWatchLaterMutation();
     const onClick = useCallback(async () => {
       try {
+        if (isLoading) return;
         await mutateAsync(videoId);
         toggleState();
       } catch (error) {
