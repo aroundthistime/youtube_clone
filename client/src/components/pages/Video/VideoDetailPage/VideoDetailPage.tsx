@@ -203,13 +203,11 @@ VideoDetailPage.VideoMeta = React.memo(() => {
     <VideoDetailPage.Section className="video-detail__meta">
       <UserAvatarLink user={video.creator} isLazyImage={false} />
       <div className="video-detail__meta-contents">
-        <div className="meta-content__top-row">
-          <UserNameLink
-            user={video.creator}
-            className="video-detail__meta-content"
-          />
-          {isMyVideo && <VideoDetailPage.MyVideoConfigButtons />}
-        </div>
+        <UserNameLink
+          user={video.creator}
+          className="video-detail__meta-content"
+        />
+        {isMyVideo && <VideoDetailPage.MyVideoConfigButtons />}
         <VideoDetailPage.Description />
       </div>
     </VideoDetailPage.Section>
@@ -269,11 +267,11 @@ VideoDetailPage.Description = React.memo(() => {
     toggleShowFull,
   } = useToggleShowFull();
   return (
-    <>
+    <div className="video-detail__meta-content video-detail__description">
       <div
         ref={descriptionRef}
-        className={`video-detail__meta-content video-detail__description ${
-          showFull ? 'video-detail__description--full' : ''
+        className={`description__content ${
+          showFull ? 'description__content--full' : ''
         }`}>
         {description}
       </div>
@@ -285,7 +283,7 @@ VideoDetailPage.Description = React.memo(() => {
           {showFull ? '간략히' : '자세히'}
         </button>
       )}
-    </>
+    </div>
   );
 });
 

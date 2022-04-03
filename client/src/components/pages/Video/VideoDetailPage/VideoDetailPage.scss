@@ -40,36 +40,40 @@
       display: flex;
       column-gap: column-gap();
       .video-detail__meta-contents {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        width: 100%;
+        display: grid;
+        grid-template-columns: min-content 1fr max-content;
+        grid-template-areas:
+          'usernameLink . configButtons'
+          'description description description';
+        align-items: center;
+        min-width: 0;
         row-gap: row-gap('small');
-        .meta-content__top-row {
+        .username-link {
+          grid-area: usernameLink;
+          display: inline-block;
+        }
+        .video-detail__video-config-buttons {
+          grid-area: configButtons;
           display: flex;
-          justify-content: space-between;
-          align-items: center;
-          width: 100%;
-          .username-link {
-            display: inline-block;
-          }
-          .video-detail__video-config-buttons {
-            display: flex;
-            column-gap: column-gap('small');
-            .video-config-buttons__config-button {
-              @include square-button();
-              @include approve-button();
-            }
+          column-gap: column-gap('small');
+          .video-config-buttons__config-button {
+            @include square-button();
+            @include approve-button();
           }
         }
         .video-detail__description {
-          @include n-lines(2);
-          &.video-detail__description--full {
-            @include unset-line-limits();
+          grid-area: description;
+          width: 100%;
+          .description__content {
+            @include n-lines(2);
+            word-break: break-all;
+            &.description__content--full {
+              @include unset-line-limits();
+            }
           }
-        }
-        .video-description__toggle-button {
-          color: $blur-text;
+          .video-description__toggle-button {
+            color: $blur-text;
+          }
         }
       }
     }
@@ -107,6 +111,32 @@
             }
             .video-detail__share-button {
               display: none;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+@include mobile {
+  .video-detail {
+    .video-detail__section {
+      &.video-detail__meta {
+        .video-detail__meta-contents {
+          grid-template-columns: 1fr;
+          grid-template-areas:
+            'usernameLink'
+            'description'
+            'configButtons';
+          .username-link {
+            font-weight: bold;
+          }
+          .video-detail__video-config-buttons {
+            justify-content: flex-end;
+            .video-config-buttons__config-button {
+              width: 6rem;
+              height: 2.5rem;
             }
           }
         }
