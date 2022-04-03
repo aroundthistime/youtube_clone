@@ -2,6 +2,7 @@
 import {useEffect, useMemo, useRef} from 'react';
 import {useDispatch} from 'react-redux';
 import {useLocation} from 'react-router-dom';
+import {clearComments} from '../../../../@modules/commentsSlice';
 import {resetVideoPlayer} from '../../../../@modules/videoPlayerSlice';
 import {useVideoQuery} from '../../../../@queries/useVideoQuery';
 import {VideoType} from '../../../../@types/VideoType';
@@ -26,6 +27,9 @@ export const useVideoDetailPage = (): ReturnType => {
 
   useEffect(() => {
     dispatch(resetVideoPlayer());
+    return () => {
+      dispatch(clearComments());
+    };
   }, []);
   // before component unmount => playing video set
 

@@ -1,7 +1,8 @@
 /* eslint-disable import/prefer-default-export */
-import {useMemo} from 'react';
-import {useSelector} from 'react-redux';
+import {useEffect, useMemo} from 'react';
+import {useDispatch, useSelector} from 'react-redux';
 import {useLazyInfiniteScroll} from '../../../@hooks/useLazyInfiniteScroll';
+import {setComments} from '../../../@modules/commentsSlice';
 import {RootState} from '../../../@modules/root';
 import {useCommentsQuery} from '../../../@queries/useCommentsQuery';
 import {CommentType} from '../../../@types/CommentType';
@@ -14,9 +15,11 @@ type ReturnType = null | {
 
 export const useComments = (): ReturnType => {
   const video = useSelector((state: RootState) => state.playingVideo);
+  const comments = useSelector((state: RootState) => state.comments.comments);
   const commentsSortMethod = useSelector(
-    (state: RootState) => state.commentsSortMethod,
+    (state: RootState) => state.comments.sortMethod,
   );
+  const dispatch = useDispatch();
 
   if (!video) return null;
 
@@ -29,7 +32,10 @@ export const useComments = (): ReturnType => {
   const {data, isFetchingNextPage, hasNextPage, fetchNextPage} =
     useCommentsQuery(queryParams);
 
-  const comments = useMemo(() => getCommentsFromData(data), [data]);
+  useEffect(() => {
+    const fetchedComments = getCommentsFromData(data);
+    dispatch(setComments(fetchedComments));
+  }, [data]);
 
   const canFetchNextPage = useMemo(
     () => Boolean(hasNextPage && !isFetchingNextPage),

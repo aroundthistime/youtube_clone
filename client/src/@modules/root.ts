@@ -3,14 +3,14 @@ import user from './userSlice';
 import categories from './categoriesSlice';
 import playingVideo from './playingVideoSlice';
 import videoPlayer from './videoPlayerSlice';
-import commentsSortMethod from './commentsSortMethodSlice';
+import comments from './commentsSlice';
 
 const rootReducer = combineReducers({
   user,
   categories,
   playingVideo,
   videoPlayer,
-  commentsSortMethod,
+  comments,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

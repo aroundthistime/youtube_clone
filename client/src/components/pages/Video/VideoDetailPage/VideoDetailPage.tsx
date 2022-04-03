@@ -1,11 +1,4 @@
-import React, {
-  PropsWithChildren,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import React, {PropsWithChildren, useMemo} from 'react';
 import {UseMutationResult} from 'react-query';
 import {Link} from 'react-router-dom';
 import {
@@ -24,7 +17,6 @@ import Comments from '../../../partial/Comments/Comments';
 import CommentsSortMethodSelector from '../../../partial/CommentsSortMethodSelector/CommentsSortMethodSelector';
 import VideoPlayer from '../../../partial/VideoPlayer/VideoPlayer';
 import {useVideoDetailPage} from './useVideoDetailPage';
-import CommentForm from '../../../partial/CommentForm/CommentForm';
 import './VideoDetailPage.scss';
 import {RootState} from '../../../../@modules/root';
 import {
@@ -33,6 +25,7 @@ import {
   useToggleLikeButton,
   useToggleWatchLaterButton,
 } from '../../../../@hooks/useVideoButton';
+import AddCommentForm from '../../../partial/CommentForm/AddCommentForm/AddCommentForm';
 
 const VideoDetailPage = () => {
   const {video} = useVideoDetailPage();
@@ -309,7 +302,7 @@ VideoDetailPage.Comments = React.memo(() => {
         </p>
         <CommentsSortMethodSelector />
       </div>
-      <CommentForm />
+      <AddCommentForm />
       <Comments />
     </VideoDetailPage.Section>
   );

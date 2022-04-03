@@ -1,24 +1,22 @@
-import React, {useEffect, useRef, useState} from 'react';
-import {useSelector} from 'react-redux';
-import {RootState} from '../../../@modules/root';
+import React, {useRef} from 'react';
 import ProfileImage from '../../atom/ProfileImage/ProfileImage';
 import WithLoggedInValidation from '../../wrapper/WithLoggedInValidation/WithLoggedInValidation';
 import './CommentForm.scss';
 import {useCommentForm} from './useCommentForm';
 
-type Props = {
-  onSubmit?: React.FormEventHandler<HTMLFormElement>;
-  onCancel?: React.MouseEventHandler<HTMLButtonElement>;
-  textAreaRef?: React.RefObject<HTMLTextAreaElement>;
+export interface CommentFormProps {
+  onSubmit: React.FormEventHandler<HTMLFormElement>;
+  onCancel: React.MouseEventHandler<HTMLButtonElement>;
+  textAreaRef: React.RefObject<HTMLTextAreaElement>;
   className?: string;
-};
+}
 
 const CommentForm = ({
   onSubmit,
   onCancel,
   textAreaRef = useRef<HTMLTextAreaElement>(null),
   className = '',
-}: Props) => {
+}: CommentFormProps) => {
   const {user, submitButtonDisabled} = useCommentForm(textAreaRef);
   return (
     <div className={`comment-form-container ${className}`}>

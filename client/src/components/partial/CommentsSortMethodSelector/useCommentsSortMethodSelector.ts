@@ -4,7 +4,7 @@ import {useDispatch} from 'react-redux';
 import {
   resetCommentsSortMethod,
   setCommentsSortMethod,
-} from '../../../@modules/commentsSortMethodSlice';
+} from '../../../@modules/commentsSlice';
 import {CommentSortMethodType} from '../../../@types/SortMethodType';
 
 type ReturnType = {
