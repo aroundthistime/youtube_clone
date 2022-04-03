@@ -4,11 +4,11 @@ import React from 'react';
 export const getTextWithLinebreaks = (text: string) => {
   return (
     <>
-      {text.split('\n').map(textToken => {
+      {text.split('\n').map((textToken, index) => {
         if (textToken === '') {
-          return <br />;
+          // eslint-disable-next-line react/no-array-index-key
+          return <br key={index} />;
         }
-        // eslint-disable-next-line react/no-array-index-key
         return <p key={textToken}>{textToken}</p>;
       })}
     </>

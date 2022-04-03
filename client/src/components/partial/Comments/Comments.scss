@@ -1,0 +1,8 @@
+@import '../../../styles/variables/variables';
+
+.comments {
+  display: flex;
+  flex-direction: column;
+  row-gap: row-gap();
+  margin: row-gap() 0;
+}

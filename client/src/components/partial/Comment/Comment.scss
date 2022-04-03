@@ -1,0 +1,9 @@
+@import '../../../styles/variables/variables';
+
+.comment {
+  display: grid;
+  grid-template-columns: max-content 1fr max-content;
+  column-gap: column-gap();
+  .comment__content {
+  }
+}

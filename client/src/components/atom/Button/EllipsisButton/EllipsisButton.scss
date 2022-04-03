@@ -1,0 +1,16 @@
+@import '../../../../styles/variables/variables';
+
+.ellipsis-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 30px;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  &:active {
+    background-color: $light-gray-active;
+  }
+  .ellipsis-button__icon {
+    color: gray;
+  }
+}

@@ -3,6 +3,7 @@ import WithSuspense from '../../wrapper/WithSuspense/WithSuspense';
 import Comment from '../Comment/Comment';
 import FetchMoreIndicator from '../FetchMoreIndicator/FetchMoreIndicator';
 import {useComments} from './useComments';
+import './Comments.scss';
 
 const Comments = () => {
   const useCommentResult = useComments();

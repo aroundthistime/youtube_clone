@@ -1,12 +1,17 @@
 @import './border';
 @import './colors';
 @import './shadow';
+@import './layout';
 
 @mixin square-button($size: 'default') {
   border-radius: border-radius('small');
   @if $size == 'default' {
     width: 6rem;
     height: 2.5rem;
+    @include mobile {
+      width: 3rem;
+      height: 2rem;
+    }
   }
 }
 
