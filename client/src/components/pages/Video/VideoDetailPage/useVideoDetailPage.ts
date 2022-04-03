@@ -14,6 +14,7 @@ type ReturnType = {
 export const useVideoDetailPage = (): ReturnType => {
   const location = useLocation();
   const dispatch = useDispatch();
+
   const videoId = useMemo(
     () => getVideoIdFromPathname(location.pathname),
     [location.pathname],

@@ -1,11 +1,8 @@
 /* eslint-disable import/prefer-default-export */
 import {useEffect, useMemo} from 'react';
-import {useDispatch} from 'react-redux';
 import {useNavigate} from 'react-router-dom';
 import {usePopup} from '../../../../@hooks/usePopup';
 import {useVideosFilterQueries} from '../../../../@hooks/useVideosFilterQueries';
-import {clearUser} from '../../../../@modules/userSlice';
-import {useLogoutQuery} from '../../../../@queries/useLogoutQuery';
 import {useMyProfileQuery} from '../../../../@queries/useProfileQuery';
 import {
   useMyVideosQuery,
@@ -13,7 +10,6 @@ import {
 } from '../../../../@queries/useVideosQuery';
 import {UserType} from '../../../../@types/UserType';
 import routes from '../../../../routes';
-import {PopupButtonProps} from '../../../partial/PopupWithButtons/PopupWithButtons';
 
 type ReturnType = {
   user: UserType;

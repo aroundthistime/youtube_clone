@@ -42,10 +42,17 @@
       .video-detail__meta-contents {
         display: flex;
         flex-direction: column;
-        row-gap: row-gap('small');
         align-items: flex-start;
-        .username-link {
-          display: inline-block;
+        width: 100%;
+        row-gap: row-gap('small');
+        .meta-content__top-row {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          width: 100%;
+          .username-link {
+            display: inline-block;
+          }
         }
         .video-detail__description {
           @include n-lines(2);
@@ -63,6 +70,7 @@
         display: flex;
         align-items: center;
         column-gap: column-gap();
+        margin-bottom: row-gap('small');
       }
     }
   }

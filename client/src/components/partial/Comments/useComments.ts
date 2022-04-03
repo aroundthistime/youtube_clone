@@ -7,21 +7,25 @@ import {useCommentsQuery} from '../../../@queries/useCommentsQuery';
 import {CommentType} from '../../../@types/CommentType';
 import {getCommentsFromData} from '../../../utils/fetchHandlers';
 
-type ReturnType = {
+type ReturnType = null | {
   comments: CommentType[];
   isFetchingNextPage: boolean;
 };
 
-export const useComments = (videoId: string): ReturnType => {
+export const useComments = (): ReturnType => {
+  const video = useSelector((state: RootState) => state.playingVideo);
   const commentsSortMethod = useSelector(
     (state: RootState) => state.commentsSortMethod,
   );
+
+  if (!video) return null;
+
   const queryParams = useMemo(() => {
     return {
       sortMethod: commentsSortMethod,
-      videoId,
+      videoId: video._id,
     };
-  }, [commentsSortMethod, videoId]);
+  }, [commentsSortMethod, video._id]);
   const {data, isFetchingNextPage, hasNextPage, fetchNextPage} =
     useCommentsQuery(queryParams);
 

@@ -15,7 +15,7 @@ import {
   TwitterShareButton,
 } from 'react-share';
 import {toast} from 'react-toastify';
-import {useIsOverflowing} from '../../../../@hooks/useIsOverflowing';
+import {useSelector} from 'react-redux';
 import {useToggleShowFull} from '../../../../@hooks/useToggleShowFull';
 import {
   useToggleLikeVideoMutation,
@@ -33,6 +33,7 @@ import VideoPlayer from '../../../partial/VideoPlayer/VideoPlayer';
 import {useVideoDetailPage} from './useVideoDetailPage';
 import CommentForm from '../../../partial/CommentForm/CommentForm';
 import './VideoDetailPage.scss';
+import {RootState} from '../../../../@modules/root';
 
 const VideoDetailPage = () => {
   const {video} = useVideoDetailPage();
@@ -41,12 +42,9 @@ const VideoDetailPage = () => {
       <VideoPlayer video={video}>
         <VideoPlayer.Controller />
       </VideoPlayer>
-      <VideoDetailPage.VideoInfo video={video} />
-      <VideoDetailPage.VideoMeta video={video} />
-      <VideoDetailPage.Comments
-        videoId={video._id}
-        commentsCount={video.commentsCount}
-      />
+      <VideoDetailPage.VideoInfo />
+      <VideoDetailPage.VideoMeta />
+      <VideoDetailPage.Comments />
     </main>
   );
 };
@@ -58,11 +56,11 @@ VideoDetailPage.Section = ({
   <section className={`video-detail__section ${className}`}>{children}</section>
 );
 
-type VideoInfoProps = {
-  video: VideoType;
-};
-
-VideoDetailPage.VideoInfo = ({video}: VideoInfoProps) => {
+VideoDetailPage.VideoInfo = React.memo(() => {
+  const video = useSelector((state: RootState) => state.playingVideo);
+  if (!video) {
+    return null;
+  }
   return (
     <VideoDetailPage.Section className="video-detail__infos">
       <h3 className="video__title">{video.title}</h3>
@@ -89,7 +87,7 @@ VideoDetailPage.VideoInfo = ({video}: VideoInfoProps) => {
       </div>
     </VideoDetailPage.Section>
   );
-};
+});
 
 type VideoToggleButtonProps = {
   videoId: string;
@@ -212,24 +210,32 @@ VideoDetailPage.TwitterShareButton = ({
   </TwitterShareButton>
 );
 
-type VideoMetaProps = {
-  video: VideoType;
-};
-
-VideoDetailPage.VideoMeta = ({video}: VideoMetaProps) => {
+VideoDetailPage.VideoMeta = React.memo(() => {
+  const user = useSelector((state: RootState) => state.user);
+  const video = useSelector((state: RootState) => state.playingVideo);
+  const isMyVideo = useMemo(
+    () => video?.creator._id === user?._id,
+    [video, user],
+  );
+  if (!video) {
+    return null;
+  }
   return (
     <VideoDetailPage.Section className="video-detail__meta">
       <UserAvatarLink user={video.creator} isLazyImage={false} />
       <div className="video-detail__meta-contents">
-        <UserNameLink
-          user={video.creator}
-          className="video-detail__meta-content"
-        />
+        <div className="meta-content__top-row">
+          <UserNameLink
+            user={video.creator}
+            className="video-detail__meta-content"
+          />
+          {isMyVideo && <div>1</div>}
+        </div>
         <VideoDetailPage.Description description={video.description} />
       </div>
     </VideoDetailPage.Section>
   );
-};
+});
 
 type VideoDescriptionProps = {
   description?: string;
@@ -265,25 +271,23 @@ VideoDetailPage.Description = React.memo(
   },
 );
 
-type VideoDetailPageCommentsProps = {
-  commentsCount: number;
-  videoId: string;
-};
-
-VideoDetailPage.Comments = ({
-  commentsCount,
-  videoId,
-}: VideoDetailPageCommentsProps) => (
-  <VideoDetailPage.Section className="video-detail__comments">
-    <div className="comments__header">
-      <p className="comments-count">
-        댓글 {getCommaAddedNumber(commentsCount)}개
-      </p>
-      <CommentsSortMethodSelector />
-    </div>
-    <CommentForm />
-    <Comments videoId={videoId} />
-  </VideoDetailPage.Section>
-);
+VideoDetailPage.Comments = React.memo(() => {
+  const video = useSelector((state: RootState) => state.playingVideo);
+  if (!video) {
+    return null;
+  }
+  return (
+    <VideoDetailPage.Section className="video-detail__comments">
+      <div className="comments__header">
+        <p className="comments-count">
+          댓글 {getCommaAddedNumber(video.commentsCount)}개
+        </p>
+        <CommentsSortMethodSelector />
+      </div>
+      <CommentForm />
+      <Comments />
+    </VideoDetailPage.Section>
+  );
+});
 
 export default React.memo(VideoDetailPage);

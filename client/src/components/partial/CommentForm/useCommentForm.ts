@@ -14,7 +14,7 @@ export const useCommentForm = (
   textAreaRef: React.RefObject<HTMLTextAreaElement>,
 ): ReturnType => {
   const [submitButtonDisabled, setSubmitButtonDisabled] =
-    useState<boolean>(false);
+    useState<boolean>(true);
   const user = useSelector((state: RootState) => state.user);
   useEffect(() => {
     textAreaRef.current?.addEventListener('input', onTextAreaChange);
