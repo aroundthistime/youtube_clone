@@ -22,6 +22,7 @@ export const useCommentForm = (
       textAreaRef.current?.removeEventListener('input', onTextAreaChange);
     };
   }, [textAreaRef.current]);
+
   const onTextAreaChange = () => {
     setSubmitButtonDisabled(Boolean(!textAreaRef.current?.value));
   };

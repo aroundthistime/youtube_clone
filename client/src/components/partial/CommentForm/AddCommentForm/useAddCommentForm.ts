@@ -36,6 +36,7 @@ export const useAddCommentForm = (): ReturnType => {
   const clearTextArea = useCallback(() => {
     if (textAreaRef.current) {
       textAreaRef.current.value = '';
+      textAreaRef.current.dispatchEvent(new InputEvent('input', {data: ''}));
     }
   }, [textAreaRef.current]);
 
