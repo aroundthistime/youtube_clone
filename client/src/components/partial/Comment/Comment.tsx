@@ -6,9 +6,11 @@ import {RootState} from '../../../@modules/root';
 import {useBlockCommentMutation} from '../../../@queries/useCommentMutation';
 import {CommentType} from '../../../@types/CommentType';
 import constants from '../../../constants';
+import {getTimeDiffFromNowString} from '../../../utils/dateHandler';
 import {getTextWithLinebreaks} from '../../../utils/stringUtils';
 import EllipsisButton from '../../atom/Button/EllipsisButton/EllipsisButton';
 import UserAvatarLink from '../../atom/Links/UserAvatarLink/UserAvatarLink';
+import UserNameLink from '../../atom/Links/UserNameLink/UserNameLink';
 import EditCommentForm from '../CommentForm/EditCommentForm/EditCommentForm';
 import PopupWithButtons from '../PopupWithButtons/PopupWithButtons';
 import './Comment.scss';
@@ -24,6 +26,7 @@ const Comment = ({comment}: Props) => {
     popupRef,
     showByButtonClick,
     isMyComment,
+    timeDiffFromUploadDate,
     useEditMode,
     closeEditMode,
     openEditMode,
@@ -33,9 +36,17 @@ const Comment = ({comment}: Props) => {
     <>
       <div className={`comment ${useEditMode ? 'comment--editing' : ''}`}>
         <UserAvatarLink user={comment.creator} className="comment__creator" />
-        <div className="comment__content">
-          {/* <div className="comment__header">{error}업로드타이머지ㅏ구 !@!</div> */}
-          {getTextWithLinebreaks(comment.text)}
+        <div className="comment__main">
+          <div className="comment__header">
+            <UserNameLink user={comment.creator} />
+            <span className="comment__upload-time">
+              {timeDiffFromUploadDate}
+            </span>
+            {comment.isEdited && <span>(수정됨)</span>}
+          </div>
+          <div className="comment__content">
+            {getTextWithLinebreaks(comment.text)}
+          </div>
         </div>
         {isLoggedIn && (
           <>

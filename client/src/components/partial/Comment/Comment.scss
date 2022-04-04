@@ -4,18 +4,36 @@
   display: grid;
   grid-template-columns: max-content 1fr max-content;
   column-gap: column-gap();
+  padding: padding-vertical() 0;
   &:hover {
     .comment__config-button {
-      display: flex;
+      opacity: 1;
     }
+  }
+  &:not(:last-child) {
+    border-bottom: light-gray-border();
   }
   &.comment--editing {
     display: none;
   }
-  .comment__content {
+  .comment__main {
+    .comment__header {
+      display: flex;
+      align-items: center;
+      .username-link {
+        margin-right: column-gap('small');
+      }
+      span {
+        opacity: 0.7;
+        @include font-size('small');
+      }
+    }
+    .comment__content {
+    }
   }
+
   .comment__config-button {
-    display: none;
+    opacity: 0;
   }
 }
 

@@ -4,11 +4,13 @@ import {useSelector} from 'react-redux';
 import {usePopup} from '../../../@hooks/usePopup';
 import {RootState} from '../../../@modules/root';
 import {CommentType} from '../../../@types/CommentType';
+import {getTimeDiffFromNowString} from '../../../utils/dateHandler';
 
 type ReturnType = {
   isLoggedIn: boolean;
   popupRef: React.RefObject<HTMLDivElement>;
   showByButtonClick: React.MouseEventHandler<HTMLButtonElement>;
+  timeDiffFromUploadDate: string;
   isMyComment: boolean;
   useEditMode: boolean;
   closeEditMode: () => void;
@@ -20,6 +22,9 @@ export const useComment = (comment: CommentType): ReturnType => {
   const [useEditMode, setUseEditMode] = useState<boolean>(false);
 
   const isMyComment = useMemo(() => comment.creator._id === user?._id, [user]);
+  const timeDiffFromUploadDate = useMemo(() => {
+    return getTimeDiffFromNowString(new Date(comment.uploadTime));
+  }, []);
 
   const {ref, showByButtonClick} = usePopup<HTMLDivElement>();
 
@@ -30,6 +35,7 @@ export const useComment = (comment: CommentType): ReturnType => {
     isLoggedIn: Boolean(user),
     popupRef: ref,
     isMyComment,
+    timeDiffFromUploadDate,
     showByButtonClick,
     openEditMode,
     closeEditMode,
