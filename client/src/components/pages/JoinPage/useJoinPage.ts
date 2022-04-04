@@ -8,7 +8,9 @@ import {usePublicValidation} from '../../../@hooks/useAuthValidation';
 import {useInput} from '../../../@hooks/useInput';
 import {setUser} from '../../../@modules/userSlice';
 import {useJoinMutation} from '../../../@queries/useAuthMutation';
+import constants from '../../../constants';
 import routes from '../../../routes';
+import {passwordHasAppropriateLength} from '../../../utils/formUtils';
 import {FieldInputPropsType} from '../../partial/FieldInput/FieldInput';
 
 type ReturnType = {
@@ -19,11 +21,6 @@ type ReturnType = {
   alertMessage: string;
   onSubmit: React.FormEventHandler<HTMLFormElement>;
   isLoading: boolean;
-};
-
-type CanSubmitReturnType = {
-  result: boolean;
-  errorMessage: string;
 };
 
 export const useJoinPage = (): ReturnType => {
@@ -54,32 +51,27 @@ export const useJoinPage = (): ReturnType => {
 
   const onSubmit: React.FormEventHandler<HTMLFormElement> = event => {
     event.preventDefault();
-    const checkResult = canSubmit();
-    if (checkResult.result) {
+    if (canSubmit()) {
       tryJoin();
-    } else {
-      setAlertMessage(checkResult.errorMessage);
     }
   };
 
-  const canSubmit = (): CanSubmitReturnType => {
-    const passwordHasAppropriateLength = (password: string): boolean =>
-      password.length >= PASSWORD_LEAST_LENGTH &&
-      password.length <= PASSWORD_MAX_LENGTH;
+  const canSubmit = (): boolean => {
     let errorMessage: string = '';
     if (nameInput.value === '') {
-      errorMessage = '이름이 입력해주세요';
+      errorMessage = '이름을 입력해주세요';
     } else if (emailInput.value === '') {
       errorMessage = '이메일을 입력해주세요';
     } else if (!passwordHasAppropriateLength(password1Input.value)) {
-      errorMessage = `비밀번호는 ${PASSWORD_LEAST_LENGTH}자 이상 ${PASSWORD_MAX_LENGTH}자 이하이어야 합니다`;
+      errorMessage =
+        constants.messages.formErrorMessages.inappropriateLengthPassword;
     } else if (password1Input.value !== password2Input.value) {
-      errorMessage = '두 비밀번호가 일치하지 않습니다';
+      errorMessage = constants.messages.formErrorMessages.passwordsNotMatching;
     }
-    return {
-      result: errorMessage === '',
-      errorMessage,
-    };
+    if (errorMessage) {
+      setAlertMessage(errorMessage);
+    }
+    return !errorMessage;
   };
 
   const tryJoin = async () => {

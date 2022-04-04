@@ -21,22 +21,18 @@ const JoinPage = () => {
   } = useJoinPage();
   return (
     <main className="join">
-      {isLoading ? (
-        <Loader />
-      ) : (
-        <PageForm className="join-wrapper">
-          <PageForm.Title text="회원가입" />
-          <PageForm.Form className="join-form" onSubmit={onSubmit}>
-            <JoinPage.Input {...nameInputProps} />
-            <JoinPage.Input {...emailInputProps} />
-            <JoinPage.Input {...password1InputProps} />
-            <JoinPage.Input {...password2InputProps} />
-            <PageForm.AlertMessage text={alertMessage} />
-            <PageForm.SubmitButton text="가입하기" />
-          </PageForm.Form>
-          <AuthFormLink path={routes.login} text="이미 계정이 있으신가요?" />
-        </PageForm>
-      )}
+      <PageForm className="join-wrapper">
+        <PageForm.Title text="회원가입" />
+        <PageForm.Form className="join-form" onSubmit={onSubmit}>
+          <JoinPage.Input {...nameInputProps} />
+          <JoinPage.Input {...emailInputProps} />
+          <JoinPage.Input {...password1InputProps} />
+          <JoinPage.Input {...password2InputProps} />
+          <PageForm.AlertMessage text={alertMessage} />
+          <PageForm.SubmitButton text="가입하기" />
+        </PageForm.Form>
+        <AuthFormLink path={routes.login} text="이미 계정이 있으신가요?" />
+      </PageForm>
     </main>
   );
 };

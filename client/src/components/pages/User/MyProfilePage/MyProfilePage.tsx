@@ -3,6 +3,7 @@ import {faCog} from '@fortawesome/free-solid-svg-icons';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {useDispatch} from 'react-redux';
 import {useNavigate} from 'react-router-dom';
+import {toast} from 'react-toastify';
 import PopupWithButtons from '../../../partial/PopupWithButtons/PopupWithButtons';
 import './MyProfilePage.scss';
 import {useMyProfilePage} from './useMyProfilePage';
@@ -71,8 +72,10 @@ MyProfilePage.LogoutButton = () => {
   const dispatch = useDispatch();
   const [executeLogoutQuery] = useLogoutQuery();
   const onClick = useCallback(async () => {
+    if (!window.confirm('정말 로그아웃하시겠습니까?')) return;
     await executeLogoutQuery();
     dispatch(clearUser());
+    toast.success('로그아웃되었습니다.');
     navigate(routes.home);
   }, []);
   return <PopupWithButtons.Button text="로그아웃" onClick={onClick} />;

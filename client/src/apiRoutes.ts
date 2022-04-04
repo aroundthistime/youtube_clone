@@ -25,8 +25,8 @@ const apiUrls = {
   userVideo: (id: string): string => {
     return `/user/${id}/video`;
   },
-  userPassword: (id: string): string => {
-    return `/user/${id}/password`;
+  get userPassword() {
+    return `${this.user}/password`;
   },
 
   // video
