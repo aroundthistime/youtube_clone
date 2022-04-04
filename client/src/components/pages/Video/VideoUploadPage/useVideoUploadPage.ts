@@ -4,10 +4,15 @@ import {useCallback, useEffect, useMemo, useRef} from 'react';
 import {useNavigate} from 'react-router-dom';
 import {useUploadVideoMutation} from '../../../../@queries/useVideoMutation';
 import routes from '../../../../routes';
+import {
+  showErrorToastAfterLoading,
+  showLoadingToast,
+  showSuccessToastAfterLoading,
+} from '../../../../utils/toastUtils';
 
 export const useVideoUploadPage = () => {
   const navigate = useNavigate();
-  const {mutateAsync, data} = useUploadVideoMutation();
+  const {mutateAsync, isLoading, data} = useUploadVideoMutation();
 
   const videoFileInputRef = useRef<HTMLInputElement>(null);
   const thumbnailInputRef = useRef<HTMLInputElement>(null);
@@ -17,11 +22,15 @@ export const useVideoUploadPage = () => {
 
   const onSubmit: React.FormEventHandler<HTMLFormElement> = async event => {
     event.preventDefault();
-    if (
-      videoFileInputRef.current?.files &&
-      thumbnailInputRef.current?.files &&
-      titleInputRef.current?.value
-    ) {
+    if (isLoading) return;
+    const toastId = showLoadingToast();
+    try {
+      if (
+        !videoFileInputRef.current?.files ||
+        !thumbnailInputRef.current?.files ||
+        !titleInputRef.current?.value
+      )
+        return;
       const videoUploadRequirements = {
         videoFile: videoFileInputRef.current?.files[0],
         thumbnailImage: thumbnailInputRef.current?.files[0],
@@ -29,26 +38,21 @@ export const useVideoUploadPage = () => {
         description: descriptionInputRef.current?.value,
         category: categoryInputRef.current?.value,
       };
-      mutateAsync(videoUploadRequirements);
+      await mutateAsync(videoUploadRequirements);
+      showSuccessToastAfterLoading(
+        toastId,
+        '영상을 성공적으로 업로드했습니다.',
+      );
+    } catch {
+      showErrorToastAfterLoading(toastId);
     }
   };
 
   useEffect(() => {
     if (data?.result) {
-      onVideoUploadSuccess();
-    } else if (data?.result === false) {
-      onVideoUploadFail();
+      navigate(routes.videoDetail(data.videoId));
     }
-  }, [data]);
-
-  const onVideoUploadSuccess = useCallback(() => {
-    navigate(routes.videoDetail(data.videoId));
   }, [data?.videoId]);
-
-  const onVideoUploadFail = useCallback(() => {
-    alert('요청하신 작업에 실패했습니다. 다시 시도해주세요');
-    location.reload();
-  }, []);
 
   return {
     videoFileInputRef,

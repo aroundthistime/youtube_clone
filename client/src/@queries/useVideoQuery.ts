@@ -17,7 +17,5 @@ const getVideo = async (videoId: string) => {
 };
 
 export const useVideoQuery = (videoId: string) => {
-  return useQuery(['video', videoId], () => getVideo(videoId), {
-    staleTime: Infinity,
-  });
+  return useQuery(['video', videoId], () => getVideo(videoId));
 };
