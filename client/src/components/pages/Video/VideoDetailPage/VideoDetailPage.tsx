@@ -1,6 +1,6 @@
-import React, {PropsWithChildren, useMemo} from 'react';
+import React, {PropsWithChildren, useCallback, useMemo} from 'react';
 import {UseMutationResult} from 'react-query';
-import {Link} from 'react-router-dom';
+import {Link, useNavigate} from 'react-router-dom';
 import {
   FacebookIcon,
   FacebookShareButton,
@@ -26,6 +26,7 @@ import {
   useToggleWatchLaterButton,
 } from '../../../../@hooks/useVideoButton';
 import AddCommentForm from '../../../partial/CommentForm/AddCommentForm/AddCommentForm';
+import routes from '../../../../routes';
 
 const VideoDetailPage = () => {
   const {video} = useVideoDetailPage();
@@ -233,7 +234,9 @@ VideoDetailPage.EditVideoButton = () => {
 VideoDetailPage.DeleteVideoButton = () => {
   const video = useSelector((state: RootState) => state.playingVideo);
   if (!video) return null;
-  const {onClick} = useDeleteVideoButton(video._id);
+  const navigate = useNavigate();
+  const navigateToHome = useCallback(() => navigate(routes.home), []);
+  const {onClick} = useDeleteVideoButton(video._id, navigateToHome);
   return (
     <VideoDetailPage.MyVideoConfigButton onClick={onClick} text="영상 삭제" />
   );

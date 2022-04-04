@@ -1,4 +1,5 @@
 const messages = {
+  loading: '잠시만 기다려주세요',
   confirmClear: '해당 영상들을 모두 삭제하시겠습니까?',
   confirmRemoveVideoFromList: '해당 영상을 목록에서 제거하시겠습니까?',
   videoRemovedFromList: '영상을 목록에서 제거했습니다.',

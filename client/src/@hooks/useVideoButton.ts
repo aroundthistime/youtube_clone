@@ -1,6 +1,6 @@
 /* eslint-disable import/prefer-default-export */
 
-import {useCallback, useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import {UseMutationResult} from 'react-query';
 import {useNavigate} from 'react-router-dom';
 import {toast} from 'react-toastify';
@@ -11,6 +11,11 @@ import {
 } from '../@queries/useVideoMutation';
 import constants from '../constants';
 import routes from '../routes';
+import {
+  showErrorToastAfterLoading,
+  showLoadingToast,
+  showSuccessToastAfterLoading,
+} from '../utils/toastUtils';
 
 interface UseSingleActionButtonReturnType {
   onClick: React.MouseEventHandler<HTMLButtonElement>;
@@ -26,27 +31,18 @@ export const useDeleteVideoButton = (
   callback?: Function,
 ): UseSingleActionButtonReturnType => {
   const {mutateAsync, isLoading} = useDeleteVideoMutation();
-  const onClick = useCallback(() => {
+  const onClick = useCallback(async () => {
     if (isLoading) return;
-    if (window.confirm('정말 해당 영상을 삭제하시겠습니까?')) return;
+    if (!window.confirm('정말 해당 영상을 삭제하시겠습니까?')) return;
+    const toastId = showLoadingToast();
     try {
-      mutateAsync(videoId);
-      handleDeleteSuccess();
+      await mutateAsync(videoId);
+      showSuccessToastAfterLoading(toastId, '해당 영상을 삭제했습니다.');
+      if (callback) callback();
     } catch {
-      handleDeleteFail();
+      showErrorToastAfterLoading(toastId);
     }
   }, [videoId]);
-
-  const handleDeleteSuccess = useCallback(() => {
-    toast.success('해당 영상을 삭제했습니다.');
-    if (callback) {
-      callback();
-    }
-  }, []);
-
-  const handleDeleteFail = useCallback(() => {
-    toast.error('요청하신 작업에 실패했습니다.');
-  }, []);
 
   return {
     onClick,
@@ -101,38 +97,29 @@ const useVideoToggleButton = (
   const [isActive, setIsActive] = useState<boolean>(isActiveProp);
   const {mutateAsync, isLoading} = mutation();
   const onClick = useCallback(async () => {
+    if (isLoading) return;
+    const toastId = showLoadingToast();
     try {
-      if (isLoading) return;
       await mutateAsync(videoId);
-      toggleState();
+      toggleState(toastId);
     } catch (error) {
-      toast.error(constants.messages.taskFailed);
+      showErrorToastAfterLoading(toastId);
     }
   }, [videoId]);
 
-  const toggleState = useCallback(() => {
-    setIsActive(prev => {
-      const newState = !prev;
-      if (newState) {
-        showActiveToast();
-      } else {
-        showInactiveToast();
-      }
-      return newState;
-    });
-  }, [isActive]);
-
-  const showActiveToast = useCallback(() => {
-    toast.success(onActiveMessage, {
-      toastId: onActiveMessage,
-    });
-  }, []);
-
-  const showInactiveToast = useCallback(() => {
-    toast.success(onInactiveMessage, {
-      toastId: onInactiveMessage,
-    });
-  }, []);
+  const toggleState = useCallback(
+    (toastId: React.ReactText) => {
+      setIsActive(prev => {
+        const newState = !prev;
+        showSuccessToastAfterLoading(
+          toastId,
+          newState ? onActiveMessage : onInactiveMessage,
+        );
+        return newState;
+      });
+    },
+    [isActive],
+  );
 
   return {
     onClick,

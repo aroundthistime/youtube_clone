@@ -47,6 +47,7 @@
           'description description description';
         align-items: center;
         min-width: 0;
+        width: 100%;
         row-gap: row-gap('small');
         .username-link {
           grid-area: usernameLink;
