@@ -1,5 +1,5 @@
 /* eslint-disable import/prefer-default-export */
-import React, {LegacyRef, useEffect, useRef} from 'react';
+import React, {useEffect, useRef} from 'react';
 import {
   hideBlurBackground,
   showBlurBackground,
@@ -20,7 +20,6 @@ export const usePopup = <T extends {}>(): ReturnType<T> => {
       const element = ref.current as HTMLElement;
       element.dataset.isVisible = 'true';
       element.scrollTop = 0;
-      // element.scrollTo({top: 0});
     }
   };
 

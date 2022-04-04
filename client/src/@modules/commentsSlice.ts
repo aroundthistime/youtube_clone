@@ -40,7 +40,7 @@ const commentsSlice = createSlice({
         comments: [],
       };
     },
-    deleteComment(state, {payload}: PayloadAction<string>) {
+    deleteCommentById(state, {payload}: PayloadAction<string>) {
       const filteredComments = state.comments.filter(
         comment => comment._id !== payload,
       );
@@ -71,7 +71,8 @@ export const {
   setComments,
   clearComments,
   addComment,
-  deleteComment,
+  editComment,
+  deleteCommentById,
   setCommentsSortMethod,
   resetCommentsSortMethod,
 } = commentsSlice.actions;

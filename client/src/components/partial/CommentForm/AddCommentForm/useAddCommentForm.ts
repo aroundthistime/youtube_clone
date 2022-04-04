@@ -14,12 +14,13 @@ export const useAddCommentForm = (): ReturnType => {
   const video = useSelector((state: RootState) => state.playingVideo);
   if (!video) return null;
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
-  const {mutateAsync, data} = useAddCommentMutation();
+  const {mutateAsync, data, isLoading} = useAddCommentMutation();
   const dispatch = useDispatch();
 
   const onSubmit: React.FormEventHandler<HTMLFormElement> = async event => {
     event.preventDefault();
     if (!textAreaRef.current) return;
+    if (isLoading) return;
     const addCommentRequirements = {
       videoId: video._id,
       text: textAreaRef.current.value,

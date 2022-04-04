@@ -1,0 +1,18 @@
+@import '../../../styles/variables/variables';
+
+.popup.buttons-popup {
+  width: 18rem;
+  display: none;
+  padding: padding-vertical('small') 0;
+  @include scrollbar('y');
+  &[data-is-visible='true'] {
+    display: flex;
+    flex-direction: column;
+  }
+  .popup__button {
+    padding: padding-vertical('small') padding-horizontal();
+    &:not(:last-child) {
+      border-bottom: light-gray-border();
+    }
+  }
+}

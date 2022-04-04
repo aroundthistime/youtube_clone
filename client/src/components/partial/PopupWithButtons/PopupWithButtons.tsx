@@ -1,5 +1,6 @@
 import React from 'react';
 import {usePopupWithButtons} from './usePopupWithButtons';
+import './PopupWithButtons.scss';
 
 type Props = {
   children?: React.ReactNode;
@@ -22,7 +23,7 @@ const PopupWithButtons = React.forwardRef<HTMLDivElement, Props>(
   ({className = '', children}, ref) => {
     const {innerRef} = usePopupWithButtons(ref);
     return (
-      <div ref={innerRef} className={`popup ${className}`}>
+      <div ref={innerRef} className={`popup buttons-popup ${className}`}>
         {children}
       </div>
     );

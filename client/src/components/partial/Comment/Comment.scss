@@ -4,6 +4,25 @@
   display: grid;
   grid-template-columns: max-content 1fr max-content;
   column-gap: column-gap();
+  &:hover {
+    .comment__config-button {
+      display: flex;
+    }
+  }
+  &.comment--editing {
+    display: none;
+  }
   .comment__content {
+  }
+  .comment__config-button {
+    display: none;
+  }
+}
+
+@include mobile {
+  .comment {
+    .comment__config-button {
+      display: flex;
+    }
   }
 }

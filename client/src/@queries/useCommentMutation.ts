@@ -39,6 +39,26 @@ const editComment = async ({id, text}: CommentEditRequirements) => {
   return data;
 };
 
+const deleteComment = async (id: string) => {
+  const route = apiRoutes.deleteComment;
+  const urlFunction = route.url as Function;
+  const {data} = await axios({
+    url: urlFunction(id),
+    method: route.method,
+  });
+  return data;
+};
+
+const blockComment = async (id: string) => {
+  const route = apiRoutes.blockComment;
+  const urlFunction = route.url as Function;
+  const {data} = await axios({
+    url: urlFunction(id),
+    method: route.method,
+  });
+  return data;
+};
+
 export const useAddCommentMutation = () => {
   return useMutation(addComment, {
     mutationKey: 'addComment',
@@ -48,5 +68,17 @@ export const useAddCommentMutation = () => {
 export const useEditCommentMutation = () => {
   return useMutation(editComment, {
     mutationKey: 'editComment',
+  });
+};
+
+export const useDeleteCommentMutation = () => {
+  return useMutation(deleteComment, {
+    mutationKey: 'deleteComment',
+  });
+};
+
+export const useBlockCommentMutation = () => {
+  return useMutation(blockComment, {
+    mutationKey: 'blockComment',
   });
 };
