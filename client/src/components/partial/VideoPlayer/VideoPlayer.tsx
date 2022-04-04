@@ -61,7 +61,7 @@ type Props = {
 
 const VideoPlayer = React.memo(
   ({video, className = '', children}: PropsWithChildren<Props>) => {
-    const {videoRef, videoPlayerRef, overlayEffectRef} = useVideoPlayer(video);
+    const {videoRef, videoPlayerRef, overlayEffectRef} = useVideoPlayer();
     return (
       <div
         className={`video-player ${className}`}

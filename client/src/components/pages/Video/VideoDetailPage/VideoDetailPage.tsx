@@ -1,6 +1,5 @@
 import React, {PropsWithChildren, useCallback, useMemo} from 'react';
-import {UseMutationResult} from 'react-query';
-import {Link, useNavigate} from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 import {
   FacebookIcon,
   FacebookShareButton,

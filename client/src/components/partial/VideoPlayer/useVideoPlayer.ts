@@ -1,12 +1,12 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable import/prefer-default-export */
-import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-import {setPlayingVideo} from '../../../@modules/playingVideoSlice';
 import {RootState} from '../../../@modules/root';
 import {
   endVideo,
   playVideo,
+  resetVideoPlayer,
   setCurrentTime,
   setDuration,
   setVolume,
@@ -15,7 +15,6 @@ import {
   toggleVideoIsMuted,
   useDefaultScreen,
 } from '../../../@modules/videoPlayerSlice';
-import {VideoType} from '../../../@types/VideoType';
 import {isMobile} from '../../../utils/browser';
 
 type ReturnType = {
@@ -40,7 +39,7 @@ const OVERLAY_EFFECT_ICONS = {
 
 type OverlayEffectTypes = keyof typeof OVERLAY_EFFECT_ICONS;
 
-export const useVideoPlayer = (video: VideoType): ReturnType => {
+export const useVideoPlayer = (): ReturnType => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const videoPlayerRef = useRef<HTMLDivElement>(null);
   const overlayEffectRef = useRef<HTMLDivElement>(null);
@@ -49,7 +48,7 @@ export const useVideoPlayer = (video: VideoType): ReturnType => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(setPlayingVideo(video));
+    dispatch(resetVideoPlayer());
   }, []);
 
   useEffect(() => {
