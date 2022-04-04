@@ -43,6 +43,7 @@ export const useCommentsQuery = (queryParams: CommentsQueryParams) => {
     ({pageParam}) => getVideoComments({...queryParams, pageParam}),
     {
       getNextPageParam,
+      staleTime: Infinity,
     },
   );
 };

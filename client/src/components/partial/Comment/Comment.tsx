@@ -3,7 +3,10 @@ import {useDispatch, useSelector} from 'react-redux';
 import {toast} from 'react-toastify';
 import {deleteCommentById} from '../../../@modules/commentsSlice';
 import {RootState} from '../../../@modules/root';
-import {useBlockCommentMutation} from '../../../@queries/useCommentMutation';
+import {
+  useBlockCommentMutation,
+  useDeleteCommentMutation,
+} from '../../../@queries/useCommentMutation';
 import {CommentType} from '../../../@types/CommentType';
 import constants from '../../../constants';
 import {getTimeDiffFromNowString} from '../../../utils/dateHandler';
@@ -33,7 +36,7 @@ const Comment = ({comment}: Props) => {
   } = useComment(comment);
 
   return (
-    <>
+    <div className="comment-container">
       <div className={`comment ${useEditMode ? 'comment--editing' : ''}`}>
         <UserAvatarLink user={comment.creator} className="comment__creator" />
         <div className="comment__main">
@@ -56,9 +59,11 @@ const Comment = ({comment}: Props) => {
             />
             <PopupWithButtons ref={popupRef} className="comment__popup">
               {isMyComment ? (
-                <Comment.EditButton openEditMode={openEditMode} />
+                <>
+                  <Comment.EditButton openEditMode={openEditMode} />
+                  <Comment.DeleteButton commentId={comment._id} />
+                </>
               ) : (
-                // <Comment.DeleteButton />
                 <Comment.BlockButton commentId={comment._id} />
               )}
             </PopupWithButtons>
@@ -68,7 +73,7 @@ const Comment = ({comment}: Props) => {
       {useEditMode && (
         <EditCommentForm comment={comment} closeEditMode={closeEditMode} />
       )}
-    </>
+    </div>
   );
 };
 
@@ -80,14 +85,12 @@ Comment.EditButton = ({openEditMode}: CommentEditButtonProps) => {
   return <PopupWithButtons.Button text="댓글 수정" onClick={openEditMode} />;
 };
 
-// type CommentDeleteButtonProps = {};
-
-type CommentBlockButtonProps = {
+type CommentDeleteButtonProps = {
   commentId: string;
 };
 
-Comment.BlockButton = ({commentId}: CommentBlockButtonProps) => {
-  const {mutateAsync, data, isLoading} = useBlockCommentMutation();
+Comment.DeleteButton = ({commentId}: CommentDeleteButtonProps) => {
+  const {mutateAsync, isLoading} = useDeleteCommentMutation();
   const dispatch = useDispatch();
 
   const onClick = useCallback(async () => {
@@ -95,17 +98,31 @@ Comment.BlockButton = ({commentId}: CommentBlockButtonProps) => {
     if (!window.confirm(constants.messages.confirmDeleteComment)) return;
     try {
       await mutateAsync(commentId);
-      toast.success(constants.messages.blockedComment);
+      dispatch(deleteCommentById(commentId));
+      toast.success(constants.messages.deletedComment);
     } catch {
       toast.error(constants.messages.taskFailed);
     }
   }, []);
 
-  useEffect(() => {
-    if (data?.comment) {
+  return <PopupWithButtons.Button onClick={onClick} text="댓글 삭제" />;
+};
+
+Comment.BlockButton = ({commentId}: CommentDeleteButtonProps) => {
+  const {mutateAsync, isLoading} = useBlockCommentMutation();
+  const dispatch = useDispatch();
+
+  const onClick = useCallback(async () => {
+    if (isLoading) return;
+    if (!window.confirm(constants.messages.confirmDeleteComment)) return;
+    try {
+      await mutateAsync(commentId);
       dispatch(deleteCommentById(commentId));
+      toast.success(constants.messages.blockedComment);
+    } catch {
+      toast.error(constants.messages.taskFailed);
     }
-  }, [data?.comment]);
+  }, []);
 
   return <PopupWithButtons.Button onClick={onClick} text="댓글 차단" />;
 };

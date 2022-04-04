@@ -3,5 +3,5 @@
 .comments {
   display: flex;
   flex-direction: column;
-  margin: row-gap() 0;
+  margin: row-gap('small') 0;
 }

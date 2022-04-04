@@ -6,7 +6,7 @@ const messages = {
   confirmDeleteComment: '해당 댓글을 삭제하시겠습니까?',
   addedComment: '댓글을 등록했습니다.',
   editedComment: '댓글을 수정했습니다.',
-  deleteComment: '댓글을 삭제했습니다.',
+  deletedComment: '댓글을 삭제했습니다.',
   blockedComment: '해당 댓글을 차단합니다.',
   cancelTask: ' (클릭해서 취소 가능)',
   taskFailed: '요청하신 작업에 실패했습니다.',

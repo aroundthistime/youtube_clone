@@ -29,6 +29,7 @@ export const useComments = (): ReturnType => {
       videoId: video._id,
     };
   }, [commentsSortMethod, video._id]);
+
   const {data, isFetchingNextPage, hasNextPage, fetchNextPage} =
     useCommentsQuery(queryParams);
 
