@@ -11,19 +11,8 @@ import {useJoinMutation} from '../../../@queries/useAuthMutation';
 import constants from '../../../constants';
 import routes from '../../../routes';
 import {passwordHasAppropriateLength} from '../../../utils/formUtils';
-import {FieldInputPropsType} from '../../partial/FieldInput/FieldInput';
 
-type ReturnType = {
-  nameInputProps: FieldInputPropsType;
-  emailInputProps: FieldInputPropsType;
-  password1InputProps: FieldInputPropsType;
-  password2InputProps: FieldInputPropsType;
-  alertMessage: string;
-  onSubmit: React.FormEventHandler<HTMLFormElement>;
-  isLoading: boolean;
-};
-
-export const useJoinPage = (): ReturnType => {
+export const useJoinPage = () => {
   usePublicValidation();
   const [alertMessage, setAlertMessage] = useState<string>('');
   const {mutateAsync, isLoading, data} = useJoinMutation();
@@ -33,9 +22,6 @@ export const useJoinPage = (): ReturnType => {
   const emailInput = useInput('');
   const password1Input = useInput('');
   const password2Input = useInput('');
-
-  const PASSWORD_LEAST_LENGTH = 6;
-  const PASSWORD_MAX_LENGTH = 20;
 
   useEffect(() => {
     checkJoinResult();
@@ -93,26 +79,10 @@ export const useJoinPage = (): ReturnType => {
   };
 
   return {
-    nameInputProps: {
-      ...nameInput,
-      fieldName: '이름',
-    },
-    emailInputProps: {
-      ...emailInput,
-      fieldName: '이메일',
-      type: 'email',
-    },
-    password1InputProps: {
-      ...password1Input,
-      fieldName: '비밀번호',
-      placeholder: `${PASSWORD_LEAST_LENGTH}자 이상 ${PASSWORD_MAX_LENGTH}자 이하`,
-      type: 'password',
-    },
-    password2InputProps: {
-      ...password2Input,
-      fieldName: '비밀번호 확인',
-      type: 'password',
-    },
+    nameInput,
+    emailInput,
+    password1Input,
+    password2Input,
     alertMessage,
     onSubmit,
     isLoading,

@@ -1,7 +1,7 @@
 /* eslint-disable import/prefer-default-export */
 import {useNavigate} from 'react-router-dom';
-import {useInput} from '../../../@hooks/useInput';
-import routes from '../../../routes';
+import {useInput} from '../../../../@hooks/useInput';
+import routes from '../../../../routes';
 
 type ReturnType = {
   value: string;

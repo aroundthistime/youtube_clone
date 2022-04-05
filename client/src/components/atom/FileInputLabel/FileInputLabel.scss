@@ -1,14 +1,15 @@
 @import '../../../styles/variables/variables';
 
-.file-input-label {
-  width: 100%;
+.file-input__label {
   padding: padding-vertical('small') padding-horizontal('small');
   background-color: $light-gray;
   border-radius: border-radius();
+  margin-top: 0.1rem;
+  word-break: break-all;
   &:active {
     background-color: $light-gray-active;
   }
-  .file-upload-button {
+  .label__file-upload-button {
     text-align: center;
   }
 }

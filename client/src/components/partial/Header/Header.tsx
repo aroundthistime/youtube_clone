@@ -10,7 +10,7 @@ import {UserType} from '../../../@types/UserType';
 import LogoImage from '../../../assets/images/logo.png';
 import routes from '../../../routes';
 import ProfileImage from '../../atom/ProfileImage/ProfileImage';
-import SearchForm from '../SearchForm/SearchForm';
+import SearchForm from '../Forms/SearchForm/SearchForm';
 import './Header.scss';
 
 type Props = {

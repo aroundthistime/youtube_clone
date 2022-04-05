@@ -9,14 +9,14 @@ type Props = {
 };
 
 const FileInputLabel = ({htmlFor, file, className = ''}: Props) => (
-  <label htmlFor={htmlFor} className={`file-input-label no-drag ${className}`}>
+  <label htmlFor={htmlFor} className={`file-input__label no-drag ${className}`}>
     {file ? (
-      <div className="file-information">
+      <div className="label__file-information">
         <p>파일명 : {file.name}</p>
         <p>파일용량 : {getSizeInMB(file.size)}MB</p>
       </div>
     ) : (
-      <div className="file-upload-button">파일 선택하기</div>
+      <div className="label__file-upload-button">파일 선택하기</div>
     )}
   </label>
 );

@@ -1,9 +1,6 @@
-@import '../../../styles/variables/variables';
+@import '../../../../styles/variables/variables';
 
 .video-form {
-  .video-form__file-input {
-    display: none;
-  }
   .video-form__alert-message.form__alert-message {
     height: auto;
     margin: row-gap() 0;

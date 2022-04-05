@@ -1,5 +1,6 @@
 import React from 'react';
-import VideoForm from '../../../partial/VideoForm/VideoForm';
+import PageForm from '../../../partial/Forms/PageForm/PageForm';
+import VideoForm from '../../../partial/Forms/VideoForm/VideoForm';
 import {useVideoEditPage} from './useVideoEditPage';
 import './VideoEditPage.scss';
 
@@ -8,15 +9,15 @@ const VideoEditPage = () => {
     useVideoEditPage();
   return (
     <main className="video-edit">
-      <VideoForm>
-        <VideoForm.Title text="동영상 수정" />
-        <VideoForm.Form className="edit-form" onSubmit={onSubmit}>
+      <PageForm>
+        <PageForm.Title text="동영상 수정" />
+        <VideoForm className="edit-form" onSubmit={onSubmit}>
           <VideoForm.TitleInput ref={titleInputRef} />
           <VideoForm.DescriptionInput ref={descriptionInputRef} />
           <VideoForm.CategoryInput ref={categoryInputRef} />
-          <VideoForm.SubmitButton text="업로드하기" />
-        </VideoForm.Form>
-      </VideoForm>
+          <PageForm.SubmitButton text="업로드하기" />
+        </VideoForm>
+      </PageForm>
     </main>
   );
 };

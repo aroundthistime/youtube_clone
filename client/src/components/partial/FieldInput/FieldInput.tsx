@@ -1,53 +1,53 @@
+/* eslint-disable react/prop-types */
 import React, {PropsWithChildren} from 'react';
-import {getSizeInMB} from '../../../utils/mathHandler';
+import {useFileInputOnChange} from '../../../@hooks/useFileInputOnChange';
+import FileInputLabel from '../../atom/FileInputLabel/FileInputLabel';
 import './FieldInput.scss';
 
-export interface FieldInputPropsType
-  extends Pick<
-    React.HTMLProps<HTMLInputElement>,
-    'value' | 'onChange' | 'required' | 'type' | 'placeholder'
-  > {
+type Props = {
   fieldName: string;
-  className?: string;
-}
-
-type DefaultProps = {
   className?: string;
 };
 
-interface Props extends DefaultProps {}
-
-const FieldInput = ({className = '', children}: PropsWithChildren<Props>) => (
-  <div className={`field-input ${className}`}>{children}</div>
+const FieldInput = ({
+  fieldName,
+  className = '',
+  children,
+}: PropsWithChildren<Props>) => (
+  <div className={`field-input ${className}`}>
+    <p className="field-input__field-name">{fieldName}</p>
+    {children}
+  </div>
 );
 
-interface FieldNameProps extends DefaultProps {
-  fieldName: string;
-}
+type FieldInputFileInputProps = Required<
+  Pick<React.InputHTMLAttributes<HTMLInputElement>, 'id'>
+> &
+  Pick<
+    React.InputHTMLAttributes<HTMLInputElement>,
+    'accept' | 'required' | 'name' | 'className'
+  >;
 
-FieldInput.FieldName = ({fieldName, className = ''}: FieldNameProps) => (
-  <p className={`field-input__field-name ${className}`}>{fieldName}</p>
-);
-interface FieldInputLabelProps {
-  htmlFor: string;
-  file?: File;
-  className?: string;
-}
-
-FieldInput.Label = React.memo(
-  ({htmlFor, file, className = ''}: FieldInputLabelProps) => (
-    <label
-      htmlFor={htmlFor}
-      className={`file-input__label no-drag ${className}`}>
-      {file ? (
-        <div className="file-information">
-          <p>파일명 : {file.name}</p>
-          <p>파일용량 : {getSizeInMB(file.size)}MB</p>
-        </div>
-      ) : (
-        <div className="file-upload-button">파일 선택하기</div>
-      )}
-    </label>
+FieldInput.FileInput = React.memo(
+  React.forwardRef<HTMLInputElement, FieldInputFileInputProps>(
+    ({accept, required, id, name, className}, ref) => {
+      const {file, onChange} = useFileInputOnChange();
+      return (
+        <>
+          <input
+            type="file"
+            required={required}
+            accept={accept}
+            className={`field-input__file-input ${className}`}
+            ref={ref}
+            id={id}
+            name={name}
+            onChange={onChange}
+          />
+          <FileInputLabel htmlFor={id} file={file} />
+        </>
+      );
+    },
   ),
 );
 

@@ -8,17 +8,8 @@ import {useInput} from '../../../@hooks/useInput';
 import {setUser} from '../../../@modules/userSlice';
 import {useLoginMutation} from '../../../@queries/useAuthMutation';
 import routes from '../../../routes';
-import {FieldInputPropsType} from '../../partial/FieldInput/FieldInput';
 
-type ReturnType = {
-  emailInputProps: FieldInputPropsType;
-  passwordInputProps: FieldInputPropsType;
-  alertMessage: string;
-  onSubmit: React.FormEventHandler<HTMLFormElement>;
-  isLoading: boolean;
-};
-
-export const useLoginPage = (): ReturnType => {
+export const useLoginPage = () => {
   usePublicValidation();
   const [alertMessage, setAlertMessage] = useState<string>('');
   const {mutateAsync, isLoading, data} = useLoginMutation();
@@ -62,16 +53,8 @@ export const useLoginPage = (): ReturnType => {
   };
 
   return {
-    emailInputProps: {
-      ...emailInput,
-      fieldName: '이메일',
-      type: 'email',
-    },
-    passwordInputProps: {
-      ...passwordInput,
-      fieldName: '비밀번호',
-      type: 'password',
-    },
+    emailInput,
+    passwordInput,
     alertMessage,
     onSubmit,
     isLoading,
