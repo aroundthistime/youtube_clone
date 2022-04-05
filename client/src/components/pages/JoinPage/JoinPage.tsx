@@ -1,9 +1,9 @@
 import React from 'react';
 import routes from '../../../routes';
+import AuthInput from '../../atom/Inputs/AuthInputs/AuthInput';
 import PageForm from '../../partial/Forms/PageForm/PageForm';
 import './JoinPage.scss';
 import {useJoinPage} from './useJoinPage';
-import AuthForm from '../../partial/Forms/AuthForm/AuthForm';
 
 const JoinPage = () => {
   const {
@@ -19,18 +19,18 @@ const JoinPage = () => {
     <main className="join">
       <PageForm className="join-wrapper">
         <PageForm.Title text="회원가입" />
-        <AuthForm onSubmit={onSubmit}>
-          <AuthForm.NameInput {...nameInput} />
-          <AuthForm.EmailInput {...emailInput} />
-          <AuthForm.PasswordInput {...password1Input} />
-          <AuthForm.PasswordInput
-            {...password2Input}
+        <PageForm.Form onSubmit={onSubmit}>
+          <AuthInput.NameInput {...nameInput} />
+          <AuthInput.EmailInput {...emailInput} />
+          <AuthInput.PasswordInput {...password1Input} />
+          <AuthInput.PasswordInput
             fieldName="비밀번호 확인"
+            {...password2Input}
           />
           <PageForm.AlertMessage text={alertMessage} />
           <PageForm.SubmitButton text="가입하기" />
-        </AuthForm>
-        <AuthForm.Link path={routes.login} text="이미 계정이 있으신가요?" />
+        </PageForm.Form>
+        <PageForm.Link path={routes.login} text="이미 계정이 있으신가요?" />
       </PageForm>
     </main>
   );

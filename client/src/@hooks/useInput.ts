@@ -3,12 +3,17 @@
 
 import {useState} from 'react';
 
-export const useInput = (
+type UserInputElementType =
+  | HTMLInputElement
+  | HTMLTextAreaElement
+  | HTMLSelectElement;
+
+export const useInput = <T extends UserInputElementType = HTMLInputElement>(
   initialState: string,
   validator?: (value: string) => boolean,
 ) => {
   const [value, setValue] = useState(initialState);
-  const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const onChange = (event: React.ChangeEvent<T>) => {
     const {
       target: {value: newValue},
     } = event;
@@ -16,5 +21,5 @@ export const useInput = (
       setValue(newValue);
     }
   };
-  return {value, onChange};
+  return {value, onChange, setValue};
 };

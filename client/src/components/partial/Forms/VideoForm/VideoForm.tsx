@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, {PropsWithChildren} from 'react';
+import React from 'react';
 import {useSelector} from 'react-redux';
 import PageForm from '../PageForm/PageForm';
 import FieldInput from '../../FieldInput/FieldInput';

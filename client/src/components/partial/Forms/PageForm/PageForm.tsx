@@ -1,4 +1,6 @@
 import React, {PropsWithChildren} from 'react';
+import {Link} from 'react-router-dom';
+import FieldInput from '../../FieldInput/FieldInput';
 import './PageForm.scss';
 
 const PageForm = ({
@@ -40,6 +42,18 @@ PageForm.SubmitButton = ({text, className = ''}: SubComponentProps) => (
   <button className={`form__submit-button no-drag ${className}`} type="submit">
     {text}
   </button>
+);
+
+type PageFormLinkProps = {
+  text: string;
+  path: string;
+  className?: string;
+};
+
+PageForm.Link = ({text, path, className = ''}: PageFormLinkProps) => (
+  <Link to={path} className={`page-form__link ${className}`}>
+    <p className="link__text">{text}</p>
+  </Link>
 );
 
 export default PageForm;

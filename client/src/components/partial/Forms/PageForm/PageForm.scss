@@ -45,6 +45,12 @@
   }
 }
 
+.page-form__link {
+  margin-top: row-gap('small');
+  text-decoration: underline;
+  color: rgba(0, 0, 0, 0.7);
+}
+
 @include mobile {
   .form-wrapper {
     form {

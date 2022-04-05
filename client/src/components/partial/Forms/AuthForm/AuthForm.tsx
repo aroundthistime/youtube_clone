@@ -15,8 +15,14 @@ interface IAuthForm
   NameInput: React.MemoExoticComponent<
     ({value, onChange}: AuthFormInputProps) => JSX.Element
   >;
+  StatusInput: React.MemoExoticComponent<
+    ({value, onChange}: AuthFormInputProps) => JSX.Element
+  >;
   PasswordInput: React.MemoExoticComponent<
     ({value, onChange}: PasswordInput) => JSX.Element
+  >;
+  AvatarInput: React.MemoExoticComponent<
+    React.ForwardRefExoticComponent<React.RefAttributes<HTMLInputElement>>
   >;
   Link: ({text, path, className}: AuthFormLinkProps) => JSX.Element;
 }
@@ -48,6 +54,12 @@ AuthForm.NameInput = React.memo(({value, onChange}: AuthFormInputProps) => (
   </FieldInput>
 ));
 
+AuthForm.StatusInput = React.memo(({value, onChange}: AuthFormInputProps) => (
+  <FieldInput fieldName="상태 메세지">
+    <input required value={value} onChange={onChange} />
+  </FieldInput>
+));
+
 interface PasswordInput extends AuthFormInputProps {
   fieldName?: string;
 }
@@ -58,6 +70,20 @@ AuthForm.PasswordInput = React.memo(
       <input type="password" required value={value} onChange={onChange} />
     </FieldInput>
   ),
+);
+
+AuthForm.AvatarInput = React.memo(
+  React.forwardRef<HTMLInputElement>((_, ref) => (
+    <FieldInput fieldName="프로필 이미지">
+      <FieldInput.FileInput
+        required
+        accept="image/*"
+        ref={ref}
+        id="avatarImage"
+        name="avatarImage"
+      />
+    </FieldInput>
+  )),
 );
 
 type AuthFormLinkProps = {

@@ -1,5 +1,5 @@
 import React from 'react';
-import AuthForm from '../../../partial/Forms/AuthForm/AuthForm';
+import AuthInput from '../../../atom/Inputs/AuthInputs/AuthInput';
 import PageForm from '../../../partial/Forms/PageForm/PageForm';
 import './ChangePasswordPage.scss';
 import {useChangePasswordPage} from './useChangePasswordPage';
@@ -16,22 +16,22 @@ const ChangePasswordPage = () => {
     <main className="change-password">
       <PageForm className="change-password-wrapper">
         <PageForm.Title text="비밀번호 변경" />
-        <AuthForm className="password-form" onSubmit={onSubmit}>
-          <AuthForm.PasswordInput
-            {...oldPasswordInput}
+        <PageForm.Form onSubmit={onSubmit}>
+          <AuthInput.PasswordInput
             fieldName="기존 비밀번호"
+            {...oldPasswordInput}
           />
-          <AuthForm.PasswordInput
-            {...newPassword1Input}
+          <AuthInput.PasswordInput
             fieldName="새 비밀번호"
+            {...newPassword1Input}
           />
-          <AuthForm.PasswordInput
-            {...newPassword2Input}
+          <AuthInput.PasswordInput
             fieldName="새 비밀번호 확인"
+            {...newPassword2Input}
           />
           <PageForm.AlertMessage text={alertMessage} />
           <PageForm.SubmitButton text="변경하기" />
-        </AuthForm>
+        </PageForm.Form>
       </PageForm>
     </main>
   );
