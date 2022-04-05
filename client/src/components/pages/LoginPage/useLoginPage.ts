@@ -23,7 +23,7 @@ export const useLoginPage = () => {
   }, [data]);
 
   const checkLoginResult = () => {
-    if (data?.result) {
+    if (data?.result && data?.user) {
       dispatch(setUser(data.user));
       toast.success('로그인되었습니다.');
       navigate(routes.home);

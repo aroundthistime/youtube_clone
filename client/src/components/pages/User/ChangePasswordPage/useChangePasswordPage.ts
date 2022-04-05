@@ -35,6 +35,8 @@ export const useChangePasswordPage = () => {
         constants.messages.formErrorMessages.inappropriateLengthPassword;
     } else if (newPassword1Input.value !== newPassword2Input.value) {
       errorMessage = constants.messages.formErrorMessages.passwordsNotMatching;
+    } else if (oldPasswordInput.value === newPassword1Input.value) {
+      errorMessage = '기존 비밀번호와 새 비밀번호가 일치합니다.';
     }
     if (errorMessage) {
       setAlertMessage(errorMessage);
