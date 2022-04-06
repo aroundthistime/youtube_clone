@@ -14,13 +14,11 @@ const EmailInput = React.memo(({value, onChange}: DefaultFieldInputProps) => (
   </FieldInput>
 ));
 
-const StatueMessageInput = React.memo(
-  ({value, onChange}: DefaultFieldInputProps) => (
-    <FieldInput fieldName="상대 메세지">
-      <input value={value} onChange={onChange} />
-    </FieldInput>
-  ),
-);
+const StatusInput = React.memo(({value, onChange}: DefaultFieldInputProps) => (
+  <FieldInput fieldName="상태 메세지">
+    <input value={value} onChange={onChange} />
+  </FieldInput>
+));
 
 interface PasswordInputProps extends DefaultFieldInputProps {
   fieldName?: string;
@@ -38,7 +36,6 @@ const AvatarInput = React.memo(
   React.forwardRef<HTMLInputElement>((_, ref) => (
     <FieldInput fieldName="프로필 이미지">
       <FieldInput.FileInput
-        required
         accept="image/*"
         ref={ref}
         id="avatarImage"
@@ -51,7 +48,7 @@ const AvatarInput = React.memo(
 const AuthInput = {
   NameInput,
   EmailInput,
-  StatueMessageInput,
+  StatusInput,
   PasswordInput,
   AvatarInput,
 };

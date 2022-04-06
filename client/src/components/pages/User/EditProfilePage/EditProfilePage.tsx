@@ -1,16 +1,21 @@
 import React from 'react';
-import AuthForm from '../../../partial/Forms/AuthForm/AuthForm';
+import AuthInput from '../../../atom/Inputs/AuthInputs/AuthInput';
 import PageForm from '../../../partial/Forms/PageForm/PageForm';
 import './EditProfilePage.scss';
+import {useEditProfilePage} from './useEditProfilePage';
 
 const EditProfilePage = () => {
+  const {avatarInputRef, nameInput, statusInput, onSubmit} =
+    useEditProfilePage();
   return (
     <main className="edit-profile">
       <PageForm className="edit-profile-wrapper">
         <PageForm.Title text="프로필 수정" />
-        <AuthForm onSubmit={e => e.preventDefault()}>{/* <AuthF */}</AuthForm>
-        <PageForm.Form className="edit-profile__form" onSubmit={() => 1}>
-          {/* < */}
+        <PageForm.Form onSubmit={onSubmit}>
+          <AuthInput.AvatarInput ref={avatarInputRef} />
+          <AuthInput.NameInput {...nameInput} />
+          <AuthInput.StatusInput {...statusInput} />
+          <PageForm.SubmitButton text="적용하기" />
         </PageForm.Form>
       </PageForm>
     </main>

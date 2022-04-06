@@ -4,12 +4,28 @@ import qs from 'qs';
 import {useMutation} from 'react-query';
 import {UserType} from '../@types/UserType';
 import apiRoutes from '../apiRoutes';
+import {getFormDataFromObject} from '../utils/fetchHandlers';
 
-// type EditProfileRequirements = Pick<UserType, 'name' | 'status'
+interface EditProfileRequirements extends Pick<UserType, 'name' | 'status'> {
+  avatar?: File;
+}
 
-// const editProfile = (
-//     editProfileRequirements :
-// )
+const editProfile = async (
+  editProfileRequirements: EditProfileRequirements,
+) => {
+  const route = apiRoutes.editProfile;
+  const formData = getFormDataFromObject(editProfileRequirements);
+  console.log(editProfileRequirements);
+  const {data} = await axios({
+    url: route.url as string,
+    method: route.method,
+    data: formData,
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+  return data;
+};
 
 type ChangePasswordRequirements = {
   oldPassword: string;
@@ -26,6 +42,12 @@ const changePassword = async (
     data: qs.stringify(changePasswordRequirements),
   });
   return data;
+};
+
+export const useEditProfileMutation = () => {
+  return useMutation(editProfile, {
+    mutationKey: 'editProfile',
+  });
 };
 
 export const useChanagePasswordMutation = () => {
