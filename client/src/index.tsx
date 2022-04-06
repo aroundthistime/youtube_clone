@@ -11,7 +11,7 @@ import reportWebVitals from './reportWebVitals';
 import useConfigureStore from './useConfigureStore';
 import 'react-toastify/dist/ReactToastify.css';
 
-// axios.defaults.baseURL = process.env.REACT_APP_BASE_URL;
+axios.defaults.baseURL = process.env.REACT_APP_BASE_URL;
 axios.defaults.withCredentials = true;
 
 const {store, persistor} = useConfigureStore();
