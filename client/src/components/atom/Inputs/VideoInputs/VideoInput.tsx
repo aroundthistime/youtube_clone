@@ -1,26 +1,19 @@
-/* eslint-disable react/prop-types */
 import React from 'react';
 import {useSelector} from 'react-redux';
-import PageForm from '../PageForm/PageForm';
-import FieldInput from '../../FieldInput/FieldInput';
 import {RootState} from '../../../../@modules/root';
-import './VideoForm.scss';
+import FieldInput from '../../../partial/FieldInput/FieldInput';
+import {
+  DefaultFieldInputProps,
+  DefaultFieldSelectProps,
+  DefaultFieldTextareaProps,
+} from '../../../../@types/FieldInputProps';
 
-type Props = React.ComponentProps<typeof PageForm.Form>;
-
-const VideoForm = ({onSubmit, children, className = ''}: Props) => (
-  <PageForm.Form className={`video-form ${className}`} onSubmit={onSubmit}>
-    {children}
-  </PageForm.Form>
-);
-
-VideoForm.VideoInput = React.memo(
+const VideoFileInput = React.memo(
   React.forwardRef<HTMLInputElement>((_, ref) => (
     <FieldInput fieldName="영상 파일">
       <FieldInput.FileInput
-        required
+        // required
         accept="video/*"
-        className="video-form__input video-form__file-input"
         ref={ref}
         id="videoFile"
         name="videoFile"
@@ -29,13 +22,12 @@ VideoForm.VideoInput = React.memo(
   )),
 );
 
-VideoForm.ThumbnailInput = React.memo(
+const ThumbnailInput = React.memo(
   React.forwardRef<HTMLInputElement>((_, ref) => (
     <FieldInput fieldName="썸네일 이미지">
       <FieldInput.FileInput
-        required
+        // required
         accept="image/*"
-        className="video-form__input video-form__file-input"
         ref={ref}
         id="thumbnailImage"
         name="thumbnailImage"
@@ -44,23 +36,21 @@ VideoForm.ThumbnailInput = React.memo(
   )),
 );
 
-VideoForm.TitleInput = React.memo(
-  React.forwardRef<HTMLInputElement>((_, ref) => (
-    <FieldInput fieldName="제목">
-      <input className="video-form__input" required ref={ref} />
-    </FieldInput>
-  )),
-);
+const TitleInput = React.memo(({value, onChange}: DefaultFieldInputProps) => (
+  <FieldInput fieldName="제목">
+    <input required value={value} onChange={onChange} />
+  </FieldInput>
+));
 
-VideoForm.DescriptionInput = React.memo(
-  React.forwardRef<HTMLTextAreaElement>((_, ref) => (
+const DescriptionInput = React.memo(
+  ({value, onChange}: DefaultFieldTextareaProps) => (
     <FieldInput fieldName="영상 설명">
-      <textarea rows={5} className="video-form__input" ref={ref} />
+      <textarea value={value} onChange={onChange} rows={5} />
     </FieldInput>
-  )),
+  ),
 );
 
-VideoForm.CategoryInput = React.memo(
+const CategoryInput = React.memo(
   React.forwardRef<HTMLSelectElement>((_, ref) => {
     const categories = useSelector((state: RootState) => state.categories);
     return (
@@ -78,4 +68,21 @@ VideoForm.CategoryInput = React.memo(
   }),
 );
 
-export default VideoForm;
+export const getCategoryFromCategoryInputValue = (
+  value: string | undefined,
+): string | undefined => {
+  if (value === undefined || value === '기타') {
+    return undefined;
+  }
+  return value;
+};
+
+const VideoInput = {
+  VideoFileInput,
+  ThumbnailInput,
+  TitleInput,
+  DescriptionInput,
+  CategoryInput,
+};
+
+export default VideoInput;

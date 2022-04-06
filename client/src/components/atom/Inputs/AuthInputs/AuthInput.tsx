@@ -1,41 +1,37 @@
 import React from 'react';
+import {DefaultFieldInputProps} from '../../../../@types/FieldInputProps';
 import FieldInput from '../../../partial/FieldInput/FieldInput';
 
-type DefaultProps = Pick<
-  React.InputHTMLAttributes<HTMLInputElement>,
-  'value' | 'onChange'
->;
-
-const NameInput = ({value, onChange}: DefaultProps) => (
+const NameInput = React.memo(({value, onChange}: DefaultFieldInputProps) => (
   <FieldInput fieldName="닉네임">
     <input value={value} onChange={onChange} required />
   </FieldInput>
-);
+));
 
-const EmailInput = ({value, onChange}: DefaultProps) => (
+const EmailInput = React.memo(({value, onChange}: DefaultFieldInputProps) => (
   <FieldInput fieldName="이메일">
     <input type="email" required value={value} onChange={onChange} />
   </FieldInput>
+));
+
+const StatueMessageInput = React.memo(
+  ({value, onChange}: DefaultFieldInputProps) => (
+    <FieldInput fieldName="상대 메세지">
+      <input value={value} onChange={onChange} />
+    </FieldInput>
+  ),
 );
 
-const StatueMessageInput = ({value, onChange}: DefaultProps) => (
-  <FieldInput fieldName="상대 메세지">
-    <input value={value} onChange={onChange} />
-  </FieldInput>
-);
-
-interface PasswordInputProps extends DefaultProps {
+interface PasswordInputProps extends DefaultFieldInputProps {
   fieldName?: string;
 }
 
-const PasswordInput = ({
-  value,
-  onChange,
-  fieldName = '비밀번호',
-}: PasswordInputProps) => (
-  <FieldInput fieldName={fieldName}>
-    <input type="password" required value={value} onChange={onChange} />
-  </FieldInput>
+const PasswordInput = React.memo(
+  ({value, onChange, fieldName = '비밀번호'}: PasswordInputProps) => (
+    <FieldInput fieldName={fieldName}>
+      <input type="password" required value={value} onChange={onChange} />
+    </FieldInput>
+  ),
 );
 
 const AvatarInput = React.memo(

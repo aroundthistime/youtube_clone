@@ -26,6 +26,7 @@ import {
 } from '../../../../@hooks/useVideoButton';
 import AddCommentForm from '../../../partial/CommentForm/AddCommentForm/AddCommentForm';
 import routes from '../../../../routes';
+import {getTextWithLinebreaks} from '../../../../utils/stringUtils';
 
 const VideoDetailPage = () => {
   const {video} = useVideoDetailPage();
@@ -275,7 +276,7 @@ VideoDetailPage.Description = React.memo(() => {
         className={`description__content ${
           showFull ? 'description__content--full' : ''
         }`}>
-        {description}
+        {getTextWithLinebreaks(description || '')}
       </div>
       {isOverflowing && (
         <button

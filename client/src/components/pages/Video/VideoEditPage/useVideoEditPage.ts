@@ -1,6 +1,7 @@
 /* eslint-disable import/prefer-default-export */
 import {useCallback, useEffect, useMemo, useRef} from 'react';
 import {useLocation, useNavigate} from 'react-router-dom';
+import {useInput} from '../../../../@hooks/useInput';
 import {useEditVideoMutation} from '../../../../@queries/useVideoMutation';
 import {useVideoQuery} from '../../../../@queries/useVideoQuery';
 import {VideoType} from '../../../../@types/VideoType';
@@ -11,13 +12,14 @@ import {
   showSuccessToastAfterLoading,
 } from '../../../../utils/toastUtils';
 import {getVideoIdFromPathname} from '../../../../utils/urlHandler';
+import {getCategoryFromCategoryInputValue} from '../../../atom/Inputs/VideoInputs/VideoInput';
 
 export const useVideoEditPage = () => {
   const {mutateAsync, isLoading} = useEditVideoMutation();
   const location = useLocation();
   const navigate = useNavigate();
-  const titleInputRef = useRef<HTMLInputElement>(null);
-  const descriptionInputRef = useRef<HTMLTextAreaElement>(null);
+  const titleInput = useInput('');
+  const descriptionInput = useInput<HTMLTextAreaElement>('');
   const categoryInputRef = useRef<HTMLSelectElement>(null);
 
   const videoId = useMemo(
@@ -33,24 +35,12 @@ export const useVideoEditPage = () => {
   }, [data?.video]);
 
   const resetFormValueWithVideoData = useCallback(() => {
-    if (
-      !titleInputRef.current ||
-      !descriptionInputRef.current ||
-      !categoryInputRef.current
-    )
-      return;
+    if (!categoryInputRef.current) return;
     const video = data?.video as VideoType;
-    titleInputRef.current.value = video.title;
-    descriptionInputRef.current.value = video.description || '';
-    if (video.category) {
-      categoryInputRef.current.value = video.category;
-    }
-  }, [
-    data?.video,
-    titleInputRef.current,
-    descriptionInputRef.current,
-    categoryInputRef.current,
-  ]);
+    titleInput.setValue(video.title);
+    descriptionInput.setValue(video.description || '');
+    categoryInputRef.current.value = video.category || '기타';
+  }, [data?.video, categoryInputRef.current]);
 
   const onSubmit: React.FormEventHandler<HTMLFormElement> = async event => {
     event.preventDefault();
@@ -59,9 +49,11 @@ export const useVideoEditPage = () => {
     try {
       const videoEditRequirements = {
         videoId,
-        title: titleInputRef.current?.value as string,
-        description: descriptionInputRef.current?.value as string,
-        category: categoryInputRef.current?.value,
+        title: titleInput.value,
+        description: descriptionInput.value,
+        category: getCategoryFromCategoryInputValue(
+          categoryInputRef.current?.value,
+        ),
       };
       await mutateAsync(videoEditRequirements);
       showSuccessToastAfterLoading(toastId, '영상을 수정했습니다.');
@@ -72,8 +64,8 @@ export const useVideoEditPage = () => {
   };
 
   return {
-    titleInputRef,
-    descriptionInputRef,
+    titleInput,
+    descriptionInput,
     categoryInputRef,
     onSubmit,
   };
