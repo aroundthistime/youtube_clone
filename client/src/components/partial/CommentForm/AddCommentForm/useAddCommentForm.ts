@@ -50,7 +50,6 @@ export const useAddCommentForm = (): ReturnType => {
 
   useEffect(() => {
     if (data?.result && data?.comment) {
-      console.log(data?.comment);
       dispatch(addComment(data.comment));
     }
   }, [data?.result, data?.comment]);

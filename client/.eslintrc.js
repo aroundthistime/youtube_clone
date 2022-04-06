@@ -42,6 +42,7 @@ module.exports = {
     'no-unused-vars': 'off',
     'no-use-before-define': 'off',
     'no-underscore-dangle': 'off',
+    'no-alert': 'off',
   },
   settings: {
     'import/resolver': {node: {extensions: ['.js', '.jsx', '.ts', '.tsx']}},
