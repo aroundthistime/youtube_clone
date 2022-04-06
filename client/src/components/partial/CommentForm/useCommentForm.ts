@@ -10,21 +10,20 @@ type ReturnType = {
   submitButtonDisabled: boolean;
 };
 
-export const useCommentForm = (
-  textAreaRef: React.RefObject<HTMLTextAreaElement>,
-): ReturnType => {
+export const useCommentForm = (commentInput: {
+  value: string;
+  onChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
+}): ReturnType => {
   const [submitButtonDisabled, setSubmitButtonDisabled] =
     useState<boolean>(true);
   const user = useSelector((state: RootState) => state.user);
-  useEffect(() => {
-    textAreaRef.current?.addEventListener('input', onTextAreaChange);
-    return () => {
-      textAreaRef.current?.removeEventListener('input', onTextAreaChange);
-    };
-  }, [textAreaRef.current]);
 
-  const onTextAreaChange = () => {
-    setSubmitButtonDisabled(Boolean(!textAreaRef.current?.value));
+  useEffect(() => {
+    detectSubmitButtonDisabled();
+  }, [commentInput.value]);
+
+  const detectSubmitButtonDisabled = () => {
+    setSubmitButtonDisabled(Boolean(!commentInput.value));
   };
   return {
     user,

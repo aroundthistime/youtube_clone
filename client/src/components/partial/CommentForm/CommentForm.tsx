@@ -1,4 +1,5 @@
-import React, {useRef} from 'react';
+import React, {useEffect, useRef} from 'react';
+import {useInput} from '../../../@hooks/useInput';
 import ProfileImage from '../../atom/ProfileImage/ProfileImage';
 import WithLoggedInValidation from '../../wrapper/WithLoggedInValidation/WithLoggedInValidation';
 import './CommentForm.scss';
@@ -7,17 +8,20 @@ import {useCommentForm} from './useCommentForm';
 export interface CommentFormProps {
   onSubmit: React.FormEventHandler<HTMLFormElement>;
   onCancel: React.MouseEventHandler<HTMLButtonElement>;
-  textAreaRef: React.RefObject<HTMLTextAreaElement>;
+  commentInput: {
+    value: string;
+    onChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  };
   className?: string;
 }
 
 const CommentForm = ({
   onSubmit,
   onCancel,
-  textAreaRef = useRef<HTMLTextAreaElement>(null),
+  commentInput,
   className = '',
 }: CommentFormProps) => {
-  const {user, submitButtonDisabled} = useCommentForm(textAreaRef);
+  const {user, submitButtonDisabled} = useCommentForm(commentInput);
   return (
     <div className={`comment-form-container ${className}`}>
       <ProfileImage
@@ -28,8 +32,9 @@ const CommentForm = ({
       <form className="comment-form" onSubmit={onSubmit}>
         <textarea
           className="comment-form__textarea"
-          ref={textAreaRef}
           required
+          value={commentInput.value}
+          onChange={commentInput.onChange}
         />
         <div className="comment-form__buttons">
           <button

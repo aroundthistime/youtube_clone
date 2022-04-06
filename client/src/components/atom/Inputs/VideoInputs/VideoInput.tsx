@@ -12,7 +12,6 @@ const VideoFileInput = React.memo(
   React.forwardRef<HTMLInputElement>((_, ref) => (
     <FieldInput fieldName="영상 파일">
       <FieldInput.FileInput
-        // required
         accept="video/*"
         ref={ref}
         id="videoFile"
@@ -26,7 +25,6 @@ const ThumbnailInput = React.memo(
   React.forwardRef<HTMLInputElement>((_, ref) => (
     <FieldInput fieldName="썸네일 이미지">
       <FieldInput.FileInput
-        // required
         accept="image/*"
         ref={ref}
         id="thumbnailImage"

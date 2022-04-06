@@ -15,7 +15,6 @@ const editProfile = async (
 ) => {
   const route = apiRoutes.editProfile;
   const formData = getFormDataFromObject(editProfileRequirements);
-  console.log(editProfileRequirements);
   const {data} = await axios({
     url: route.url as string,
     method: route.method,

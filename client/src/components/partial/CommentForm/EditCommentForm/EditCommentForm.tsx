@@ -9,7 +9,7 @@ type Props = {
 };
 
 const EditCommentForm = ({comment, closeEditMode}: Props) => {
-  const {onSubmit, onCancel, textAreaRef} = useEditCommentForm(
+  const {onSubmit, onCancel, commentInput} = useEditCommentForm(
     comment,
     closeEditMode,
   );
@@ -17,7 +17,7 @@ const EditCommentForm = ({comment, closeEditMode}: Props) => {
     <CommentForm
       onSubmit={onSubmit}
       onCancel={onCancel}
-      textAreaRef={textAreaRef}
+      commentInput={commentInput}
       className="edit-comment-form"
     />
   );

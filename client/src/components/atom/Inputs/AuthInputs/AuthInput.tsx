@@ -4,7 +4,13 @@ import FieldInput from '../../../partial/FieldInput/FieldInput';
 
 const NameInput = React.memo(({value, onChange}: DefaultFieldInputProps) => (
   <FieldInput fieldName="닉네임">
-    <input value={value} onChange={onChange} required />
+    <input
+      value={value}
+      onChange={onChange}
+      required
+      maxLength={20}
+      placeholder="최대 20자"
+    />
   </FieldInput>
 ));
 
@@ -16,7 +22,12 @@ const EmailInput = React.memo(({value, onChange}: DefaultFieldInputProps) => (
 
 const StatusInput = React.memo(({value, onChange}: DefaultFieldInputProps) => (
   <FieldInput fieldName="상태 메세지">
-    <input value={value} onChange={onChange} />
+    <input
+      value={value}
+      onChange={onChange}
+      maxLength={20}
+      placeholder="최대 20자"
+    />
   </FieldInput>
 ));
 

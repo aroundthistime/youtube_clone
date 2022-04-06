@@ -7,12 +7,12 @@ const AddCommentForm = () => {
   if (!useAddCommentFormResult) {
     return null;
   }
-  const {onSubmit, onCancel, textAreaRef} = useAddCommentFormResult;
+  const {onSubmit, onCancel, commentInput} = useAddCommentFormResult;
   return (
     <CommentForm
       onSubmit={onSubmit}
       onCancel={onCancel}
-      textAreaRef={textAreaRef}
+      commentInput={commentInput}
       className="add-comment-form"
     />
   );
