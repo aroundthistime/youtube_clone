@@ -3,6 +3,7 @@ import routes from '../../../routes';
 import AuthInput from '../../atom/Inputs/AuthInputs/AuthInput';
 import Loader from '../../atom/Loader/Loader';
 import PageForm from '../../partial/Forms/PageForm/PageForm';
+import WithPublicValidation from '../../wrapper/WithAuthValidation/WithPublicValidation';
 import './LoginPage.scss';
 import {useLoginPage} from './useLoginPage';
 
@@ -29,4 +30,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default WithPublicValidation(LoginPage);

@@ -4,6 +4,7 @@ import constants from '../../../../constants';
 import {DefaultVideoProps} from '../../../partial/DefaultVideo/DefaultVideo';
 import FeedVideo from '../../../partial/FeedVideo/FeedVideo';
 import Videos from '../../../partial/Videos/Videos';
+import WithPrivateValidation from '../../../wrapper/WithAuthValidation/WithPrivateValidation';
 import './LikedVideosPage.scss';
 import {useLikedVideosPage} from './useLikedVideosPage';
 
@@ -30,4 +31,4 @@ LikedVideosPage.Video = (props: DefaultVideoProps) => (
   <FeedVideo mutation={useToggleLikeVideoMutation} {...props} />
 );
 
-export default LikedVideosPage;
+export default WithPrivateValidation(LikedVideosPage);

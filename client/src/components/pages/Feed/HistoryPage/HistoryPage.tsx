@@ -7,6 +7,7 @@ import {DefaultVideoProps} from '../../../partial/DefaultVideo/DefaultVideo';
 import FeedClearButton from '../../../partial/FeedClearButton/FeedClearButton';
 import FeedVideo from '../../../partial/FeedVideo/FeedVideo';
 import Videos from '../../../partial/Videos/Videos';
+import WithPrivateValidation from '../../../wrapper/WithAuthValidation/WithPrivateValidation';
 import './HistoryPage.scss';
 import {useHistoryPage} from './useHistoryPage';
 
@@ -33,4 +34,4 @@ HistoryPage.Video = (props: DefaultVideoProps) => (
   <FeedVideo mutation={useDeleteHistoryMutation} {...props} />
 );
 
-export default HistoryPage;
+export default WithPrivateValidation(HistoryPage);

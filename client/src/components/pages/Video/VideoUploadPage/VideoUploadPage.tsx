@@ -1,6 +1,7 @@
 import React from 'react';
 import VideoInput from '../../../atom/Inputs/VideoInputs/VideoInput';
 import PageForm from '../../../partial/Forms/PageForm/PageForm';
+import WithPrivateValidation from '../../../wrapper/WithAuthValidation/WithPrivateValidation';
 import {useVideoUploadPage} from './useVideoUploadPage';
 import './VideoUploadPage.scss';
 
@@ -32,4 +33,4 @@ const VideoUploadPage = () => {
   );
 };
 
-export default VideoUploadPage;
+export default WithPrivateValidation(VideoUploadPage);

@@ -10,6 +10,7 @@ import {useMyProfilePage} from './useMyProfilePage';
 import routes from '../../../../routes';
 import {useLogoutQuery} from '../../../../@queries/useLogoutQuery';
 import {clearUser} from '../../../../@modules/userSlice';
+import WithPrivateValidation from '../../../wrapper/WithAuthValidation/WithPrivateValidation';
 
 const DetailUserProfile = React.lazy(
   () => import('../../../partial/DetailUserProfile/DetailUserProfile'),
@@ -81,4 +82,4 @@ MyProfilePage.LogoutButton = () => {
   return <PopupWithButtons.Button text="로그아웃" onClick={onClick} />;
 };
 
-export default MyProfilePage;
+export default WithPrivateValidation(MyProfilePage);

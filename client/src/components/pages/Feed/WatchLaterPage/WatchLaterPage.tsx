@@ -9,6 +9,7 @@ import {
 import {DefaultVideoProps} from '../../../partial/DefaultVideo/DefaultVideo';
 import Videos from '../../../partial/Videos/Videos';
 import FeedClearButton from '../../../partial/FeedClearButton/FeedClearButton';
+import WithPrivateValidation from '../../../wrapper/WithAuthValidation/WithPrivateValidation';
 
 const WatchLaterPage = () => {
   const {videosQuery} = useWatchLaterPage();
@@ -33,4 +34,4 @@ WatchLaterPage.Video = (props: DefaultVideoProps) => (
   <FeedVideo mutation={useToggleWatchLaterMutation} {...props} />
 );
 
-export default WatchLaterPage;
+export default WithPrivateValidation(WatchLaterPage);

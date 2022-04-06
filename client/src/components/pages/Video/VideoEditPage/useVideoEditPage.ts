@@ -1,7 +1,10 @@
 /* eslint-disable import/prefer-default-export */
 import {useCallback, useEffect, useMemo, useRef} from 'react';
+import {useSelector} from 'react-redux';
 import {useLocation, useNavigate} from 'react-router-dom';
+import {toast} from 'react-toastify';
 import {useInput} from '../../../../@hooks/useInput';
+import {RootState} from '../../../../@modules/root';
 import {useEditVideoMutation} from '../../../../@queries/useVideoMutation';
 import {useVideoQuery} from '../../../../@queries/useVideoQuery';
 import {VideoType} from '../../../../@types/VideoType';
@@ -15,6 +18,7 @@ import {getVideoIdFromPathname} from '../../../../utils/urlHandler';
 import {getCategoryFromCategoryInputValue} from '../../../atom/Inputs/VideoInputs/VideoInput';
 
 export const useVideoEditPage = () => {
+  const user = useSelector((state: RootState) => state.user);
   const {mutateAsync, isLoading} = useEditVideoMutation();
   const location = useLocation();
   const navigate = useNavigate();
@@ -31,8 +35,16 @@ export const useVideoEditPage = () => {
 
   useEffect(() => {
     if (!data?.video) return;
+    checkWhetherIsMyVideo();
     resetFormValueWithVideoData();
   }, [data?.video]);
+
+  const checkWhetherIsMyVideo = useCallback(() => {
+    if (data?.video?.creator._id !== user?._id) {
+      toast.error('해당 영상에 대한 권한이 없습니다.');
+      navigate(routes.videoDetail(data.video._id));
+    }
+  }, [data?.video, user]);
 
   const resetFormValueWithVideoData = useCallback(() => {
     if (!categoryInputRef.current) return;

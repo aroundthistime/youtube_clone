@@ -2,6 +2,7 @@ import React from 'react';
 import routes from '../../../routes';
 import AuthInput from '../../atom/Inputs/AuthInputs/AuthInput';
 import PageForm from '../../partial/Forms/PageForm/PageForm';
+import WithPublicValidation from '../../wrapper/WithAuthValidation/WithPublicValidation';
 import './JoinPage.scss';
 import {useJoinPage} from './useJoinPage';
 
@@ -36,4 +37,4 @@ const JoinPage = () => {
   );
 };
 
-export default JoinPage;
+export default WithPublicValidation(JoinPage);

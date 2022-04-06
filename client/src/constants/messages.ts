@@ -1,6 +1,8 @@
 import {PASSWORD_LEAST_LENGTH, PASSWORD_MAX_LENGTH} from '../utils/formUtils';
 
 const messages = {
+  loginRequired: '해당 서비스를 이용하기 위해서는 로그인이 필요합니다.',
+  logoutRequired: '로그인된 상태로는 이용할 수 없는 기능입니다.',
   loading: '잠시만 기다려주세요',
   confirmClear: '해당 영상들을 모두 삭제하시겠습니까?',
   confirmRemoveVideoFromList: '해당 영상을 목록에서 제거하시겠습니까?',

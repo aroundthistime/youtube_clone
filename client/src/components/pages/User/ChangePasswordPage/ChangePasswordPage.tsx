@@ -1,6 +1,7 @@
 import React from 'react';
 import AuthInput from '../../../atom/Inputs/AuthInputs/AuthInput';
 import PageForm from '../../../partial/Forms/PageForm/PageForm';
+import WithPrivateValidation from '../../../wrapper/WithAuthValidation/WithPrivateValidation';
 import './ChangePasswordPage.scss';
 import {useChangePasswordPage} from './useChangePasswordPage';
 
@@ -37,4 +38,4 @@ const ChangePasswordPage = () => {
   );
 };
 
-export default ChangePasswordPage;
+export default WithPrivateValidation(ChangePasswordPage);

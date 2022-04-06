@@ -1,7 +1,7 @@
 import React, {useEffect, useRef} from 'react';
 import {useInput} from '../../../@hooks/useInput';
 import ProfileImage from '../../atom/ProfileImage/ProfileImage';
-import WithLoggedInValidation from '../../wrapper/WithLoggedInValidation/WithLoggedInValidation';
+import WithLoginLink from '../../wrapper/WithLoginLink/WithLoginLink';
 import './CommentForm.scss';
 import {useCommentForm} from './useCommentForm';
 
@@ -57,4 +57,4 @@ const CommentForm = ({
   );
 };
 
-export default WithLoggedInValidation(CommentForm);
+export default WithLoginLink(CommentForm);

@@ -1,6 +1,7 @@
 import React from 'react';
 import AuthInput from '../../../atom/Inputs/AuthInputs/AuthInput';
 import PageForm from '../../../partial/Forms/PageForm/PageForm';
+import WithPrivateValidation from '../../../wrapper/WithAuthValidation/WithPrivateValidation';
 import './EditProfilePage.scss';
 import {useEditProfilePage} from './useEditProfilePage';
 
@@ -22,4 +23,4 @@ const EditProfilePage = () => {
   );
 };
 
-export default EditProfilePage;
+export default WithPrivateValidation(EditProfilePage);
