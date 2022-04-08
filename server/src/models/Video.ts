@@ -7,7 +7,7 @@ export interface VideoType extends mongoose.Document {
   thumbnailUrl: string;
   title: string;
   description?: string;
-  category: string;
+  category?: string;
   views: number;
   uploadTime: Date;
   comments: PopulatedDoc<CommentType>[];

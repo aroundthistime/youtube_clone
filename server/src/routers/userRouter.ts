@@ -9,12 +9,12 @@ import {
   getUserDetail,
 } from '../controllers/userController';
 import {getMyVideos, getUserVideos} from '../controllers/videoController';
-import {onlyPrivate} from '../middlewares';
+import {multerUploadAvatar, onlyPrivate} from '../middlewares';
 
 const userRouter = express.Router();
 
 userRouter.post('/', join, login);
-userRouter.patch('/', onlyPrivate, editUser);
+userRouter.patch('/', onlyPrivate, multerUploadAvatar, editUser);
 userRouter.get(routes.myProfile, onlyPrivate, getMyProfile);
 userRouter.get(routes.myVideos, onlyPrivate, getMyVideos);
 userRouter.get(routes.userDetail, getUserDetail);

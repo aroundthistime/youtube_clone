@@ -3,6 +3,7 @@ import {
   clearHistory,
   clearWatchLater,
   getHistory,
+  getLikedVideos,
   getNoInterest,
   getWatchLater,
 } from '../controllers/videoController';
@@ -10,6 +11,9 @@ import {onlyPrivate} from '../middlewares';
 import routes from '../routes';
 
 const feedRouter = express.Router();
+
+//liked-videos
+feedRouter.get(routes.likedVideos, onlyPrivate, getLikedVideos);
 
 //history
 feedRouter.get(routes.history, onlyPrivate, getHistory);

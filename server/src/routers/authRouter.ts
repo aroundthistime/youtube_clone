@@ -11,7 +11,7 @@ import routes from '../routes';
 const authRouter = express.Router();
 
 authRouter.get(routes.authFail, handleAuthFail);
-authRouter.post(routes.login, onlyPublic, login);
+authRouter.post(routes.login, onlyPublic, login, handleLoginSuccess);
 authRouter.get(routes.loginSuccess, handleLoginSuccess);
 authRouter.get(routes.logout, onlyPrivate, logout);
 

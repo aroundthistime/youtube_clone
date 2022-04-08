@@ -1,6 +1,6 @@
 import {Request, Response} from 'express';
 import stringSimilarity from 'string-similarity';
-import {HydratedDocument, Types} from 'mongoose';
+import {HydratedDocument, ObjectId, Types} from 'mongoose';
 import routes from '../routes';
 import Video, {VideoType} from '../models/Video';
 import Comment from '../models/Comment';
@@ -11,14 +11,13 @@ import {
 } from '../@types/responseType';
 import mongoose from 'mongoose';
 import {
+  getBriefCreatorPopulateOptions,
   getObjectIdFromString,
   getVideoSortOptions,
 } from '../utils/mongooseUtils';
 import {returnSuccessResponse} from '../utils/responseHandler';
-import {getReversedPaginationFetchIndexRange} from '../utils/arrayHandler';
-import {SortOptionType, VideoSortMethodType} from '../@types/sortMethod';
+import {VideoSortMethodType} from '../@types/sortMethod';
 import {CategoryType} from '../@types/categoryType';
-import {AtLeastOne} from '../@types/UtilityTypes';
 import {
   MongooseFindQuery,
   PopulateWithPaginationOptions,
@@ -28,18 +27,12 @@ import {getDateQueryStartRangeByTimeStandard} from '../utils/dateHandler';
 
 const VIDEO_FETCH_UNIT = 10; //한 번에 fetch하는 video의 수
 
-export const getVideoFromStringId = async (id: string): Promise<VideoType> => {
-  const objectId = getObjectIdFromString(id);
-  const video = await Video.findById(objectId);
-  return video;
-};
-
 type GetVideosQuery = {
   sortMethod: VideoSortMethodType;
   page: number;
   keyword?: string;
   category?: CategoryType;
-  uploadTimeStandard?: TimeStandardType;
+  uploadTime?: TimeStandardType;
 };
 
 export const getVideos = async (
@@ -47,19 +40,18 @@ export const getVideos = async (
   res: Response,
 ) => {
   try {
-    const {keyword, sortMethod, category, page, uploadTimeStandard} = req.query;
-    const videoFindQuery = getVideoFindQuery(
-      keyword,
-      category,
-      uploadTimeStandard,
-    );
-    let videos = await Video.find(videoFindQuery)
+    const {keyword, sortMethod, category, page, uploadTime} = req.query;
+    const videoFindQuery = getVideoFindQuery(keyword, category, uploadTime);
+    let videos: any[] = await Video.find(videoFindQuery)
       .sort(getVideoSortOptions(sortMethod))
       .skip((page - 1) * VIDEO_FETCH_UNIT)
       .limit(VIDEO_FETCH_UNIT)
-      .populate('creator');
+      .populate(getBriefCreatorPopulateOptions())
+      .lean();
     if (req.user) {
-      videos = filterNoInterestVideos(videos, req.user);
+      const user = await User.findById(req.user._id);
+      videos = filterNoInterestVideos(videos, user);
+      videos = markWhetherWatchLaterToVideos(videos, user);
     }
     returnVideosWithPaginationSuccessResponse(res, videos);
   } catch {
@@ -70,7 +62,7 @@ export const getVideos = async (
 const getVideoFindQuery = (
   keyword: string | undefined,
   category: string | undefined,
-  uploadTimeStandard: TimeStandardType | undefined,
+  uploadTime: TimeStandardType | undefined,
 ): MongooseFindQuery<VideoType> => {
   const videoFindQuery: MongooseFindQuery<VideoType> = {};
   if (keyword) {
@@ -82,9 +74,9 @@ const getVideoFindQuery = (
   if (category) {
     videoFindQuery.category = category;
   }
-  if (uploadTimeStandard) {
+  if (uploadTime) {
     videoFindQuery.uploadTime = {
-      $gte: getDateQueryStartRangeByTimeStandard(uploadTimeStandard),
+      $gte: getDateQueryStartRangeByTimeStandard(uploadTime),
     };
   }
   return videoFindQuery;
@@ -95,6 +87,15 @@ const filterNoInterestVideos = (
   user: UserType,
 ): VideoType[] => {
   return videos.filter((video) => !user.noInterest.includes(video.id));
+};
+
+const markWhetherWatchLaterToVideos = (videos: VideoType[], user: UserType) => {
+  return videos.map((video) => {
+    return {
+      ...video,
+      isInWatchLater: user.watchLater.includes(video._id),
+    };
+  });
 };
 
 type GetUserVideosParams = {
@@ -114,7 +115,7 @@ export const getUserVideos = async (
       params: {id: userId},
       query: {sortMethod, page},
     } = req;
-    const user = await User.findById(getObjectIdFromString(userId)).populate(
+    const user = await User.findById(userId).populate(
       getBriefVideoPopulateParameter('videos', page, sortMethod),
     );
     returnVideosWithPaginationSuccessResponse(res, user.videos);
@@ -158,8 +159,9 @@ export const uploadVideo = async (req: Request<{}, {}>, res: Response) => {
       category,
       creator: req.user.id,
     });
-    req.user.videos.push(newVideo.id);
-    req.user.save();
+    const user = await User.findById(req.user._id);
+    user.videos.push(newVideo._id);
+    await user.save();
     res.status(200).json({
       result: true,
       videoId: newVideo.id,
@@ -181,50 +183,34 @@ export const getVideo = async (
     params: {id},
   } = req;
   try {
-    const video = await getVideoFromStringId(id);
-    video.populate({
-      path: 'creator',
-      model: 'User',
-    });
-    // const video = await Video.findById(id).populate({
-    //   path: 'creator',
-    //   model: 'User',
-    // });
-    let isLiked: boolean = false;
+    const video = await Video.findById(id);
+    increaseVideoView(video);
+    let isLiked: boolean | undefined = undefined;
     if (req.user) {
-      addVideoToUserHistory(req.user, video);
-      increaseVideoView(video);
-      isLiked = videoIsLiked(req.user, video);
+      const user = await User.findById(req.user._id);
+      addVideoToList(user.history, video.id);
+      await user.save();
+      isLiked = user.liked.includes(video._id);
     }
+    const leanedVideo = await Video.findById(id)
+      .populate(getBriefCreatorPopulateOptions())
+      .lean();
     res.status(200).json({
       result: true,
       video: {
-        ...video,
+        ...leanedVideo,
         commentsCount: video.comments.length,
         isLiked,
       },
     });
-  } catch (error) {
+  } catch {
     returnErrorResponse(res);
   }
 };
 
-const addVideoToUserHistory = (user: UserType, video: VideoType) => {
-  const index = user.history.indexOf(video._id);
-  if (index > -1) {
-    user.history.splice(index, 1);
-  }
-  user.history.push(video);
-  user.save();
-};
-
-const increaseVideoView = (video: VideoType) => {
+const increaseVideoView = async (video: VideoType) => {
   video.views += 1;
-  video.save();
-};
-
-const videoIsLiked = (user: UserType, video: VideoType): boolean => {
-  return user.liked.includes(video._id);
+  await video.save();
 };
 
 type EditVideoParams = {
@@ -234,6 +220,7 @@ type EditVideoParams = {
 type EditVideoBody = {
   title: string;
   description: string;
+  category: string;
 };
 
 export const editVideo = async (
@@ -243,15 +230,15 @@ export const editVideo = async (
   try {
     const {
       params: {id},
-      body: {title, description},
+      body: {title, description, category},
     } = req;
-    const video = await getVideoFromStringId(id);
-    // const video = await Video.findById(getObjectIdFromString(id));
+    const video = await Video.findById(id);
     if (!userHasRightsForTheVideo(req.user, video)) {
       throw Error;
     }
     video.title = title;
     video.description = description;
+    video.category = category;
     video.save();
     returnSuccessResponse(res);
   } catch {
@@ -264,13 +251,11 @@ export const deleteVideo = async (req: Request, res: Response) => {
     const {
       params: {id},
     } = req;
-    const video = await getVideoFromStringId(id);
-    // const videoId = getObjectIdFromString(id);
-    // const video = await Video.findById(getObjectIdFromString(id));
+    const video = await Video.findById(id);
     if (!userHasRightsForTheVideo(req.user, video)) {
       throw Error;
     }
-    Video.findByIdAndDelete(video._id);
+    await Video.findByIdAndDelete(video._id);
     returnSuccessResponse(res);
   } catch {
     returnErrorResponse(res);
@@ -281,7 +266,68 @@ const userHasRightsForTheVideo = (
   user: UserType,
   video: VideoType,
 ): boolean => {
-  return user && user.id === video.creator._id;
+  return user && getObjectIdFromString(user._id).equals(video.creator);
+};
+
+export const toggleVideoLike = async (
+  req: Request<{id: string}>,
+  res: Response,
+) => {
+  try {
+    const {
+      params: {id},
+    } = req;
+    const user = await User.findById(req.user._id);
+    toggleVideoOfArray(user.liked, id);
+    await user.save();
+    returnSuccessResponse(res);
+  } catch {
+    returnErrorResponse(res);
+  }
+};
+
+export const toggleVideoWatchLater = async (
+  req: Request<{id: string}>,
+  res: Response,
+) => {
+  try {
+    const {
+      params: {id},
+    } = req;
+    const user = await User.findById(req.user._id);
+    toggleVideoOfArray(user.watchLater, id);
+    await user.save();
+    returnSuccessResponse(res);
+  } catch {
+    returnErrorResponse(res);
+  }
+};
+
+export const toggleVideoNotInterested = async (
+  req: Request<{id: string}>,
+  res: Response,
+) => {
+  try {
+    const {
+      params: {id},
+    } = req;
+    const user = await User.findById(req.user._id);
+    toggleVideoOfArray(user.noInterest, id);
+    await user.save();
+    returnSuccessResponse(res);
+  } catch {
+    returnErrorResponse(res);
+  }
+};
+
+const toggleVideoOfArray = (videos: Types.ObjectId[], videoIdStr: string) => {
+  const videoId = getObjectIdFromString(videoIdStr);
+  const videoIndex = videos.indexOf(videoId);
+  if (videoIndex > -1) {
+    videos.splice(videoIndex, 1);
+  } else {
+    videos.push(videoId);
+  }
 };
 
 export const likeVideo = async (req: Request<{id: string}>, res: Response) => {
@@ -315,12 +361,27 @@ export const unlikedVideo = async (
   }
 };
 
-type GetHistoryQuery = {
+type GetFeedQuery = {
   page: string;
 };
 
+export const getLikedVideos = async (
+  req: Request<{}, {}, {}, GetFeedQuery>,
+  res: Response,
+) => {
+  try {
+    const page = parseInt(req.query.page);
+    const user = await User.findById(req.user._id).populate(
+      getBriefVideoPopulateParameter('liked', page),
+    );
+    returnVideosWithPaginationSuccessResponse(res, user.liked);
+  } catch {
+    returnErrorResponse(res);
+  }
+};
+
 export const getHistory = async (
-  req: Request<{}, {}, {}, GetHistoryQuery>,
+  req: Request<{}, {}, {}, GetFeedQuery>,
   res: Response,
 ) => {
   try {
@@ -359,11 +420,11 @@ export const deleteHistory = async (req: Request, res: Response) => {
 };
 
 export const getWatchLater = async (
-  req: Request<{}, {}, {}, {page: string}>,
+  req: Request<{}, {}, {}, GetFeedQuery>,
   res: Response,
 ) => {
   try {
-    const page = parseInt(req.query.page);
+    const page = +req.query.page;
     const user = await User.findById(req.user._id).populate(
       getBriefVideoPopulateParameter('watchLater', page),
     );
@@ -386,18 +447,17 @@ export const clearWatchLater = async (req: Request, res: Response) => {
 type AddWatchLaterParams = {
   id: string;
 };
-
 export const addWatchLater = async (
   req: Request<AddWatchLaterParams>,
   res: Response,
 ) => {
   const {
     params: {id},
-    user,
   } = req;
   try {
+    const user = await User.findById(req.user._id);
     await addVideoToList(user.watchLater, id);
-    user.save();
+    await user.save();
     returnSuccessResponse(res);
   } catch {
     returnErrorResponse(res);
@@ -407,11 +467,11 @@ export const addWatchLater = async (
 export const deleteWatchLater = async (req: Request, res: Response) => {
   const {
     params: {id},
-    user,
   } = req;
   try {
+    const user = await User.findById(req.user._id);
     await deleteVideoFromList(user.watchLater, id);
-    user.save();
+    await user.save();
     returnSuccessResponse(res);
   } catch (error) {
     returnErrorResponse(res);
@@ -419,13 +479,13 @@ export const deleteWatchLater = async (req: Request, res: Response) => {
 };
 
 export const getNoInterest = async (
-  req: Request<{}, {}, {}, {page: string}>,
+  req: Request<{}, {}, {}, GetFeedQuery>,
   res: Response,
 ) => {
   try {
     const page = parseInt(req.query.page);
     const user = await User.findById(req.user._id).populate(
-      getBriefVideoPopulateParameter('noInterest', page),
+      getBriefVideoPopulateParameter('noInetrest', page),
     );
     returnVideosWithPaginationSuccessResponse(res, user.noInterest);
   } catch {
@@ -436,11 +496,11 @@ export const getNoInterest = async (
 export const addNoInterest = async (req: Request, res: Response) => {
   const {
     params: {id},
-    user,
   } = req;
   try {
+    const user = await User.findById(req.user._id);
     await addVideoToList(user.noInterest, id);
-    user.save();
+    await user.save();
     returnSuccessResponse(res);
   } catch {
     returnErrorResponse(res);
@@ -450,148 +510,16 @@ export const addNoInterest = async (req: Request, res: Response) => {
 export const deleteNoInterest = async (req: Request, res: Response) => {
   const {
     params: {id},
-    user,
   } = req;
   try {
+    const user = await User.findById(req.user._id);
     await deleteVideoFromList(user.noInterest, id);
-    user.save();
+    await user.save();
     returnSuccessResponse(res);
   } catch (error) {
     returnErrorResponse(res);
   }
 };
-
-// export const videoDetail = async (req, res) => {
-//   const {
-//     params: {id},
-//   } = req;
-//   try {
-//     const video = await Video.findById(id)
-//       .populate({
-//         path: 'creator',
-//         model: 'User',
-//         populate: {path: 'blockedComments', model: 'Comment'},
-//       })
-//       .populate({
-//         path: 'comments',
-//         model: 'Comment',
-//         populate: {path: 'creator', model: 'User'},
-//       });
-//     const {category} = video;
-//     const videosRecommended = [];
-//     const sameCategory = await Video.find({category})
-//       .populate('creator')
-//       .sort({views: -1}); // should change to real recommendations.
-//     sameCategory.some((v) => {
-//       if (
-//         video.id !== v.id &&
-//         (!req.user ||
-//           (checkVideoUnblocked(v, req.user) &&
-//             checkVideoNotAlreadyWatched(v, req.user)))
-//       ) {
-//         videosRecommended.push(v);
-//       }
-//       return videosRecommended.length >= 5;
-//     });
-//     let popularVideos = await Video.find({})
-//       .populate('creator')
-//       .sort({_id: -1});
-//     popularVideos = popularVideos.filter(
-//       (v) =>
-//         video.id !== v.id &&
-//         !videosRecommended.includes(v) &&
-//         (!req.user ||
-//           (checkVideoUnblocked(v, req.user) &&
-//             checkVideoNotAlreadyWatched(v, req.user))),
-//     );
-//     popularVideos.some((v) => {
-//       videosRecommended.push(v);
-//       return videosRecommended.length >= 10;
-//     });
-//     if (req.user) {
-//       // add the video to user's history
-//       const user = await User.findById(req.user._id);
-//       const index = user.history.indexOf(video._id);
-//       if (index > -1) {
-//         user.history.splice(index, 1);
-//       }
-//       user.history.push(video);
-//       if (user.history.length > 50) {
-//         user.history.shift();
-//       }
-//       user.save();
-//     }
-//     res.render('videoDetail', {
-//       pageTitle: video.title,
-//       video,
-//       videosRecommended,
-//     });
-//   } catch (error) {
-//     console.log(error);
-//     res.render('userDetail', {pageTitle: 'Video not Found', user: null});
-//     // don't worry about movign to userDetail, if the video doesn't exist the user goes to a page that says the video doensn't exist which just shares userDetail pug file
-//   }
-// };
-// export const getEditVideo = async (req, res) => {
-//   const {
-//     params: {id},
-//   } = req;
-//   try {
-//     const video = await Video.findById(id);
-//     if (req.user && video.creator._id == req.user.id) {
-//       res.render('editVideo', {pageTitle: `[Edit] ${video.title}`, video});
-//     } else {
-//       res.render('editVideo', {pageTitle: 'Video Edit Error', video: null});
-//     }
-//   } catch (error) {
-//     res.redirect(routes.home);
-//   }
-// };
-
-// export const postEditVideo = async (req, res) => {
-//   const {
-//     params: {id},
-//     body: {title, description},
-//   } = req;
-//   try {
-//     await Video.findOneAndUpdate({_id: id}, {title, description}); // remember! it is _id not id how things are saved in the mongoose db
-//     res.redirect(routes.videoDetail(id));
-//   } catch (error) {
-//     res.redirect(routes.home);
-//   }
-// };
-
-// export const deleteVideo = async (req, res) => {
-//   const {
-//     params: {id},
-//   } = req;
-//   try {
-//     const video = await Video.findById(id);
-//     if (req.user && video.creator._id == req.user.id) {
-//       await Video.findByIdAndRemove(id);
-//       res.render(routes.home);
-//     } else {
-//       res.render('editVideo', {pageTitle: 'Video Delete Error', video: null});
-//     }
-//   } catch (error) {}
-//   res.redirect(routes.home);
-// };
-
-// export const postRegisterView = async (req, res) => {
-//   const {
-//     params: {id},
-//   } = req;
-//   try {
-//     const video = await Video.findById(id);
-//     video.views += 1;
-//     video.save();
-//     res.status(200);
-//   } catch (error) {
-//     res.status(400);
-//   } finally {
-//     res.end();
-//   }
-// };
 
 const addVideoToList = async (
   videos: Types.ObjectId[],
@@ -599,9 +527,10 @@ const addVideoToList = async (
 ): Promise<void> => {
   const videoId = getObjectIdFromString(videoIdStr);
   const videoIndex = videos.indexOf(videoId);
-  if (videoIndex === -1) {
-    videos.push(videoId);
+  if (videoIndex > -1) {
+    videos.splice(videoIndex, 1);
   }
+  videos.unshift(videoId);
 };
 
 const deleteVideoFromList = async (
@@ -615,9 +544,13 @@ const deleteVideoFromList = async (
   }
 };
 
+interface IsInWatchLaterMarkedVideoType extends VideoType {
+  isInWatchLater: boolean;
+}
+
 const returnVideosWithPaginationSuccessResponse = (
   res: Response,
-  videos: VideoType[],
+  videos: VideoType[] | IsInWatchLaterMarkedVideoType[],
 ) => {
   res.status(200).json({
     result: true,
@@ -632,7 +565,7 @@ const getVideoWithPaginationPopulateOptions = (
 ): PopulateWithPaginationOptions<VideoType> => {
   return {
     limit: VIDEO_FETCH_UNIT,
-    skip: page * VIDEO_FETCH_UNIT,
+    skip: (page - 1) * VIDEO_FETCH_UNIT,
     sort: getVideoSortOptions(sortMethod),
   };
 };
@@ -644,11 +577,9 @@ const getBriefVideoPopulateParameter = (
 ) => {
   return {
     path,
+    select: '_id thumbnailUrl title views uploadTime creator',
     options: getVideoWithPaginationPopulateOptions(page, sortMethod),
-    populate: {
-      path: 'creator',
-      model: 'User',
-    },
+    populate: getBriefCreatorPopulateOptions(),
   };
 };
 

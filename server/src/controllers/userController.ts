@@ -7,13 +7,6 @@ import {
   returnErrorResponse,
   returnSuccessResponse,
 } from '../utils/responseHandler';
-import {getObjectIdFromString} from '../utils/mongooseUtils';
-
-const getUserFromStringId = async (id: string): Promise<UserType> => {
-  const objectId = getObjectIdFromString(id);
-  const user = await User.findById(objectId);
-  return user;
-};
 
 type JoinRequiredFieldsType = {
   name: string;
@@ -30,7 +23,7 @@ export const join = async (req: Request, res: Response, next: NextFunction) => {
     });
     await User.register(user, password);
     next();
-  } catch (error) {
+  } catch {
     res.status(409).json({
       result: false,
     });
@@ -43,7 +36,7 @@ export const handleAuthFail = (req: Request, res: Response) => {
 
 export const login = passport.authenticate('local', {
   failureRedirect: routes.auth + routes.authFail,
-  successRedirect: routes.auth + routes.loginSuccess,
+  // successRedirect: routes.auth + routes.loginSuccess,
 });
 
 export const handleLoginSuccess = (req: Request, res: Response) => {
@@ -51,12 +44,7 @@ export const handleLoginSuccess = (req: Request, res: Response) => {
   req.session.save(() => {
     res.status(200).json({
       result: true,
-      user: {
-        id: req.user.id,
-        name: req.user.name,
-        email: req.user.email,
-        avatarUrl: req.user.avatarUrl,
-      },
+      user: req.user,
     });
   });
 };
@@ -176,7 +164,7 @@ export const getUserDetail = async (req: Request, res: Response) => {
     const {
       params: {id},
     } = req;
-    const user = await getUserFromStringId(id);
+    const user = await User.findById(id);
     res.status(200).json({
       result: true,
       user,
@@ -215,23 +203,26 @@ export const getUserDetail = async (req: Request, res: Response) => {
 //   }
 // };
 
-type EditUserRequiredFieldsType = Pick<
-  UserType,
-  'name' | 'status' | 'avatarUrl'
->;
+type EditUserRequiredFieldsType = Pick<UserType, 'name' | 'status'>;
 
 export const editUser = async (req: Request, res: Response) => {
-  const {name, status, avatarUrl}: EditUserRequiredFieldsType = req.body;
   try {
+    const {name, status}: EditUserRequiredFieldsType = req.body;
+    const avatarUrl = req.file?.path;
     await User.findByIdAndUpdate(req.user._id, {
       name,
       status,
-      avatarUrl: avatarUrl ? avatarUrl : req.user.avatarUrl,
+      avatarUrl: avatarUrl || req.user.avatarUrl,
     });
+    const updatedUser = await User.findById(req.user._id);
+    req.user = updatedUser;
     req.session.save(() => {
-      returnSuccessResponse(res);
+      res.status(200).json({
+        result: true,
+        user: req.user,
+      });
     });
-  } catch (error) {
+  } catch {
     returnErrorResponse(res);
   }
 };
@@ -253,7 +244,8 @@ export const changeUserPassword = async (req: Request, res: Response) => {
     req.session.save(() => {
       returnSuccessResponse(res);
     });
-  } catch {
+  } catch (error) {
+    console.log(error);
     returnErrorResponse(res);
   }
 };

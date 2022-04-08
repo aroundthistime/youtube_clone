@@ -1,3 +1,3 @@
-import {TIME_GAPS} from '../utils/dateHandler';
+import {TIME_STANDARDS} from '../utils/dateHandler';
 
-export type TimeStandardType = keyof typeof TIME_GAPS;
+export type TimeStandardType = keyof typeof TIME_STANDARDS;

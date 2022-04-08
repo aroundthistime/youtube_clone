@@ -46,6 +46,7 @@ const routes = {
   // feed
   feed: '/feed',
   history: '/history',
+  likedVideos: '/liked-videos',
   watchLater: '/watch-later',
   noInterest: '/no-interest',
 };

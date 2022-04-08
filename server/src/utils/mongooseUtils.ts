@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose, {PopulateOptions} from 'mongoose';
 import {
   CommentSortMethodType,
   SortOptionType,
@@ -44,4 +44,11 @@ export const getVideoSortOptions = (
       views: -1,
     };
   }
+};
+
+export const getBriefCreatorPopulateOptions = (): PopulateOptions => {
+  return {
+    path: 'creator',
+    select: '_id avatarUrl name',
+  };
 };

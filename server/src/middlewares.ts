@@ -1,6 +1,7 @@
 import multer from 'multer';
 import {Request, Response, NextFunction} from 'express';
 import routes from './routes';
+import path from 'path';
 import {returnErrorResponse} from './utils/responseHandler';
 // import multerS3 from "multer-s3";
 // import aws from "aws-sdk";
@@ -21,8 +22,34 @@ import {returnErrorResponse} from './utils/responseHandler';
 //   acl : "public-read",
 //   bucket : "aroundthistimeyutube/avatars"
 // }) });
-const multerVideo = multer({dest: 'uploads/videos/'});
-const multerAvater = multer({dest: 'uploads/avatars/'});
+const multerVideo = multer({
+  // dest: 'uploads/videos/',
+  storage: multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, 'uploads/videos');
+    },
+    filename: function (req, file, cb) {
+      cb(null, new Date().valueOf() + path.extname(file.originalname));
+    },
+  }),
+});
+const multerAvater = multer({
+  // dest: 'uploads/avatars/'
+  storage: multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, 'uploads/avatars');
+    },
+    filename: function (req, file, cb) {
+      cb(null, new Date().valueOf() + path.extname(file.originalname));
+    },
+  }),
+});
+
+export const authentication = (req: Request, res: Response, next) => {
+  console.log(req.user, req.session.user, req.session);
+  req.user = req.session.user;
+  next();
+};
 
 export const onlyPublic = (req: Request, res: Response, next) => {
   if (req.user) {
@@ -38,6 +65,7 @@ export const onlyPrivate = (
   next: NextFunction,
 ) => {
   if (!req.user) {
+    console.log('야 너 req user 없잖아');
     returnErrorResponse(res);
   } else {
     next();
@@ -48,4 +76,5 @@ export const multerUploadVideo = multerVideo.fields([
   {name: 'videoFile'},
   {name: 'thumbnailImage'},
 ]);
+
 export const multerUploadAvatar = multerAvater.single('avatar');

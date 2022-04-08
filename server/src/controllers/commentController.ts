@@ -7,20 +7,12 @@ import {
   returnSuccessResponse,
 } from '../utils/responseHandler';
 import {
+  getBriefCreatorPopulateOptions,
   getCommentSortOptions,
   getObjectIdFromString,
 } from '../utils/mongooseUtils';
 import {CommentSortMethodType} from '../@types/sortMethod';
 import {PopulateWithPaginationOptions} from '../@types/mongooseTypes';
-import {getVideoFromStringId} from './videoController';
-
-export const getCommentFromStringId = async (
-  id: string,
-): Promise<CommentType> => {
-  const objectId = getObjectIdFromString(id);
-  const comment = await Comment.findById(objectId);
-  return comment;
-};
 
 const COMMENT_FETCH_UNIT = 20;
 
@@ -39,22 +31,10 @@ export const getVideoComments = async (
       params: {id: videoId},
       query: {page, sortMethod},
     } = req;
-    // const video = await Video.findById(videoId).populate({
-    //   path: 'comments',
-    //   options: getCommentWithPaginationPopulateOptions(page, sortMethod),
-    //   populate: {
-    //     path: 'creator',
-    //     model: 'User',
-    //   },
-    // });
-    const video = await getVideoFromStringId(videoId);
-    await video.populate({
+    const video = await Video.findById(videoId).populate({
       path: 'comments',
       options: getCommentWithPaginationPopulateOptions(page, sortMethod),
-      populate: {
-        path: 'creator',
-        model: 'User',
-      },
+      populate: getBriefCreatorPopulateOptions(),
     });
     let comments: CommentType[];
     if (req.user) {
@@ -79,7 +59,7 @@ const getCommentWithPaginationPopulateOptions = (
 ): PopulateWithPaginationOptions<CommentType> => {
   return {
     limit: COMMENT_FETCH_UNIT,
-    skip: page * COMMENT_FETCH_UNIT,
+    skip: (page - 1) * COMMENT_FETCH_UNIT,
     sort: sortMethod ? getCommentSortOptions(sortMethod) : {},
   };
 };
@@ -89,7 +69,7 @@ const filterBlockedComments = (
   user: UserType,
 ): CommentType[] => {
   return comments.filter(
-    (comment) => !user.blockedComments.includes(comment.id),
+    (comment) => !user.blockedComments.includes(comment._id),
   );
 };
 
@@ -106,12 +86,12 @@ const returnCommentsWithPaginationSuccessResponse = (
 
 export const addComment = async (req: Request, res: Response) => {
   const {
-    body: {text, videoId},
-    user,
+    params: {id: videoId},
+    body: {text},
   } = req;
   try {
-    const video = await getVideoFromStringId(videoId);
-    // const video = await Video.findById(videoId);
+    const video = await Video.findById(videoId);
+    const user = await User.findById(req.user._id);
     const newComment = await Comment.create({
       text,
       creator: user._id,
@@ -120,7 +100,13 @@ export const addComment = async (req: Request, res: Response) => {
     user.comments.push(newComment.id);
     await video.save();
     await user.save();
-    returnSuccessResponse(res);
+    const populatedComment = await newComment.populate(
+      getBriefCreatorPopulateOptions(),
+    );
+    res.status(200).json({
+      result: true,
+      comment: populatedComment,
+    });
   } catch (error) {
     returnErrorResponse(res);
   }
@@ -128,21 +114,25 @@ export const addComment = async (req: Request, res: Response) => {
 
 export const editComment = async (req: Request, res: Response) => {
   const {
-    body: {text, id},
+    params: {id},
+    body: {text},
     user,
   } = req;
   try {
-    const comment = await getCommentFromStringId(id);
-    // const comment = await Comment.findById(id);
-    if (comment.creator.id !== user.id) {
+    const comment = await Comment.findById(id);
+    if (!userHasRightsForTheComment(user, comment)) {
       throw Error("User doesn't have rights for the comment");
     }
     await Comment.findByIdAndUpdate(comment._id, {
       text,
       isEdited: true,
     });
-    returnSuccessResponse(res);
-  } catch (error) {
+    const editedComment = await Comment.findById(id).populate('creator');
+    res.status(200).json({
+      result: true,
+      comment: editedComment,
+    });
+  } catch {
     returnErrorResponse(res);
   }
 };
@@ -150,12 +140,11 @@ export const editComment = async (req: Request, res: Response) => {
 export const deleteComment = async (req: Request, res: Response) => {
   try {
     const {
-      body: {id},
+      params: {id},
       user,
     } = req;
-    const commentToDelete = await getCommentFromStringId(id);
-    // const commentToDelete = await Comment.findById(id);
-    if (commentToDelete.creator.id !== id) {
+    const commentToDelete = await Comment.findById(id);
+    if (!userHasRightsForTheComment(user, commentToDelete)) {
       throw Error("User doesn't have rights for the comment");
     }
     await Comment.findByIdAndDelete(commentToDelete._id);
@@ -165,13 +154,20 @@ export const deleteComment = async (req: Request, res: Response) => {
   }
 };
 
+const userHasRightsForTheComment = (
+  user: UserType | undefined,
+  comment: CommentType,
+): boolean => {
+  return user && getObjectIdFromString(user._id).equals(comment.creator);
+};
+
 export const blockComment = async (req: Request, res: Response) => {
   const {
-    body: {commentId},
+    params: {id},
   } = req;
   try {
     const user = await User.findById(req.user._id);
-    user.blockedComments.push(commentId);
+    user.blockedComments.push(id);
     await user.save();
     returnSuccessResponse(res);
   } catch (error) {
