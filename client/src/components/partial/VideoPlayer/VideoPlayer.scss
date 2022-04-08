@@ -16,6 +16,9 @@
   }
   .video-player__video {
     background-color: rgba(0, 0, 0, 0.8);
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    position: relative;
   }
   // &[data-view-mode='fullscreen'] {
   //   .video-player__controller {
@@ -23,9 +26,12 @@
   //     transition: all 0.25s ease-in-out;
   //   }
   // }
-  .video-player__video {
-    width: 100%;
-    aspect-ratio: 16 / 9;
+  .video-player__loader {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
   }
   .video-player__overlay-effect {
     opacity: 0;

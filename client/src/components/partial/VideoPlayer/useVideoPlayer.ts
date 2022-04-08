@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable import/prefer-default-export */
-import React, {useCallback, useEffect, useRef} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {RootState} from '../../../@modules/root';
 import {
@@ -21,6 +21,7 @@ type ReturnType = {
   videoRef: React.RefObject<HTMLVideoElement>;
   videoPlayerRef: React.RefObject<HTMLDivElement>;
   overlayEffectRef: React.RefObject<HTMLDivElement>;
+  isLoading: boolean;
 };
 
 const VIDEO_TIME_CHANGE_UNIT = 5;
@@ -40,6 +41,7 @@ const OVERLAY_EFFECT_ICONS = {
 type OverlayEffectTypes = keyof typeof OVERLAY_EFFECT_ICONS;
 
 export const useVideoPlayer = (): ReturnType => {
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const videoRef = useRef<HTMLVideoElement>(null);
   const videoPlayerRef = useRef<HTMLDivElement>(null);
   const overlayEffectRef = useRef<HTMLDivElement>(null);
@@ -64,8 +66,10 @@ export const useVideoPlayer = (): ReturnType => {
       videoElement.onclick = requestTogglePlayVideo;
       videoElement.ondblclick = requestToggleFullScreen;
       videoElement.ontimeupdate = saveVideoCurrentTime;
-      videoElement.onloadedmetadata = () =>
+      videoElement.onloadedmetadata = () => {
+        setIsLoading(false);
         dispatch(setDuration(videoElement.duration));
+      };
     }
   }, [videoElement]);
 
@@ -117,6 +121,12 @@ export const useVideoPlayer = (): ReturnType => {
       dispatch(playVideo());
     }
   }, [videoElement?.ended, videoPlayer.status]);
+
+  useEffect(() => {
+    if (!overlayEffectRef.current) return;
+    overlayEffectRef.current.onclick = requestTogglePlayVideo;
+    overlayEffectRef.current.ondblclick = requestToggleFullScreen;
+  }, [overlayEffectRef.current]);
 
   const requestTogglePlayVideo = () => {
     dispatch(togglePlayVideo());
@@ -197,5 +207,6 @@ export const useVideoPlayer = (): ReturnType => {
     videoRef,
     videoPlayerRef,
     overlayEffectRef,
+    isLoading,
   };
 };

@@ -24,6 +24,7 @@ import {
 } from '../../../@modules/videoPlayerSlice';
 import {VideoType} from '../../../@types/VideoType';
 import {getTimestampFromSeconds} from '../../../utils/dateHandler';
+import Loader from '../../atom/Loader/Loader';
 import TextHoverButtonWrapper from '../../wrapper/TextHoverButtonWrapper/TextHoverButtonWrapper';
 import {useVideoPlayer} from './useVideoPlayer';
 import './VideoPlayer.scss';
@@ -61,7 +62,8 @@ type Props = {
 
 const VideoPlayer = React.memo(
   ({video, className = '', children}: PropsWithChildren<Props>) => {
-    const {videoRef, videoPlayerRef, overlayEffectRef} = useVideoPlayer();
+    const {videoRef, videoPlayerRef, overlayEffectRef, isLoading} =
+      useVideoPlayer();
     return (
       <div
         className={`video-player ${className}`}
@@ -74,9 +76,14 @@ const VideoPlayer = React.memo(
           autoPlay
           muted
           preload="auto"
-          playsInline
-        />
-        <VideoPlayer.OverlayEffect ref={overlayEffectRef} />
+          playsInline>
+          <VideoPlayer.OverlayEffect ref={overlayEffectRef} />
+        </video>
+        {isLoading ? (
+          <Loader className="video-player__loader" />
+        ) : (
+          <VideoPlayer.OverlayEffect ref={overlayEffectRef} />
+        )}
         <VideoPlayer.ProgressBar videoRef={videoRef} />
         {children}
       </div>
