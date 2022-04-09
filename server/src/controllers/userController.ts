@@ -153,8 +153,7 @@ export const getMyProfile = async (req: Request, res: Response) => {
       result: true,
       user,
     });
-  } catch (error) {
-    console.log(error);
+  } catch {
     returnErrorResponse(res);
   }
 };
@@ -208,7 +207,7 @@ type EditUserRequiredFieldsType = Pick<UserType, 'name' | 'status'>;
 export const editUser = async (req: Request, res: Response) => {
   try {
     const {name, status}: EditUserRequiredFieldsType = req.body;
-    const avatarUrl = req.file?.path;
+    const avatarUrl = req.file?.location;
     await User.findByIdAndUpdate(req.user._id, {
       name,
       status,
@@ -244,8 +243,7 @@ export const changeUserPassword = async (req: Request, res: Response) => {
     req.session.save(() => {
       returnSuccessResponse(res);
     });
-  } catch (error) {
-    console.log(error);
+  } catch {
     returnErrorResponse(res);
   }
 };

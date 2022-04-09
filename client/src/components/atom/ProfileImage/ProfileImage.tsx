@@ -14,13 +14,11 @@ const ProfileImage = ({
   isLazyImage = true,
   className = '',
 }: Props) => {
-  const srcWithFullUrl =
-    src === DefaultProfileImage ? src : process.env.REACT_APP_BASE_URL + src;
   if (isLazyImage) {
     return (
       <LazyImage
         className={`profile-image no-drag ${className}`}
-        src={srcWithFullUrl}
+        src={src}
         alt="프로필 이미지"
       />
     );
@@ -28,7 +26,7 @@ const ProfileImage = ({
   return (
     <img
       className={`profile-image no-drag ${className}`}
-      src={srcWithFullUrl}
+      src={src}
       alt="프로필 이미지"
     />
   );

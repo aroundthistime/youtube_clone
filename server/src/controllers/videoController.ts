@@ -1,15 +1,7 @@
 import {Request, Response} from 'express';
-import stringSimilarity from 'string-similarity';
-import {HydratedDocument, ObjectId, Types} from 'mongoose';
-import routes from '../routes';
+import {Types} from 'mongoose';
 import Video, {VideoType} from '../models/Video';
-import Comment from '../models/Comment';
 import User, {UserType} from '../models/User';
-import {
-  DefaultResponseType,
-  VideosFetchSuccessWithPaginationResponse,
-} from '../@types/responseType';
-import mongoose from 'mongoose';
 import {
   getBriefCreatorPopulateOptions,
   getObjectIdFromString,
@@ -147,10 +139,10 @@ export const uploadVideo = async (req: Request<{}, {}>, res: Response) => {
       body: {title, description, category},
     } = req;
     const {videoFile, thumbnailImage} = req.files as {
-      [fieldname: string]: Express.Multer.File[];
+      [fieldname: string]: Request['file'][];
     };
-    const fileUrl = videoFile[0].path;
-    const thumbnailUrl = thumbnailImage[0].path;
+    const fileUrl = videoFile[0].location;
+    const thumbnailUrl = thumbnailImage[0].location;
     const newVideo = await Video.create({
       fileUrl,
       thumbnailUrl,

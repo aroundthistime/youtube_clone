@@ -19,7 +19,6 @@ import './passport';
 import authRouter from './routers/authRouter';
 import feedRouter from './routers/feedRouter';
 import commentRouter from './routers/commentRouter';
-import {authentication} from './middlewares';
 
 const ONE_MONTH_IN_MILLISECONDS = 1000 * 60 * 60 * 24 * 30;
 
@@ -53,7 +52,6 @@ app.use(
   session({
     cookie: {
       maxAge: ONE_MONTH_IN_MILLISECONDS,
-      // secure: false,
       sameSite: 'none',
       secure: true,
       httpOnly: false,
@@ -62,12 +60,12 @@ app.use(
     resave: false,
     saveUninitialized: false,
     store: new CookieStore({mongooseConnection: mongoose.connection}),
+    proxy: true,
   }),
 );
 
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(authentication);
 
 app.use(routes.home, globalRouter);
 app.use(routes.auth, authRouter);

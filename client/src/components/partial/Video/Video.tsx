@@ -62,7 +62,7 @@ const Video = React.memo(
       <div className={`video ${className}`}>
         <Link to={routes.videoDetail(video._id)}>
           <Video.Thumbnail
-            thumbnailUrl={process.env.REACT_APP_BASE_URL + video.thumbnailUrl}
+            thumbnailUrl={video.thumbnailUrl}
             videoTitle={video.title}
           />
         </Link>

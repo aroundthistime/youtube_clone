@@ -71,7 +71,7 @@ const VideoPlayer = React.memo(
         tabIndex={0}>
         <video
           className="video-player__video"
-          src={process.env.REACT_APP_BASE_URL + video.fileUrl}
+          src={video.fileUrl}
           ref={videoRef}
           autoPlay
           muted
