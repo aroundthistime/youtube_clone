@@ -45,7 +45,7 @@ type FeedTabProps = Pick<NavTabContentType, 'name' | 'iconClassName'> & {
 FeedTabs.FeedTab = ({name, iconClassName, path}: FeedTabProps) => {
   const location = useLocation();
   const isSelected = useMemo(() => {
-    return location.pathname === routes.feed + path;
+    return location.pathname === path;
   }, [location.pathname]);
   return (
     <Link to={path} className="feed-link">
