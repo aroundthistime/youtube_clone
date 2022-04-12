@@ -1,7 +1,5 @@
-import React, {Suspense} from 'react';
+import React from 'react';
 import {Route, Routes} from 'react-router-dom';
-import {MainErrorBoundary} from '../App';
-import Loader from '../components/atom/Loader/Loader';
 import RouteWithErrorBoundary from '../components/wrapper/RouteWithErrorBoundary/RouteWithErrorBoundary';
 import routes from '../routes';
 
