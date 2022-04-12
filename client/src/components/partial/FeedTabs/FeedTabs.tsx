@@ -6,7 +6,7 @@ import {NavTabContent} from '../Nav/Nav';
 
 const FeedTabs = () => {
   return (
-    <ul className="nav__tabs feed-tabs">
+    <ul className="nav__tabs feed-tabs" data-testid="feed-tabs">
       <FeedTabs.LikedVideosTab />
       <FeedTabs.HistoryTab />
       <FeedTabs.WatchLaterTab />
