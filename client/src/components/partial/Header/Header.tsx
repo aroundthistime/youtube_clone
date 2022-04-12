@@ -69,7 +69,8 @@ Header.AuthButton = ({user}: AuthButtonProps) => {
   return (
     <Link
       to={user ? routes.users + routes.myProfile : routes.login}
-      className="header__button">
+      className="header__button"
+      data-testid="header__auth-button">
       <ProfileImage
         className="header__icon"
         src={user?.avatarUrl}

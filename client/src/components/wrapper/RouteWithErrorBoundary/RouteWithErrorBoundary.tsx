@@ -1,6 +1,6 @@
 import React from 'react';
 import {Route} from 'react-router-dom';
-import {MainErrorBoundary} from '../../../App';
+import {MainErrorBoundary} from '../../App';
 
 type Props = {
   path: string;

@@ -1,16 +1,16 @@
 module.exports = {
   env: {
     browser: true,
-    es2021: true,
+    es2021: true
   },
-  extends: ['plugin:react/recommended', 'airbnb', 'prettier'],
+  extends: ['plugin:react/recommended', 'airbnb', 'prettier', 'plugin:storybook/recommended'],
   parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaFeatures: {
-      jsx: true,
+      jsx: true
     },
     ecmaVersion: 'latest',
-    sourceType: 'module',
+    sourceType: 'module'
   },
   plugins: ['react', '@typescript-eslint', 'prettier'],
   rules: {
@@ -18,33 +18,32 @@ module.exports = {
     'no-shadow': 'off',
     'no-undef': 'off',
     'arrow-body-style': 0,
-    'prettier/prettier': [
-      'error',
-      {
-        endOfLine: 'auto',
-      },
-    ],
-    'import/extensions': [
-      'error',
-      'ignorePackages',
-      {
-        js: 'never',
-        jsx: 'never',
-        ts: 'never',
-        tsx: 'never',
-        mjs: 'never',
-      },
-    ],
-    'react/jsx-filename-extension': [1, {extensions: ['.js', '.jsx', '.tsx']}],
+    'prettier/prettier': ['error', {
+      endOfLine: 'auto'
+    }],
+    'import/extensions': ['error', 'ignorePackages', {
+      js: 'never',
+      jsx: 'never',
+      ts: 'never',
+      tsx: 'never',
+      mjs: 'never'
+    }],
+    'react/jsx-filename-extension': [1, {
+      extensions: ['.js', '.jsx', '.tsx']
+    }],
     'react/function-component-definition': 0,
     'react/require-default-props': 'off',
     'react/jsx-props-no-spreading': 'off',
     'no-unused-vars': 'off',
     'no-use-before-define': 'off',
     'no-underscore-dangle': 'off',
-    'no-alert': 'off',
+    'no-alert': 'off'
   },
   settings: {
-    'import/resolver': {node: {extensions: ['.js', '.jsx', '.ts', '.tsx']}},
-  },
+    'import/resolver': {
+      node: {
+        extensions: ['.js', '.jsx', '.ts', '.tsx']
+      }
+    }
+  }
 };

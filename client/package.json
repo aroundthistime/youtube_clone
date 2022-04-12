@@ -9,7 +9,7 @@
     "@fortawesome/react-fontawesome": "^0.1.17",
     "@reduxjs/toolkit": "^1.8.0",
     "@testing-library/jest-dom": "^5.14.1",
-    "@testing-library/react": "^12.0.0",
+    "@testing-library/react": "^12.1.4",
     "@testing-library/user-event": "^13.2.1",
     "@types/jest": "^27.0.1",
     "@types/node": "^16.7.13",
@@ -28,6 +28,7 @@
     "react-toastify": "^8.2.0",
     "redux-persist": "^6.0.0",
     "sass": "^1.49.11",
+    "storybook": "^6.4.21",
     "typescript": "^4.4.2",
     "web-vitals": "^2.1.0"
   },
@@ -35,12 +36,25 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "test:cov": "npm test -- --coverage --watchAll=false",
+    "eject": "react-scripts eject",
+    "storybook": "start-storybook -p 6006 -s public",
+    "build-storybook": "build-storybook -s public"
   },
   "eslintConfig": {
     "extends": [
       "react-app",
       "react-app/jest"
+    ],
+    "overrides": [
+      {
+        "files": [
+          "**/*.stories.*"
+        ],
+        "rules": {
+          "import/no-anonymous-default-export": "off"
+        }
+      }
     ]
   },
   "browserslist": {
@@ -56,6 +70,17 @@
     ]
   },
   "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.16.7",
+    "@storybook/addon-actions": "^6.4.21",
+    "@storybook/addon-essentials": "^6.4.21",
+    "@storybook/addon-interactions": "^6.4.21",
+    "@storybook/addon-links": "^6.4.21",
+    "@storybook/builder-webpack5": "^6.4.21",
+    "@storybook/manager-webpack5": "^6.4.21",
+    "@storybook/node-logger": "^6.4.21",
+    "@storybook/preset-create-react-app": "^4.1.0",
+    "@storybook/react": "^6.4.21",
+    "@storybook/testing-library": "^0.0.9",
     "@typescript-eslint/eslint-plugin": "^5.13.0",
     "@typescript-eslint/parser": "^5.13.0",
     "eslint": "^8.10.0",
@@ -66,6 +91,13 @@
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-react": "^7.29.2",
     "eslint-plugin-react-hooks": "^4.3.0",
-    "prettier": "^2.5.1"
+    "eslint-plugin-storybook": "^0.5.8",
+    "prettier": "^2.5.1",
+    "webpack": "^5.72.0"
+  },
+  "jest": {
+    "collectCoverageFrom": [
+      "./src/components/**/**/*.tsx"
+    ]
   }
 }

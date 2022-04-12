@@ -4,6 +4,6 @@ export type UserType = {
   email: string;
   status: string;
   avatarUrl: string;
-  facebookId?: number;
-  googleId?: number;
+  // facebookId?: number;
+  // googleId?: number;
 };

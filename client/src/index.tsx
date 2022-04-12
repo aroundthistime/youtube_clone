@@ -6,7 +6,7 @@ import {Provider} from 'react-redux';
 import {PersistGate} from 'redux-persist/integration/react';
 import {QueryClient, QueryClientProvider} from 'react-query';
 import {ToastContainer} from 'react-toastify';
-import App from './App';
+import App from './components/App';
 import reportWebVitals from './reportWebVitals';
 import useConfigureStore from './useConfigureStore';
 import 'react-toastify/dist/ReactToastify.css';
