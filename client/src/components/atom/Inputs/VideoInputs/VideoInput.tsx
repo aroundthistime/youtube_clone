@@ -4,7 +4,6 @@ import {RootState} from '../../../../@modules/root';
 import FieldInput from '../../../partial/FieldInput/FieldInput';
 import {
   DefaultFieldInputProps,
-  DefaultFieldSelectProps,
   DefaultFieldTextareaProps,
 } from '../../../../@types/FieldInputProps';
 
@@ -53,7 +52,10 @@ const CategoryInput = React.memo(
     const categories = useSelector((state: RootState) => state.categories);
     return (
       <FieldInput fieldName="카테고리 선택">
-        <select className="video-form__input" ref={ref}>
+        <select
+          className="video-form__input"
+          ref={ref}
+          data-testid="category-input">
           {categories.map(category => (
             <option value={category} key={category}>
               {category}
