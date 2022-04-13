@@ -16,7 +16,10 @@ function WithLoginLink<T>(WrappedComponent: React.ComponentType<T>) {
       toast.error(constants.messages.loginRequired);
     }, []);
     return (
-      <Link to={routes.login} onClick={onClick}>
+      <Link
+        to={routes.login}
+        onClick={onClick}
+        data-testid="login-link-wrapper__link">
         <WrappedComponent {...props} />
       </Link>
     );

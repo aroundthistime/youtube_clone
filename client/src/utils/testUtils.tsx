@@ -53,6 +53,8 @@ export const testState = {
   categories: ['music'],
 };
 
+export const TestWrappedComponent = () => <div />;
+
 // re-export everything
 export * from '@testing-library/react';
 // override render method
