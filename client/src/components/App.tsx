@@ -1,4 +1,4 @@
-import React, {PropsWithChildren, Suspense} from 'react';
+import React, {Suspense} from 'react';
 import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
 import {usePopup} from '../@hooks/usePopup';
 import './App.scss';
@@ -24,13 +24,6 @@ const CategoryPage = React.lazy(
 const EmptyPage = React.lazy(() => import('./pages/EmptyPage/EmptyPage'));
 const BlurBackground = React.lazy(
   () => import('./atom/BlurBackground/BlurBackground'),
-);
-
-export const MainErrorBoundary = ({children}: PropsWithChildren<{}>) => (
-  <ErrorBoundary
-    fallback={<ErrorMessage className="error-message--fullscreen" />}>
-    {children}
-  </ErrorBoundary>
 );
 
 function App() {
