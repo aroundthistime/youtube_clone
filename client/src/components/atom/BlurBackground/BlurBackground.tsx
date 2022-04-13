@@ -20,7 +20,11 @@ export const hideBlurBackground = () => {
 };
 
 const BlurBackground = () => (
-  <div className="blur-background" id="blur-background" />
+  <div
+    className="blur-background"
+    id="blur-background"
+    data-testid="blur-background"
+  />
 );
 
 export default React.memo(BlurBackground);
