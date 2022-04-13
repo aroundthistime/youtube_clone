@@ -9,9 +9,7 @@ type Props = {
 };
 
 export const loadLazyImage = (imageElement: HTMLImageElement) => {
-  if (imageElement.dataset.src) {
-    imageElement.src = imageElement.dataset.src;
-  }
+  imageElement.src = imageElement.dataset.src as string;
   if (imageElement.dataset.alt) {
     imageElement.alt = imageElement.dataset.alt;
   }
