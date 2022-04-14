@@ -144,7 +144,6 @@ Video.ToggleWatchLaterButton = React.memo(
       isActive: isInWatchLater,
     } = useToggleWatchLaterButton(videoId, isInWatchLaterProp);
 
-    console.log(isLoading, onClick);
     if (isLoading) {
       return <Video.LoadingOverlayButton />;
     }
@@ -215,7 +214,10 @@ Video.DeleteFromListButton = ({
 };
 
 Video.LoadingOverlayButton = React.memo(() => (
-  <Video.OverlayButton iconClassName="fa-solid fa-spinner" />
+  <Video.OverlayButton
+    iconClassName="fa-solid fa-spinner"
+    data-testid="video__loading-overlay-button"
+  />
 ));
 
 Video.OverlayButton = React.memo(

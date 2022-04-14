@@ -123,10 +123,3 @@ const useVideoToggleButton = (
     isActive,
   };
 };
-
-export default {
-  useDeleteVideoButton,
-  useEditVideoButton,
-  useToggleLikeButton,
-  useToggleWatchLaterButton,
-};
