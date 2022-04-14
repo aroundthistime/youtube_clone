@@ -10,7 +10,7 @@ export interface DefaultInfiniteFetchSuccess extends SuccessResponseData {
   nextPage: number;
 }
 
-interface FetchedVideoType extends VideoType {
+interface FetchedVideoType extends BriefVideoType {
   isInWatchLater?: boolean | undefined;
 }
 

@@ -26,7 +26,7 @@ interface MyVideosQueryParams extends DefaultInfiniteQueryParams {
   uploadTime?: TimeStandardType;
 }
 
-const getVideos = async ({
+export const getVideos = async ({
   keyword,
   category,
   sortMethod,
