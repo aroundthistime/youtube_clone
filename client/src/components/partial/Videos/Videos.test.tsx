@@ -1,35 +1,20 @@
-/* eslint-disable import/no-extraneous-dependencies */
 import React from 'react';
 import {renderHook} from '@testing-library/react-hooks/dom';
 import * as ReactQuery from 'react-query';
 import {UseInfiniteQueryResult} from 'react-query';
 import * as useLazyInfiniteScroll from '../../../@hooks/useLazyInfiniteScroll';
-// import * as useVideosQueryModule from '../../../@queries/useVideosQuery';
 import {useVideosQuery} from '../../../@queries/useVideosQuery';
-import {render, testData} from '../../../utils/testUtils';
+import {
+  defaultVideosQueryResult,
+  render,
+  testData,
+} from '../../../utils/testUtils';
 import Videos from './Videos';
 
 describe('Videos', () => {
   jest
     .spyOn(useLazyInfiniteScroll, 'useLazyInfiniteScroll')
     .mockImplementation(() => {});
-
-  const defaultVideosQueryResult = {
-    data: {
-      pages: [
-        {
-          result: true,
-          hasNextPage: true,
-          nextPage: 2,
-          videos: [testData.breifVideo],
-        },
-      ],
-    },
-    isFetching: false,
-    hasNextPage: true,
-    fetchNextPage: jest.fn(),
-    refetch: jest.fn(),
-  } as unknown as UseInfiniteQueryResult<unknown, unknown>;
 
   it('renders OK when videos exist', () => {
     jest.spyOn(ReactQuery, 'useInfiniteQuery').mockImplementation(() => {

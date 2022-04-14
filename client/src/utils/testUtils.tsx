@@ -3,7 +3,12 @@ import {render as rtlRender} from '@testing-library/react';
 import {Provider} from 'react-redux';
 import {configureStore} from '@reduxjs/toolkit';
 import {MemoryRouter} from 'react-router-dom';
-import {QueryClient, QueryClientProvider, setLogger} from 'react-query';
+import {
+  QueryClient,
+  QueryClientProvider,
+  setLogger,
+  UseInfiniteQueryResult,
+} from 'react-query';
 import rootReducer from '../@modules/root';
 
 const queryClient = new QueryClient({
@@ -70,6 +75,23 @@ export const testData = {
 };
 
 export const TestWrappedComponent = () => <div />;
+
+export const defaultVideosQueryResult = {
+  data: {
+    pages: [
+      {
+        result: true,
+        hasNextPage: true,
+        nextPage: 2,
+        videos: [testData.breifVideo],
+      },
+    ],
+  },
+  isFetching: false,
+  hasNextPage: true,
+  fetchNextPage: jest.fn(),
+  refetch: jest.fn(),
+} as unknown as UseInfiniteQueryResult<unknown, unknown>;
 
 // re-export everything
 export * from '@testing-library/react';
