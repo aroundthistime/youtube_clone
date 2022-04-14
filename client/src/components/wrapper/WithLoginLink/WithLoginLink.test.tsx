@@ -1,10 +1,6 @@
 import React from 'react';
 import {toast} from 'react-toastify';
-import {
-  render,
-  testState,
-  TestWrappedComponent,
-} from '../../../utils/testUtils';
+import {render, testData, TestWrappedComponent} from '../../../utils/testUtils';
 import WithLoginLink from './WithLoginLink';
 
 toast.error = jest.fn();
@@ -24,7 +20,7 @@ describe('WithLoginLink', () => {
   it('renders with login link when not logged in', () => {
     const {getByTestId} = render(<WithLoginLinkComponent />, {
       preloadedState: {
-        user: testState.user,
+        user: testData.user,
       },
     });
 

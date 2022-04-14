@@ -1,6 +1,6 @@
 import React from 'react';
 import routes from '../../../routes';
-import {render, testState} from '../../../utils/testUtils';
+import {render, testData} from '../../../utils/testUtils';
 import Header from './Header';
 
 describe('Header', () => {
@@ -17,7 +17,7 @@ describe('Header', () => {
   it('renders myProfile button when loggedIn', () => {
     const {getByTestId} = render(<Header showMobileNav={() => 1} />, {
       preloadedState: {
-        user: testState.user,
+        user: testData.user,
       },
     });
     expect(getByTestId('header__auth-button')).toHaveAttribute(

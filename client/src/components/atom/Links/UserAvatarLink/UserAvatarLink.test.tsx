@@ -1,10 +1,10 @@
 import React from 'react';
 import routes from '../../../../routes';
-import {render, testState} from '../../../../utils/testUtils';
+import {render, testData} from '../../../../utils/testUtils';
 import UserAvatarLink from './UserAvatarLink';
 
 describe('UserAvatarLink', () => {
-  const {user} = testState;
+  const {user} = testData;
   it('renders OK', () => {
     const {container} = render(<UserAvatarLink user={user} />);
     expect(

@@ -20,7 +20,7 @@ import './VideoDetailPage.scss';
 import {RootState} from '../../../../@modules/root';
 import {
   useDeleteVideoButton,
-  useEditvideoButton,
+  useEditVideoButton,
   useToggleLikeButton,
   useToggleWatchLaterButton,
 } from '../../../../@hooks/useVideoButton';
@@ -225,7 +225,7 @@ VideoDetailPage.MyVideoConfigButtons = () => (
 VideoDetailPage.EditVideoButton = () => {
   const video = useSelector((state: RootState) => state.playingVideo);
   if (!video) return null;
-  const {onClick} = useEditvideoButton(video._id);
+  const {onClick} = useEditVideoButton(video._id);
   return (
     <VideoDetailPage.MyVideoConfigButton onClick={onClick} text="영상 수정" />
   );

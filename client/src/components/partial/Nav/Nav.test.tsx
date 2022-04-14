@@ -1,6 +1,6 @@
 import React from 'react';
 import routes from '../../../routes';
-import {render, testState} from '../../../utils/testUtils';
+import {render, testData} from '../../../utils/testUtils';
 import Nav from './Nav';
 
 describe('Nav', () => {
@@ -10,7 +10,7 @@ describe('Nav', () => {
   it('renders Feed Tabs when Logged In', () => {
     const {getByTestId} = render(<Nav />, {
       preloadedState: {
-        user: testState.user,
+        user: testData.user,
       },
     });
     getByTestId('feed-tabs');
@@ -19,7 +19,7 @@ describe('Nav', () => {
     const {getByText} = render(<Nav />, {
       route: routes.feed + routes.history,
       preloadedState: {
-        user: testState.user,
+        user: testData.user,
       },
     });
     expect(

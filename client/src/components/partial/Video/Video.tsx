@@ -1,12 +1,6 @@
 /* eslint-disable no-alert */
-import React, {
-  PropsWithChildren,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
-import {Link, useNavigate} from 'react-router-dom';
+import React, {PropsWithChildren, useCallback, useMemo} from 'react';
+import {Link} from 'react-router-dom';
 import {toast} from 'react-toastify';
 import {UseMutationResult} from 'react-query';
 import {BriefVideoType} from '../../../@types/VideoType';
@@ -14,13 +8,12 @@ import routes from '../../../routes';
 import './Video.scss';
 import LazyImage from '../LazyImage/LazyImage';
 import {useVideo} from './useVideo';
-import {useToggleWatchLaterMutation} from '../../../@queries/useVideoMutation';
 import constants from '../../../constants';
 import UserAvatarLink from '../../atom/Links/UserAvatarLink/UserAvatarLink';
 import UserNameLink from '../../atom/Links/UserNameLink/UserNameLink';
 import {
   useDeleteVideoButton,
-  useEditvideoButton,
+  useEditVideoButton,
   useToggleWatchLaterButton,
 } from '../../../@hooks/useVideoButton';
 
@@ -118,7 +111,7 @@ Video.OverlayButtons = ({children}: PropsWithChildren<{}>) => (
 );
 
 Video.EditVideoButton = ({videoId}: VideoEditButtonProps) => {
-  const {onClick} = useEditvideoButton(videoId);
+  const {onClick} = useEditVideoButton(videoId);
   return (
     <Video.OverlayButton
       text="영상 수정"
@@ -131,7 +124,6 @@ Video.EditVideoButton = ({videoId}: VideoEditButtonProps) => {
 Video.DeleteVideoButton = ({videoId, setRender}: VideoDeleteButtonProps) => {
   const onDeleteSuccessCallback = useCallback(() => setRender(false), []);
   const {onClick} = useDeleteVideoButton(videoId, onDeleteSuccessCallback);
-
   return (
     <Video.OverlayButton
       text="영상 삭제"
@@ -152,6 +144,7 @@ Video.ToggleWatchLaterButton = React.memo(
       isActive: isInWatchLater,
     } = useToggleWatchLaterButton(videoId, isInWatchLaterProp);
 
+    console.log(isLoading, onClick);
     if (isLoading) {
       return <Video.LoadingOverlayButton />;
     }

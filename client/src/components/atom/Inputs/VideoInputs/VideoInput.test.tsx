@@ -1,5 +1,5 @@
 import React from 'react';
-import {render, testState} from '../../../../utils/testUtils';
+import {render, testData} from '../../../../utils/testUtils';
 import VideoInput, {getCategoryFromCategoryInputValue} from './VideoInput';
 
 describe('VideoInputs', () => {
@@ -22,7 +22,7 @@ describe('VideoInputs', () => {
   it('CategoryInput renders OK', () => {
     render(<VideoInput.CategoryInput />, {
       preloadedState: {
-        categories: testState.categories,
+        categories: testData.categories,
       },
     });
   });
@@ -30,7 +30,7 @@ describe('VideoInputs', () => {
   it('extracts category from CategoryInput', () => {
     const {getByTestId} = render(<VideoInput.CategoryInput />, {
       preloadedState: {
-        categories: testState.categories,
+        categories: testData.categories,
       },
     });
     const selectElement = getByTestId('category-input') as HTMLSelectElement;

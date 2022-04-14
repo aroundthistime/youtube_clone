@@ -1,15 +1,11 @@
-/* eslint-disable import/prefer-default-export */
-
 import React, {useCallback, useState} from 'react';
 import {UseMutationResult} from 'react-query';
 import {useNavigate} from 'react-router-dom';
-import {toast} from 'react-toastify';
 import {
   useDeleteVideoMutation,
   useToggleLikeVideoMutation,
   useToggleWatchLaterMutation,
 } from '../@queries/useVideoMutation';
-import constants from '../constants';
 import routes from '../routes';
 import {
   showErrorToastAfterLoading,
@@ -49,7 +45,7 @@ export const useDeleteVideoButton = (
   };
 };
 
-export const useEditvideoButton = (
+export const useEditVideoButton = (
   videoId: string,
 ): UseSingleActionButtonReturnType => {
   const navigate = useNavigate();
@@ -126,4 +122,11 @@ const useVideoToggleButton = (
     isLoading,
     isActive,
   };
+};
+
+export default {
+  useDeleteVideoButton,
+  useEditVideoButton,
+  useToggleLikeButton,
+  useToggleWatchLaterButton,
 };

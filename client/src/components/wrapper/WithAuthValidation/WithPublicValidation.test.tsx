@@ -1,11 +1,7 @@
 /* eslint-disable no-import-assign */
 import React from 'react';
 import {toast} from 'react-toastify';
-import {
-  render,
-  testState,
-  TestWrappedComponent,
-} from '../../../utils/testUtils';
+import {render, testData, TestWrappedComponent} from '../../../utils/testUtils';
 import WithPublicValidation from './WithPublicValidation';
 
 toast.error = jest.fn();
@@ -28,7 +24,7 @@ describe('WithPublicValidation', () => {
   it('redirects when logged in', () => {
     render(<WithPublicValidationComponent />, {
       preloadedState: {
-        user: testState.user,
+        user: testData.user,
       },
     });
     expect(mockedUsedNavigate).toBeCalledTimes(1);
