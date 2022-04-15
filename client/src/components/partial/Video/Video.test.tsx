@@ -6,7 +6,7 @@ import * as useVideoButton from '../../../@hooks/useVideoButton';
 import Video from './Video';
 
 describe('Video', () => {
-  const video = testData.breifVideo;
+  const video = testData.briefVideo;
   const setRender: React.Dispatch<React.SetStateAction<boolean>> = () => {};
 
   it('renders OK', () => {
